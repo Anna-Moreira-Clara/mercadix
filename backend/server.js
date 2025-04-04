@@ -18,6 +18,10 @@ app.use('/usuarios',usuariosRouter);
 const categoriasRouter = require('./routes/categorias');
 app.use('/categorias', categoriasRouter);
 
+//rota produtos
+const produtosRouter = require('./routes/produtos');
+app.use('/produtos', produtosRouter);
+
 //Conexão com o Banco de Dados
 const db = mysql.createConnection({ //Cria a conexão com o banco de dados MySQL.
     host: process.env.DB_HOST,
