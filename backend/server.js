@@ -1,21 +1,25 @@
 // Importando as dependências
 require ('dotenv').config(); //dotenv -> carrega as variáveis de amibiente do arquivo .env
 const express = require('express'); //express-> framework para criar o servidor e rotas da API
-const mysql = require('mysql'); //mysql2-> biblioteca para conectar ao mysql
+const mysql = require('mysql2'); //mysql2-> biblioteca para conectar ao mysql
 const cors = require('cors'); //cors-> permite que o frontend(react) se conecte ao backend sem bloqueios
-const usuariosRouter = require('./routes/usuarios');
-app.use('/usuarios',usuariosRouter);
+
 
 //Inicialização do Express
 const app = express(); //Inicializa o servidor
 app.use(cors()); //Permite que o frontend acesse a API sem problemas de Cors
 app.use(express.json()); // Permite receber dados no formato JSON no corpo das requisições
 
+const usuariosRouter = require('./routes/usuarios');
+app.use('/usuarios',usuariosRouter);
+
 //Conexão com o Banco de Dados
 const db = mysql.createConnection({ //Cria a conexão com o banco de dados MySQL.
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    password: process.env.DB_NAME
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
     //As credenciais (host, user, password, database) vêm do arquivo .env.  db.connect(err => {...}) → Testa a conexão e exibe uma mensagem no console.
 
 });
