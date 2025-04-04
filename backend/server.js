@@ -10,8 +10,13 @@ const app = express(); //Inicializa o servidor
 app.use(cors()); //Permite que o frontend acesse a API sem problemas de Cors
 app.use(express.json()); // Permite receber dados no formato JSON no corpo das requisições
 
+//rota usuários
 const usuariosRouter = require('./routes/usuarios');
 app.use('/usuarios',usuariosRouter);
+
+//rota categorias
+const categoriasRouter = require('./routes/categorias');
+app.use('/categorias', categoriasRouter);
 
 //Conexão com o Banco de Dados
 const db = mysql.createConnection({ //Cria a conexão com o banco de dados MySQL.
