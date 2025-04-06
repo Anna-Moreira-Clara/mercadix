@@ -18,6 +18,7 @@ router.post('/',(req,res)=>{
 router.get('/',(req,res)=>{
     db.query('SELECT * FROM categorias', (err, results)=>{
         if(err) return res.status(500).json({error: err.message});
+        res.json(results);
     });
 });
 
@@ -39,12 +40,12 @@ router.put('/:id', (req,res)=>{
 
     db.query(sql,[nome,req.params.id], (err, result)=>{
         if(err) return res.status(500).json({error: err.message});
-        React.json({message: 'Categoria Atualizada com Sucesso!'});
+        res.json({message: 'Categoria Atualizada com Sucesso!'});
     });
 });
 
 //delete categoria
-route.delete('/:id', (req,res)=>{
+router.delete('/:id', (req,res)=>{
     db.query('DELETE FROM categorias WHERE id =?',[req.params.id], (err, result)=>{
         if(err) return res.status(500).json({error: err.message});
         res.json({message: 'Categoria Excluída com Sucesso'});

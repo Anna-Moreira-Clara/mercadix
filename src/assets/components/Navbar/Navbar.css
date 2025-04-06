@@ -1,0 +1,131 @@
+.header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 10%;
+    background: rgb(255, 255, 255);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.container-logo{
+    .redirect-link{
+        display: flex;
+        gap: 0.8rem;
+        transform: translateX(-150px);
+
+        .logo{
+            width: auto;
+        }
+    }
+}
+
+
+.btn {
+    font-size: 12px;
+    padding: 12px 24px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+  }
+
+.login-btn {
+    background-color: #0c7e11;  /* Azul */
+    color: white;
+  }
+
+  .login-btn:hover {
+    background-color: #01e70c; /* Azul escuro */
+  }
+  
+  .login-btn:active {
+    transform: scale(0.98); /* Efeito de clique */
+  }
+
+  .cadastrar-btn {
+    background-color: #0c7e11; /* Verde */
+    color: white;
+    margin-right: -100px;
+  }
+  
+  .cadastrar-btn:hover {
+    background-color: #01e70c; /* Verde escuro */
+  }
+  
+  .cadastrar-btn:active {
+    transform: scale(0.98); /* Efeito de clique */
+  }
+
+  
+
+
+.search-bar {
+    padding: px;
+    width: 250px;
+    height: 28px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    
+}
+
+.menu-hamburguer{
+  display: flex;
+  cursor: pointer;
+  font-size: 24px;
+
+}
+
+.pesquisa{
+  display: flex;
+  transform: translateX(-100px);
+}
+
+.menu-dropdown{
+  display: block;
+  position: absolute;
+  top: 60px;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.288);
+}
+
+.menu-dropdown ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-dropdown ul li{
+  cursor: pointer;
+}
+
+.menu-dropdown ul li a {
+  text-decoration: none;
+  color: black;
+  display: block;
+  padding: 8px 25px;
+}
+
+.menu-dropdown ul li a:hover{
+  background-color: white;
+}
+
+.botao-menu {
+  background: transparent; /* Fundo transparente */
+  border: none; /* Sem bordas */
+  font-size: 24px; /* Tamanho do ícone */
+  cursor: pointer; /* Muda o cursor ao passar */
+  padding: 1px; /* Espaçamento interno */
+  border-radius: 5px; /* Cantos arredondados */
+  transition: background 0.3s ease-in-out; /* Suaviza a mudança de cor */
+}
+
+/* Efeito ao passar o mouse */
+.botao-menu:hover {
+  background: rgb(255, 255, 255); /* Fundo levemente escuro */
+}

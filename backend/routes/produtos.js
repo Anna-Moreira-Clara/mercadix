@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router(); //cria um grupo de rotas para produtos.
 const db = require('../db'); //importa a conexão com o banco de dados.
-const { route } = require('./usuarios');
+
 
 //Criar Produto
 router.post('/',(req,res)=>{
@@ -22,7 +22,7 @@ router.get('/',(req, res)=>{
     });
 });
 //buscar produto pelo id
-route.get('/:id',(req,res)=>{
+router.get('/:id',(req,res)=>{
     db.query('SELECT * FROM produtos WHERE id = ?', [req.params.id], (err,result)=>{
         if(err) return res.status(500).json({error: err.message});
         if(result.length === 0) return res.status(404).json({error: 'Produto não encontrado'});
@@ -32,9 +32,9 @@ route.get('/:id',(req,res)=>{
 
 
 //atualizar produto
-route.put('/:id',(req,res)=>{
+router.put('/:id',(req,res)=>{
     const {nome,descricao,preco,estoque,imagem,categoria_id} = req.body;
-    const sql = 'UPDATE produtos SET nome = ?, descricao =?, estoque = ?, imagem= ?, categoria_id =?, WHERE id = ?';
+    const sql = 'UPDATE produtos SET nome = ?, descricao =?, estoque = ?, imagem= ?, categoria_id =? WHERE id = ?';
 
     db.query(sql, [nome, descricao, preco, estoque, imagem, categoria_id, req.params.id], (err,result)=>{
         if(err) return res.status(500).json({error: err.message});
@@ -43,9 +43,10 @@ route.put('/:id',(req,res)=>{
 });
 
 //deletar um produto
-route.delete('/:id',(req, res)=>{
+router.delete('/:id',(req, res)=>{
     db.query('DELETE FROM produtos WHERE id = ?',[req.params.id],(err, result)=>{
         if(err) return res.status(500).json({error:err.message});
         res.json({message: 'Produto Excluído com Sucesso!'});
     });
 });
+module.exports = router;

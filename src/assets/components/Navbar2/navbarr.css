@@ -1,0 +1,30 @@
+nav.categorias  {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 20px;
+}
+
+/* botei esse nav e o botao aqui em cima */
+nav.categorias h3 {
+    text-align: center;
+}
+
+nav.categorias .botao {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: antiquewhite;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    transition: 0.3s;
+}
+
+nav.categorias .botao:hover {
+    background-color: hsl(135, 90%, 42%);
+}

@@ -50,15 +50,3 @@ const PORT = 5000;
 app.listen(PORT, () =>{ //Inicia o servidor e exibe uma mensagem no console
     console.log(`Servidor rodando na porta ${PORT} `);
 });
-
-
-
-
-
-
-
-
-
-
-
-
