@@ -28,7 +28,7 @@ const Login = () => {
         if (data.usuario.role === "admin") {
           navigate("/dashboard");
         } else {
-          navigate("/cliente"); // ou outra rota
+          navigate("/"); // ou outra rota
         }
       } else {
         setErro(data.error);
