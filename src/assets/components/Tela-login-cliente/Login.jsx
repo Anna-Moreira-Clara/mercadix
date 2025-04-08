@@ -1,66 +1,27 @@
 import React, { useState } from "react";
-import "./Login.css"; // Se quiser, estilize separado
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const Login = () => {
+function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
-  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:5000/usuarios", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, senha }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert(data.message);
-
-        if (data.usuario.role === "admin") {
-          navigate("/dashboard");
-        } else {
-          navigate("/"); // ou outra rota
-        }
-      } else {
-        setErro(data.error);
-      }
-    } catch (error) {
-      setErro("Erro na conexão com o servidor.");
+      const res = await axios.post("http://localhost:5000/usuarios", { email, senha });
+      alert("Bem-vindo " + res.data.user.nome);
+    } catch (err) {
+      alert("Login inválido");
     }
   };
 
   return (
-    <div className="login-container">
+    <div>
       <h2>Login</h2>
-      {erro && <p className="erro">{erro}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          required
-        />
-        <button type="submit">Entrar</button>
-      </form>
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
+      <button onClick={handleLogin}>Entrar</button>
     </div>
   );
-};
+}
 
 export default Login;
