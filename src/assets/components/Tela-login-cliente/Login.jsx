@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './login.css';
-import { FaGoogle, FaFacebookF } from 'react-icons/fa';
+
 
 
   

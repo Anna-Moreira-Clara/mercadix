@@ -1,3 +1,10 @@
+/*Resumo do que esse controller faz:
+Esse arquivo centraliza toda a lógica de manipulação dos dados de produtos: criar, listar, buscar por ID, atualizar e excluir. 
+Ele deixa o código mais organizado e modular, já que as rotas (em routes/produtos.js) só se preocupam com direcionar
+as requisições para o método correto do controller.*/
+
+
+
 // Importa a conexão com o banco de dados
 const db = require('../db');
 
