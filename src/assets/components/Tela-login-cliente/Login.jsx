@@ -4,7 +4,7 @@ import { FaGoogle, FaFacebookF } from 'react-icons/fa';
 
 
   
-  const Produtos = () => {
+  const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
   
     useEffect(() => {
@@ -55,4 +55,4 @@ import { FaGoogle, FaFacebookF } from 'react-icons/fa';
   );
 
   }
-export default Produtos;
+export default Usuarios;
