@@ -33,7 +33,7 @@ const Navbar = () => {
     const novoUsuario = {
       nome: 'João da Silva',
       cpf: '12345678900',
-      email: 'joao@email.com',
+      email: 'joa@email.com',
       senha: '123456',
       endereco: 'Rua ABC, 123',
       telefone: '21999999999',
