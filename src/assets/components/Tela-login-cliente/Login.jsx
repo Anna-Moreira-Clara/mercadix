@@ -59,7 +59,9 @@ const Login = () => {
           />
           {erro && <p style={{ color: 'red', fontSize: '14px' }}>{erro}</p>}
           <a href="#" className="forgot-password">Esqueci minha senha</a>
+          <a className="/">
           <button className="login-button" onClick={handleLogin}>Entrar</button>
+          </a>
           <p className="register-link">Não tem uma conta? <a href="#">Cadastre-se</a></p>
         </div>
       </div>
