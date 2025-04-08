@@ -9,7 +9,7 @@ const Login = () => {
   
   const handleLogin = async () => {
     try {
-      const res = await fetch('http://localhost:3306/login-cliente', { // porta do seu backend
+      const res = await fetch('http://localhost:5000/login-cliente', { // porta do seu backend
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha })
