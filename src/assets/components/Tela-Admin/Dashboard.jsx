@@ -41,6 +41,13 @@ const AdminDashboard = () => {
               </div>
               <ChevronRight className="h-4 w-4" />
             </div>
+            <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
+              <div className="flex items-center gap-3">
+                <Settings className="h-5 w-5" />
+                <span>Categorias</span>
+              </div>
+              <ChevronRight className="h-4 w-4" />
+            </div>
           </div>
           
         </nav>
