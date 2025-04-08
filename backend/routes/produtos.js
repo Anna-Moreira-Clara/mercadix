@@ -1,7 +1,14 @@
 const express = require('express');
 const router = express.Router(); //cria um grupo de rotas para produtos.
+const produtosController = require('../controllers/produtosController');
 const db = require('../db'); //importa a conexão com o banco de dados.
+const { route } = require('./produtos');
 
+router.post('/', produtosController.criarProduto);
+router.get('/', produtosController.listarProdutos);
+router.get('/:id', produtosController.buscarProdutoPorId);
+router.put('/:id', produtosController.atualizarProduto);
+router.delete('/:id', produtosController.deletarProduto);
 
 //Criar Produto
 router.post('/',(req,res)=>{
