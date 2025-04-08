@@ -34,7 +34,7 @@ router.get('/:id',(req,res)=>{
 //atualizar produto
 router.put('/:id',(req,res)=>{
     const {nome,descricao,preco,estoque,imagem,categoria_id} = req.body;
-    const sql = 'UPDATE produtos SET nome = ?, descricao =?, estoque = ?, imagem= ?, categoria_id =? WHERE id = ?';
+    const sql = 'UPDATE produtos SET nome = ?, descricao =?,preco = ?, estoque = ?, imagem= ?, categoria_id =? WHERE id = ?';
 
     db.query(sql, [nome, descricao, preco, estoque, imagem, categoria_id, req.params.id], (err,result)=>{
         if(err) return res.status(500).json({error: err.message});
