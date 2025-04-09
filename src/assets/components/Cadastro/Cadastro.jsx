@@ -39,7 +39,7 @@ function ClienteRegistration() {
     
     try {
       // Conectando com a rota correta do seu backend
-      const response = await axios.post('/api/usuarios', formData);
+      const response = await axios.post('/routes/usuarios', formData);
       
       setMessage(response.data.message);
       // Resetar o formulário após o sucesso
