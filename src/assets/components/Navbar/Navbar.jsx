@@ -81,6 +81,53 @@ const Navbar = () => {
         }
     };
 
+    // Estado do modal de login
+const [showLoginModal, setShowLoginModal] = useState(false);
+const [loginData, setLoginData] = useState({ email: '', senha: '' });
+const [loginMessage, setLoginMessage] = useState('');
+const [loginLoading, setLoginLoading] = useState(false);
+
+const toggleLoginModal = () => {
+  setShowLoginModal(!showLoginModal);
+  setLoginMessage('');
+};
+
+const handleLoginChange = (e) => {
+  const { name, value } = e.target;
+  setLoginData(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoginLoading(true);
+  setLoginMessage('');
+
+  try {
+    const response = await axios.post('/usuarios', loginData);
+
+    if (response.data && response.data.usuario) {
+      setLoginMessage("Login realizado com sucesso!");
+
+      // Se quiser redirecionar por role:
+      if (response.data.usuario.role === "admin") {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/";
+      }
+    } else {
+      setLoginMessage("Credenciais inválidas.");
+    }
+  } catch (error) {
+    setLoginMessage("Erro ao tentar logar. Verifique as credenciais.");
+  } finally {
+    setLoginLoading(false);
+  }
+};
+
+
     return(
         <header className="header">
             <div className="container-logo">
@@ -110,9 +157,7 @@ const Navbar = () => {
             </div>  
 
             <nav className="navbar">
-                <a href="/login-cliente">
-                    <button className="btn login-btn">Login</button>
-                </a>
+            <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
                 <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
             </nav>
 
@@ -224,6 +269,58 @@ const Navbar = () => {
                     </div>
                 </div>
             )}
+
+            {/* Modal de Login */}
+{showLoginModal && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <button className="close-btn" onClick={toggleLoginModal}>×</button>
+      <h2>Login</h2>
+
+      <form onSubmit={handleLogin}>
+        <div className="form-group">
+          <label htmlFor="loginEmail">Email</label>
+          <input
+            type="email"
+            id="loginEmail"
+            name="email"
+            value={loginData.email}
+            onChange={handleLoginChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="loginSenha">Senha</label>
+          <input
+            type="password"
+            id="loginSenha"
+            name="senha"
+            value={loginData.senha}
+            onChange={handleLoginChange}
+            required
+          />
+        </div>
+
+        {loginMessage && (
+          <div className={`message ${loginMessage.includes('sucesso') ? 'success' : 'error'}`}>
+            {loginMessage}
+          </div>
+        )}
+
+        <div className="form-buttons">
+          <button type="submit" className="submit-btn" disabled={loginLoading}>
+            {loginLoading ? 'Entrando...' : 'Entrar'}
+          </button>
+          <button type="button" className="cancel-btn" onClick={toggleLoginModal}>
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
         </header>
     );
 };
