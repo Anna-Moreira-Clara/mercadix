@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
+import "./cadastro.css";
 
-function UserRegistration() {
+function ClienteRegistration() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
@@ -10,10 +11,10 @@ function UserRegistration() {
     senha: '',
     endereco: '',
     telefone: '',
-    role: ''
+    role: 'cliente' // Valor padrão
   });
   const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleRegisterModal = () => {
     setShowRegisterModal(!showRegisterModal);
@@ -22,19 +23,23 @@ function UserRegistration() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
+    setMessage('');
     
     try {
-      const response = await axios.post('/api/usuarios', formData);
+      // Conectando com a sua rota definida em usuarios.js
+      const response = await axios.post('/usuarios', formData);
+      
       setMessage(response.data.message);
+      // Resetar o formulário após o sucesso
       setFormData({
         nome: '',
         cpf: '',
@@ -42,92 +47,135 @@ function UserRegistration() {
         senha: '',
         endereco: '',
         telefone: '',
-        role: ''
+        role: 'cliente'
       });
+      
+      // Opcional: fechar o modal após algum tempo
       setTimeout(() => {
-        toggleRegisterModal();
+        if (response.data.message.includes('sucesso')) {
+          toggleRegisterModal();
+        }
       }, 2000);
+      
     } catch (error) {
-      setMessage(error.response?.data?.error || 'Erro ao cadastrar usuário');
+      console.error('Erro ao cadastrar:', error);
+      setMessage(
+        error.response?.data?.error || 
+        'Erro ao cadastrar usuário. Tente novamente.'
+      );
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <button onClick={toggleRegisterModal}>Cadastrar-se</button>
+    <div className="cliente-registration">
+      <button className="btn-cadastrar" onClick={toggleRegisterModal}>
+        Cadastrar-se
+      </button>
       
       {showRegisterModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <h2>Cadastrar</h2>
+            <button className="close-btn" onClick={toggleRegisterModal}>×</button>
+            <h2>Cadastro de Cliente</h2>
+            
             <form onSubmit={handleSubmit}>
-              <input 
-                type="text" 
-                name="nome" 
-                placeholder="Nome" 
-                value={formData.nome} 
-                onChange={handleChange} 
-                required 
-              />
-              <input 
-                type="text" 
-                name="cpf" 
-                placeholder="CPF" 
-                value={formData.cpf} 
-                onChange={handleChange} 
-                required 
-              />
-              <input 
-                type="email" 
-                name="email" 
-                placeholder="Email" 
-                value={formData.email} 
-                onChange={handleChange} 
-                required 
-              />
-              <input 
-                type="password" 
-                name="senha" 
-                placeholder="Senha" 
-                value={formData.senha} 
-                onChange={handleChange} 
-                required 
-              />
-              <input 
-                type="text" 
-                name="endereco" 
-                placeholder="Endereço" 
-                value={formData.endereco} 
-                onChange={handleChange} 
-                required 
-              />
-              <input 
-                type="tel" 
-                name="telefone" 
-                placeholder="Telefone" 
-                value={formData.telefone} 
-                onChange={handleChange} 
-                required 
-              />
-              <select 
-                name="role" 
-                value={formData.role} 
-                onChange={handleChange}
-              >
-                <option value="">Cliente (padrão)</option>
-                <option value="admin">Administrador</option>
-                <option value="funcionario">Funcionário</option>
-              </select>
+              <div className="form-group">
+                <label htmlFor="nome">Nome Completo</label>
+                <input
+                  type="text"
+                  id="nome"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
               
-              {message && <p className={message.includes('sucesso') ? 'success-message' : 'error-message'}>{message}</p>}
+              <div className="form-group">
+                <label htmlFor="cpf">CPF</label>
+                <input
+                  type="text"
+                  id="cpf"
+                  name="cpf"
+                  value={formData.cpf}
+                  onChange={handleChange}
+                  required
+                  placeholder="000.000.000-00"
+                />
+              </div>
               
-              <div className="modal-buttons">
-                <button type="submit" disabled={isLoading}>
-                  {isLoading ? 'Cadastrando...' : 'Cadastrar'}
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="senha">Senha</label>
+                <input
+                  type="password"
+                  id="senha"
+                  name="senha"
+                  value={formData.senha}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="endereco">Endereço</label>
+                <input
+                  type="text"
+                  id="endereco"
+                  name="endereco"
+                  value={formData.endereco}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="telefone">Telefone</label>
+                <input
+                  type="tel"
+                  id="telefone"
+                  name="telefone"
+                  value={formData.telefone}
+                  onChange={handleChange}
+                  required
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+              
+              {message && (
+                <div className={`message ${message.includes('sucesso') ? 'success' : 'error'}`}>
+                  {message}
+                </div>
+              )}
+              
+              <div className="form-buttons">
+                <button 
+                  type="submit" 
+                  className="submit-btn" 
+                  disabled={loading}
+                >
+                  {loading ? 'Cadastrando...' : 'Cadastrar'}
                 </button>
-                <button type="button" onClick={toggleRegisterModal}>Fechar</button>
+                <button 
+                  type="button" 
+                  className="cancel-btn" 
+                  onClick={toggleRegisterModal}
+                >
+                  Cancelar
+                </button>
               </div>
             </form>
           </div>
@@ -137,4 +185,4 @@ function UserRegistration() {
   );
 }
 
-export default UserRegistration;
+export default ClienteRegistration;
