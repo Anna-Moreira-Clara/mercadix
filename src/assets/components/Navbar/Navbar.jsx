@@ -5,7 +5,7 @@ import axios from 'axios';
 import "../Cadastro/cadastro.css";
 
 // Configure a base URL para todas as requisições
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = 'http://localhost:5000/usuarios';
 
 const Navbar = () => {
     // Estado para o menu dropdown
@@ -49,7 +49,7 @@ const Navbar = () => {
         
         try {
             // Conectando com a rota definida em usuarios.js
-            const response = await axios.post('/routes/usuarios', formData);
+            const response = await axios.post('/usuarios', formData);
             
             setMessage(response.data.message);
             // Resetar o formulário após o sucesso
