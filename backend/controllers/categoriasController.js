@@ -1,44 +1,61 @@
 const db = require('../db'); // importa a conexão com o banco de dados
 
-//criar nova categoria
-exports.criarCategoria = (req,res)=>{
-    const {nome} = req.body;
+// Criar nova categoria
+exports.criarCategoria = (req, res) => {
+    const { nome } = req.body;
     const sql = 'INSERT INTO categorias(nome) VALUES(?)';
 
-    db.query(sql, [nome], (err, result)=>{
-        if(err) return res.status(500).json({error: err.message});
+    db.query(sql, [nome], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
 
-        res.status(201).json({message: 'Categoria criada com sucesso!', id: result.insertId});
-
+        res.status(201).json({ message: 'Categoria criada com sucesso!', id: result.insertId });
     });
 };
 
-//listar categorias
-exports.listarCategorias = (req, res) =>{
-    db.query('SELECT * FROM categorias', (err,results)=>{
-        if(err) return res.status(500).json({error: err.message});
-        
+// Listar todas as categorias
+exports.listarCategorias = (req, res) => {
+    db.query('SELECT * FROM categorias', (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
         res.json(results);
     });
 };
 
-//buscar categoria por id
-exports.atualizarCategoria = (req,res)=>{
-    const {nome} = req.body;
+// Buscar categoria por ID
+exports.buscarCategoriaPorId = (req, res) => {
+    db.query('SELECT * FROM categorias WHERE id = ?', [req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
 
-    db.query('UPDATE categorias SET nome = ? WHERE id = ?',[nome, req.params.id],(err,result) =>{
-        if(err) return res.status(500).json({error: err.message});
+        if (result.length === 0) return res.status(404).json({ error: 'Categoria não encontrada' });
 
-        res.json({message: 'Categoria atualizada com sucesso!'});
-    } );
+        res.json(result[0]);
+    });
 };
 
-//deletar categoria 
-exports.deletarCategoria = (req,res) =>{
-    db.query('DELETE FROM categorias WHERE id = ?',[req.params.id], (err,result)=>{
-        if(err) return res.status(500).json({error:err.message});
+// Atualizar categoria
+exports.atualizarCategoria = (req, res) => {
+    const { nome } = req.body;
 
-        res.json({message: 'Categoria deletada com sucesso!'});
+    db.query('UPDATE categorias SET nome = ? WHERE id = ?', [nome, req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
 
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Categoria não encontrada para atualizar' });
+        }
+
+        res.json({ message: 'Categoria atualizada com sucesso!' });
+    });
+};
+
+// Deletar categoria
+exports.deletarCategoria = (req, res) => {
+    db.query('DELETE FROM categorias WHERE id = ?', [req.params.id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Categoria não encontrada para deletar' });
+        }
+
+        res.json({ message: 'Categoria deletada com sucesso!' });
     });
 };
