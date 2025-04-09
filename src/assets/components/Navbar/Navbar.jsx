@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
-import "../Cadastro/cadastro.css";
+
 
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000/usuarios';
