@@ -6,7 +6,7 @@ function ClienteRegistration() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
-    cpf: '',
+    cpf: "",
     email: '',
     senha: '',
     endereco: '',
