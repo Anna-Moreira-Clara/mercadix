@@ -12,7 +12,6 @@ function LoginUsuario() {
 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +27,7 @@ function LoginUsuario() {
     setMessage('');
 
     try {
-      const response = await axios.get('/usuarios', { params: formData });
+      const response = await axios.get('/usuarios', formData);
       const usuario = response.data;
 
       // Armazena o usuário no localStorage
@@ -51,65 +50,50 @@ function LoginUsuario() {
   };
 
   return (
-    <div>
-      {/* Botão para abrir o modal */}
-      <button onClick={() => setIsModalOpen(true)} className="login-btn">
-        Login
-      </button>
+    <div className="login-container">
+      <div className="login-box">
+        <h2>Login</h2>
 
-      {/* Modal de login */}
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
-              <div className="form-group">
-                <label htmlFor="email">E-mail</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-              <div className="form-group">
-                <label htmlFor="senha">Senha</label>
-                <input
-                  type="password"
-                  id="senha"
-                  name="senha"
-                  value={formData.senha}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+          <div className="form-group">
+            <label htmlFor="senha">Senha</label>
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              value={formData.senha}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-              {message && (
-                <div className={`message ${message.includes('sucesso') ? 'success' : 'error'}`}>
-                  {message}
-                </div>
-              )}
+          {message && (
+            <div className={`message ${message.includes('sucesso') ? 'success' : 'error'}`}>
+              {message}
+            </div>
+          )}
 
-              <div className="form-buttons">
-                <button type="submit" className="submit-btn" disabled={loading}>
-                  {loading ? 'Entrando...' : 'Entrar'}
-                </button>
-              </div>
-            </form>
-
-            <p className="register-link">
-              Não tem uma conta? <a href="/cadastro">Cadastre-se</a>
-            </p>
-
-            <button className="close-btn" onClick={() => setIsModalOpen(false)}>
-              Fechar
+          <div className="form-buttons">
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </div>
-        </div>
-      )}
+        </form>
+
+        <p className="register-link">Não tem uma conta? <a href="/cadastro">Cadastre-se</a></p>
+      </div>
     </div>
   );
 }
