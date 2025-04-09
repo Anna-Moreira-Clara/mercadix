@@ -46,19 +46,36 @@ exports.listarUsuarios = (req, res) => {
     });
 };
 
-// Buscar usuário por ID
-exports.buscarUsuarioPorId = (req, res) => {
-    db.query('SELECT id, nome, cpf, email, endereco, telefone, role FROM usuarios WHERE id = ?', 
-    [req.params.id], (err, result) => {
+// Login do usuário
+exports.loginUsuario = (req, res) => {
+    const { email, senha } = req.body;
+
+    // Busca o usuário pelo email
+    db.query('SELECT * FROM usuarios WHERE email = ?', [email], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        
-        if (result.length === 0) {
-            return res.status(404).json({ error: 'Usuário não encontrado' });
+
+        if (results.length === 0) {
+            return res.status(401).json({ message: 'Email não cadastrado' });
         }
-        
-        res.json(result[0]);
+
+        const usuario = results[0];
+
+        // Compara a senha informada com a senha hash do banco
+        bcrypt.compare(senha, usuario.senha, (err, isMatch) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            if (!isMatch) {
+                return res.status(401).json({ message: 'Senha incorreta' });
+            }
+
+            // Remove a senha antes de enviar a resposta
+            const { senha, ...usuarioSemSenha } = usuario;
+
+            res.status(200).json(usuarioSemSenha);
+        });
     });
 };
+
 
 // Atualizar usuário
 exports.atualizarUsuario = (req, res) => {
