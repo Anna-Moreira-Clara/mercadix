@@ -60,6 +60,9 @@ const AdminDashboard = () => {
         <header className="bg-white border-b flex items-center justify-between px-6 py-4">
           {/* Search */}
           <div className="relative flex items-center">
+            <a href='/'>
+            <button className="botao"  > acessar site</button>
+          </a>         
           </div>
           
           {/* User Info */}
@@ -75,19 +78,15 @@ const AdminDashboard = () => {
         </header>
         
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-auto p-6 bg-gray-100">
+        <main className="flex-1 overflow-auto p-6 bg-gray-1-0">
           
           
           {/* Stats Cards */}
           <div className="grid grid-cols-4 gap-6 mb-6">
-            <div className="bg-white rounded border-l-4 border-blue-600 shadow flex items-center justify-between p-4">
-              <div>
-                <p className="text-xs font-bold text-blue-600">VENDAS DIARIA</p>
-                <p className="text-2xl font-bold text-gray-700">R$000,00</p>
-              </div>
-              <div className="text-gray-300">
-                <FileText className="h-12 w-12" />
-              </div>
+             <div>
+              <button className="btn mais vendidos-btn">Mais vendidos</button>
+          
+              
             </div>
             
             <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
@@ -122,45 +121,7 @@ const AdminDashboard = () => {
                 <FileText className="h-12 w-12" />
               </div>
             </div>
-          </div>
-          
-          {/* Charts Row */}
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-blue-600">MERCADIX</h2>
-                <button className="text-gray-400">...</button>
               </div>
-              <div className="h-64 bg-white">
-                {/* Line Chart Placeholder */}
-                <svg className="w-full h-full">
-                  <path
-                    d="M0,200 Q50,180 100,160 T200,140 T300,120 T400,100 T500,80 T600,60 T700,40"
-                    fill="none"
-                    stroke="#4e73df"
-                    strokeWidth="3"
-                  />
-                  <circle cx="700" cy="40" r="5" fill="#4e73df" />
-                </svg>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded shadow p-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-blue-600">MERCADIX</h2>
-                <button className="text-gray-400">...</button>
-              </div>
-              <div className="h-64 flex items-center justify-center">
-                {/* Donut Chart Placeholder */}
-                <svg width="200" height="200" viewBox="0 0 200 200">
-                  <circle cx="100" cy="100" r="80" fill="transparent" stroke="#36b9cc" strokeWidth="40" strokeDasharray="350 500" />
-                  <circle cx="100" cy="100" r="80" fill="transparent" stroke="#1cc88a" strokeWidth="40" strokeDasharray="150 500" strokeDashoffset="-350" />
-                  <circle cx="100" cy="100" r="80" fill="transparent" stroke="#4e73df" strokeWidth="40" strokeDasharray="150 500" strokeDashoffset="-150" />
-                  <circle cx="100" cy="100" r="60" fill="white" />
-                </svg>
-              </div>
-            </div>
-          </div>
         </main>
       </div>
     </div>
@@ -168,3 +129,5 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+

@@ -413,3 +413,24 @@ body {
 .hover\:bg-blue-700:hover {
   background-color: #1d4ed8;
 }
+
+.botao {
+
+  background-color: hwb(135 4% 20%);
+
+  color: rgb(0, 0, 0);
+  padding: 15px 20px;
+  text-align: center;
+  text-decoration: antiquewhite;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  border: none;
+  transition: 0.3s;
+}
+
+.botao:hover {
+  background-color: #ffffff;
+}
