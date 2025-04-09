@@ -9,6 +9,7 @@ import Produtos from './assets/components/Categorias/Categorias';
 import Login from './assets/components/Login/Login.jsx';
 import Dashboard from "./assets/components/Tela-Admin/Dashboard.jsx";
 import LoginCliente from "./assets/components/Tela-login-cliente/Login.jsx"
+import CadastroCliente from "./assets/components/Cadastro/Cadastro.jsx"
 
 
 function Home() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/login-cliente" element={<LoginCliente />} />
+        <Route path="/cadastro-cliente" element={<CadastroCliente />} />
       </Routes>
     </Router>
   );
