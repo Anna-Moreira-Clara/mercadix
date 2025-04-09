@@ -15,6 +15,6 @@ function Cadastro() {
         </form>
       </div>
     );
-  }
+}
   
-  export default Cadastro;
+export default Cadastro;
