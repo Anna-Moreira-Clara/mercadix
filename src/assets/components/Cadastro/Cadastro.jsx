@@ -2,6 +2,9 @@ import { useState } from 'react';
 import axios from 'axios';
 import "./cadastro.css";
 
+// Configure a base URL para todas as requisições
+axios.defaults.baseURL = 'http://localhost:5000'; // Ajuste para a URL do seu backend
+
 function ClienteRegistration() {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,8 +38,8 @@ function ClienteRegistration() {
     setMessage('');
     
     try {
-      // Conectando com a sua rota definida em usuarios.js
-      const response = await axios.post('/usuarios', formData);
+      // Conectando com a rota correta do seu backend
+      const response = await axios.post('/api/usuarios', formData);
       
       setMessage(response.data.message);
       // Resetar o formulário após o sucesso
