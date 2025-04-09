@@ -7,7 +7,7 @@ const port = 5000;
 
 app.use(cors());
 app.use(express.json());
-app.use('/routes/usuarios', usuariosRoutes); // <-- Suas rotas estão aqui
+app.use('/usuarios', usuariosRoutes); // <-- Suas rotas estão aqui
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

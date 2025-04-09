@@ -1,53 +1,49 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 import './login.css';
-import { FaGoogle, FaFacebookF } from 'react-icons/fa';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState('');
+axios.defaults.baseURL = 'http://localhost:5000/usuarios'; // Ajuste conforme necessário
+
+function LoginUsuario() {
+  const [formData, setFormData] = useState({
+    email: '',
+    senha: ''
+  });
+
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleLogin = async (e) => {
-    e.preventDefault(); // Previne o comportamento padrão do formulário
-    
-    // Validação básica
-    if (!email || !senha) {
-      setErro('Por favor, preencha todos os campos');
-      return;
-    }
-    
+    e.preventDefault();
     setLoading(true);
-    setErro('');
-    
+    setMessage('');
+
     try {
-      const res = await fetch('http://localhost:5000/usuarios/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha })
-      });
+      const response = await axios.get('/usuarios', formData);
+      const usuario = response.data;
 
-      const data = await res.json();
+      // Armazena o usuário no localStorage
+      localStorage.setItem('usuario', JSON.stringify(usuario));
 
-      if (!res.ok) {
-        setErro(data.message || 'Erro ao fazer login');
-        return;
-      }
+      setMessage('Login realizado com sucesso!');
 
-      // Login bem-sucedido!
-      console.log('Usuário logado:', data);
-      localStorage.setItem('usuario', JSON.stringify(data)); // salva no navegador
-      
-      // Redirecionar baseado no role do usuário (opcional)
-      if (data.role === 'admin') {
+      // Redireciona com base no tipo de usuário
+      if (usuario.role === 'admin') {
         window.location.href = '/admin';
       } else {
-        window.location.href = '/'; // página principal para clientes
+        window.location.href = '/';
       }
-
-    } catch (err) {
-      console.error('Erro de login:', err);
-      setErro('Erro ao conectar ao servidor. Tente novamente mais tarde.');
+    } catch (error) {
+      console.error('Erro ao logar:', error);
+      setMessage(error.response?.data?.message || 'Erro ao fazer login');
     } finally {
       setLoading(false);
     }
@@ -56,45 +52,50 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <div className="login-left">
-          <h3>ESCOLHA UMA OPÇÃO PARA ENTRAR</h3>
-          <button className="login-option red-border">Receber código de acesso por email</button>
-          <button className="login-option"><FaGoogle className="icon" /> Entrar com <strong>Google</strong></button>
-          <button className="login-option"><FaFacebookF className="icon" /> Entrar com <strong>Facebook</strong></button>
-        </div>
+        <h2>Login</h2>
 
-        <div className="login-right">
-          <h3>ENTRAR COM EMAIL E SENHA</h3>
-          <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="email">E-mail</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Ex.: exemplo@mail.com"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="senha">Senha</label>
             <input
               type="password"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="Adicione sua senha"
+              id="senha"
+              name="senha"
+              value={formData.senha}
+              onChange={handleChange}
               required
             />
-            {erro && <p style={{ color: 'red', fontSize: '14px' }}>{erro}</p>}
-            <a href="#" className="forgot-password">Esqueci minha senha</a>
-            <button 
-              type="submit" 
-              className="login-button" 
-              disabled={loading}
-            >
+          </div>
+
+          {message && (
+            <div className={`message ${message.includes('sucesso') ? 'success' : 'error'}`}>
+              {message}
+            </div>
+          )}
+
+          <div className="form-buttons">
+            <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? 'Entrando...' : 'Entrar'}
             </button>
-            <p className="register-link">Não tem uma conta? <a href="/cadastro">Cadastre-se</a></p>
-          </form>
-        </div>
+          </div>
+        </form>
+
+        <p className="register-link">Não tem uma conta? <a href="/cadastro">Cadastre-se</a></p>
       </div>
     </div>
   );
-};
+}
 
-export default Login;
+export default LoginUsuario;
