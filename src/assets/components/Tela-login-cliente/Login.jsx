@@ -1,27 +1,70 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import './login.css';
+import { FaGoogle, FaFacebookF } from 'react-icons/fa';
 
-function Login() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/usuarios", { email, senha });
-      alert("Bem-vindo " + res.data.user.nome);
+      const res = await fetch('http://localhost:3306/login-cliente', { // porta do seu backend
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErro(data.message || 'Erro ao logar');
+        return;
+      }
+
+      // Login bem-sucedido!
+      console.log('Usuário logado:', data);
+      localStorage.setItem('usuario', JSON.stringify(data)); // salva no navegador
+      window.location.href = '/'; // redireciona para página principal
+
     } catch (err) {
-      alert("Login inválido");
+      console.error('Erro de login:', err);
+      setErro('Erro ao conectar ao servidor');
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)} />
-      <button onClick={handleLogin}>Entrar</button>
+    <div className="login-container">
+      <div className="login-box">
+        <div className="login-left">
+          <h3>ESCOLHA UMA OPÇÃO PARA ENTRAR</h3>
+          <button className="login-option red-border">Receber código de acesso por email</button>
+          <button className="login-option"><FaGoogle className="icon" /> Entrar com <strong>Google</strong></button>
+          <button className="login-option"><FaFacebookF className="icon" /> Entrar com <strong>Facebook</strong></button>
+        </div>
+
+        <div className="login-right">
+          <h3>ENTRAR COM EMAIL E SENHA</h3>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Ex.: exemplo@mail.com"
+          />
+          <input
+            type="password"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            placeholder="Adicione sua senha"
+          />
+          {erro && <p style={{ color: 'red', fontSize: '14px' }}>{erro}</p>}
+          <a href="#" className="forgot-password">Esqueci minha senha</a>
+          <button className="login-button" onClick={handleLogin}>Entrar</button>
+          <p className="register-link">Não tem uma conta? <a href="#">Cadastre-se</a></p>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default Login;

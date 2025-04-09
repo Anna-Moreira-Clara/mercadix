@@ -66,7 +66,9 @@ const Navbar = () => {
         <a href="/login-cliente">
             <button className="btn login-btn" >Login</button>
             </a>
+            <a href="/cadastro-cliente">
             <button className="btn cadastrar-btn">Cadastrar</button>
+            </a>
         </nav>
 
        </header>
