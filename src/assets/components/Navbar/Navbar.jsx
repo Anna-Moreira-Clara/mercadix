@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 // Configure a base URL para todas as requisições
-axios.defaults.baseURL = 'http://localhost:5000/usuarios';
+axios.defaults.baseURL = 'http://localhost:5000';
 
 const Navbar = () => {
     // Estado para o menu dropdown
