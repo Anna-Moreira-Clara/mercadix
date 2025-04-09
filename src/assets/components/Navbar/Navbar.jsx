@@ -1,78 +1,84 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
-import { useState } from "react";
 
 const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
-    const [isOpen, setIsOpen] = useState(false);
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleLoginModal = () => setShowLoginModal(!showLoginModal);
+  const toggleRegisterModal = () => setShowRegisterModal(!showRegisterModal);
 
-    const toggleMenu = () => {
-      setIsOpen((prev) => !prev);
-    };
-
-    const cadastrarUsuario = async (usuario) => {
-      try {
-        const response = await fetch('http://localhost:3001/api/usuarios', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(usuario),
-        });
-    
-        const data = await response.json();
-        if (response.ok) {
-          alert('Usuário cadastrado com sucesso!');
-        } else {
-          alert('Erro ao cadastrar: ' + data.error);
-        }
-      } catch (error) {
-        console.error('Erro na requisição:', error);
-      }
-    };
-      
-
-    return(
-       <header className="header">
+  return (
+    <>
+      <header className="header">
         <div className="container-logo">
-        <a href="/" className="redirect-link">
-        <img src={Logo} alt="logoo" className="logo" />
-        </a>
+          <a href="/" className="redirect-link">
+            <img src={Logo} alt="logoo" className="logo" />
+          </a>
         </div>
-
 
         <div className="pesquisa">
-        <button className="botao-menu" onClick={toggleMenu}>☰</button>
+          <button className="botao-menu" onClick={toggleMenu}>☰</button>
 
-      {isOpen && (
-        <div id="menu-dropdown" className="menu-dropdown">
-          {/* Conteúdo do menu aqui */}
-          <ul>
+          {isOpen && (
+            <div id="menu-dropdown" className="menu-dropdown">
+              <ul>
                 <li><a href="/">Hortifruti</a></li>
-                <li><a href="/">Açogue</a></li>
+                <li><a href="/">Açougue</a></li>
                 <li><a href="/">Bebidas</a></li>
                 <li><a href="/">Limpeza</a></li>
-          </ul>
-        </div>
-      )}    
-        
-        <input
+              </ul>
+            </div>
+          )}
+
+          <input
             type="text"
             className="search-bar"
-            placeholder="Pesquisar Produtos..." />
-          </div>  
+            placeholder="Pesquisar Produtos..."
+          />
+        </div>
 
         <nav className="navbar">
-            
-        <a href="/login-cliente">
-            <button className="btn login-btn" >Login</button>
-            </a>
-            <a href="/cadastro-cliente">
-            <button className="btn cadastrar-btn">Cadastrar</button>
-            </a>
+          <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+          <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
         </nav>
+      </header>
 
-       </header>
-    )
-}
+      {/* Modal de Login */}
+      {showLoginModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Login</h2>
+            <input type="email" placeholder="Email" />
+            <input type="password" placeholder="Senha" />
+            <div className="modal-buttons">
+              <button>Entrar</button>
+              <button onClick={toggleLoginModal}>Fechar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Cadastro */}
+      {showRegisterModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Cadastrar</h2>
+            <input type="text" placeholder="Nome" />
+            <input type="email" placeholder="Email" />
+            <input type="password" placeholder="Senha" />
+            <div className="modal-buttons">
+              <button>Cadastrar</button>
+              <button onClick={toggleRegisterModal}>Fechar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
 
 export default Navbar;
