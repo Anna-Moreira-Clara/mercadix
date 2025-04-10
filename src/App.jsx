@@ -10,7 +10,8 @@ import Dashboard from "./assets/components/Tela-Admin/Dashboard.jsx";
 import LoginCliente from "./assets/components/Tela-login-cliente/Login.jsx"
 import CadastroCliente from "./assets/components/Cadastro/Cadastro.jsx"
 import ProdutosAdmin from "./assets/components/Tela-Admin/Produtos.jsx";
-
+import PedidosAdmin from "./assets/components/Tela-Admin/Pedidos.jsx"
+import CategoriasAdmin from "./assets/components/Tela-Admin/Categorias.jsx"
 function Home() {
   return (
     <>
@@ -34,6 +35,8 @@ function App() {
         {/* DASHBOARD como rota pai */}
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="produtos" element={<ProdutosAdmin />} />
+          <Route path="pedidos" element={<PedidosAdmin />} />
+          <Route path="categorias" element={<CategoriasAdmin />} />
           {/* Pode adicionar mais rotas filhas aqui, tipo: */}
           {/* <Route path="pedidos" element={<Pedidos />} /> */}
           {/* <Route path="categorias" element={<CategoriasAdmin />} /> */}

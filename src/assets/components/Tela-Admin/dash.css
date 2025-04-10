@@ -411,7 +411,7 @@ body {
 }
 
 .hover\:bg-blue-700:hover {
-  background-color: #1d4ed8;
+  background-color: #ced1d8;
 }
 
 .botao {
@@ -433,4 +433,37 @@ body {
 
 .botao:hover {
   background-color: #ffffff;
+}
+
+
+.bot {
+  text-decoration: none;
+  color: inherit;
+}
+
+.link-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.link-content:hover {
+  background-color: #a1aac5;
+  color: white;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon,
+.chevron {
+  width: 20px;
+  height: 20px;
 }
