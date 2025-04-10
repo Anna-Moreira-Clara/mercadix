@@ -115,3 +115,5 @@ exports.deletarUsuario = (req, res) => {
         res.json({ message: 'Usuário removido com sucesso!' });
     });
 };
+
+

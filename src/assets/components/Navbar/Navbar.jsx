@@ -38,7 +38,7 @@ const Navbar = () => {
 
     // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
-        const usuarioStorage = localStorage.getItem('usuarios');
+        const usuarioStorage = localStorage.getItem('usuario');
         if (usuarioStorage) {
             setUsuarioLogado(JSON.parse(usuarioStorage));
         }
@@ -115,7 +115,7 @@ const Navbar = () => {
             const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
 
-            localStorage.setItem('usuarios', JSON.stringify(usuario));
+            localStorage.setItem('usuario', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
             setLoginMessage('Login realizado com sucesso!');
 
@@ -133,7 +133,7 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('usuarios');
+        localStorage.removeItem('usuario');
         setUsuarioLogado(null);
         navigate('/');
     };
