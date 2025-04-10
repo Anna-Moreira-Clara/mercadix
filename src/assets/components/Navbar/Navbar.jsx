@@ -112,17 +112,17 @@ const Navbar = () => {
             const usuario = response.data;
 
             // Armazena o usuário no localStorage
-            localStorage.setItem('usuario', JSON.stringify(usuario));
+            localStorage.setItem('usuarios', JSON.stringify(usuario));
 
             setLoginMessage('Login realizado com sucesso!');
 
             // Redirecionar com base no tipo de usuário após um breve delay
             setTimeout(() => {
                 if (usuario.role === 'admin') {
-                    window.location.href = '/admin';
-                } else {
-                    window.location.href = '/';
-                }
+                    navigate('/admin');
+                  } else {
+                    navigate('/');
+                  }
             }, 1500);
         } catch (error) {
             console.error('Erro ao logar:', error);
@@ -161,9 +161,30 @@ const Navbar = () => {
             </div>  
 
             <nav className="navbar">
-                <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-                <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-            </nav>
+  {localStorage.getItem('usuarios') ? (
+    <div className="usuario-logado">
+      <span className="bem-vindo">
+        Olá, {JSON.parse(localStorage.getItem('usuarios')).nome.split(" ")[0]}
+      </span>
+      <button 
+        className="btn sair-btn" 
+        onClick={() => {
+          localStorage.removeItem('usuarios');
+          navigate('/');
+          /*baababjdbajdakjsd */
+        }}
+      >
+        Sair
+      </button>
+    </div>
+  ) : (
+    <>
+      <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+      <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+    </>
+  )}
+</nav>
+
 
             {/* Modal de Cadastro */}
             {showRegisterModal && (
