@@ -1,4 +1,3 @@
-// App.jsx
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -10,7 +9,7 @@ import Login from './assets/components/Login/Login.jsx';
 import Dashboard from "./assets/components/Tela-Admin/Dashboard.jsx";
 import LoginCliente from "./assets/components/Tela-login-cliente/Login.jsx"
 import CadastroCliente from "./assets/components/Cadastro/Cadastro.jsx"
-
+import ProdutosAdmin from "./assets/components/Tela-Admin/Produtos.jsx";
 
 function Home() {
   return (
@@ -29,9 +28,16 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/login-cliente" element={<LoginCliente />} />
         <Route path="/cadastro-cliente" element={<CadastroCliente />} />
+        
+        {/* DASHBOARD como rota pai */}
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="produtos" element={<ProdutosAdmin />} />
+          {/* Pode adicionar mais rotas filhas aqui, tipo: */}
+          {/* <Route path="pedidos" element={<Pedidos />} /> */}
+          {/* <Route path="categorias" element={<CategoriasAdmin />} /> */}
+        </Route>
       </Routes>
     </Router>
   );
