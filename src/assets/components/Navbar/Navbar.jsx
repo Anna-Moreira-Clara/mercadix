@@ -38,7 +38,7 @@ const Navbar = () => {
 
     // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
-        const usuarioStorage = localStorage.getItem('usuario');
+        const usuarioStorage = localStorage.getItem('usuarios');
         if (usuarioStorage) {
             setUsuarioLogado(JSON.parse(usuarioStorage));
         }
