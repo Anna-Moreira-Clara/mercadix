@@ -1,37 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
 
 const Navbar = () => {
-    // Estado para o menu dropdown
+    const navigate = useNavigate();
+
     const [isOpen, setIsOpen] = useState(false);
-    
-    // Estados para o modal de cadastro
+    const [usuarioLogado, setUsuarioLogado] = useState(null);
+
     const [showRegisterModal, setShowRegisterModal] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false);
+
     const [formData, setFormData] = useState({
         nome: '',
-        cpf: "",
+        cpf: '',
         email: '',
         senha: '',
         endereco: '',
         telefone: '',
-        role: 'cliente' // Valor padrão
+        role: 'cliente'
     });
-    const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false);
 
-    // Estados para o modal de login
-    const [showLoginModal, setShowLoginModal] = useState(false);
     const [loginData, setLoginData] = useState({
         email: '',
         senha: ''
     });
+
+    const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
     const [loginMessage, setLoginMessage] = useState('');
     const [loginLoading, setLoginLoading] = useState(false);
+
+    // Verifica se o usuário está logado ao iniciar
+    useEffect(() => {
+        const usuarioStorage = localStorage.getItem('usuario');
+        if (usuarioStorage) {
+            setUsuarioLogado(JSON.parse(usuarioStorage));
+        }
+    }, []);
 
     const toggleMenu = () => {
         setIsOpen((prev) => !prev);
@@ -67,13 +78,10 @@ const Navbar = () => {
         e.preventDefault();
         setLoading(true);
         setMessage('');
-        
+
         try {
-            // Conectando com a rota definida em usuarios.js
             const response = await axios.post('/usuarios', formData);
-            
             setMessage(response.data.message);
-            // Resetar o formulário após o sucesso
             setFormData({
                 nome: '',
                 cpf: '',
@@ -83,20 +91,16 @@ const Navbar = () => {
                 telefone: '',
                 role: 'cliente'
             });
-            
-            // Opcional: fechar o modal após algum tempo
+
             setTimeout(() => {
                 if (response.data.message.includes('sucesso')) {
                     toggleRegisterModal();
                 }
             }, 2000);
-            
+
         } catch (error) {
             console.error('Erro ao cadastrar:', error);
-            setMessage(
-                error.response?.data?.error || 
-                'Erro ao cadastrar usuário. Tente novamente.'
-            );
+            setMessage(error.response?.data?.error || 'Erro ao cadastrar usuário.');
         } finally {
             setLoading(false);
         }
@@ -108,22 +112,18 @@ const Navbar = () => {
         setLoginMessage('');
 
         try {
-            const response = await axios.get('/usuarios', loginData);
+            const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
 
-            // Armazena o usuário no localStorage
-            localStorage.setItem('usuarios', JSON.stringify(usuario));
-
+            localStorage.setItem('usuario', JSON.stringify(usuario));
+            setUsuarioLogado(usuario);
             setLoginMessage('Login realizado com sucesso!');
 
-            // Redirecionar com base no tipo de usuário após um breve delay
             setTimeout(() => {
-                if (usuario.role === 'admin') {
-                    navigate('/admin');
-                  } else {
-                    navigate('/');
-                  }
+                toggleLoginModal();
+                navigate("/");
             }, 1500);
+
         } catch (error) {
             console.error('Erro ao logar:', error);
             setLoginMessage(error.response?.data?.message || 'Email ou senha incorretos');
@@ -132,7 +132,13 @@ const Navbar = () => {
         }
     };
 
-    return(
+    const handleLogout = () => {
+        localStorage.removeItem('usuario');
+        setUsuarioLogado(null);
+        navigate('/');
+    };
+
+    return (
         <header className="header">
             <div className="container-logo">
                 <a href="/" className="redirect-link">
@@ -142,9 +148,8 @@ const Navbar = () => {
 
             <div className="pesquisa">
                 <button className="botao-menu" onClick={toggleMenu}>☰</button>
-
                 {isOpen && (
-                    <div id="menu-dropdown" className="menu-dropdown">
+                    <div className="menu-dropdown">
                         <ul>
                             <li><a href="/">Hortifruti</a></li>
                             <li><a href="/">Açogue</a></li>
@@ -152,39 +157,23 @@ const Navbar = () => {
                             <li><a href="/">Limpeza</a></li>
                         </ul>
                     </div>
-                )}    
-                
-                <input
-                    type="text"
-                    className="search-bar"
-                    placeholder="Pesquisar Produtos..." />
-            </div>  
+                )}
+                <input type="text" className="search-bar" placeholder="Pesquisar Produtos..." />
+            </div>
 
             <nav className="navbar">
-  {localStorage.getItem('usuarios') ? (
-    <div className="usuario-logado">
-      <span className="bem-vindo">
-        Olá, {JSON.parse(localStorage.getItem('usuarios')).nome.split(" ")[0]}
-      </span>
-      <button 
-        className="btn sair-btn" 
-        onClick={() => {
-          localStorage.removeItem('usuarios');
-          navigate('/');
-          /*baababjdbajdakjsd */
-        }}
-      >
-        Sair
-      </button>
-    </div>
-  ) : (
-    <>
-      <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-      <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-    </>
-  )}
-</nav>
-
+                {usuarioLogado ? (
+                    <div className="usuario-logado">
+                        Olá, {usuarioLogado.nome}
+                        <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
+                    </div>
+                ) : (
+                    <>
+                        <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+                        <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+                    </>
+                )}
+            </nav>
 
             {/* Modal de Cadastro */}
             {showRegisterModal && (
@@ -192,104 +181,35 @@ const Navbar = () => {
                     <div className="modal">
                         <button className="close-btn" onClick={toggleRegisterModal}>×</button>
                         <h2>Cadastro de Cliente</h2>
-                        
                         <form onSubmit={handleSubmit}>
+                            {/* Campos de cadastro... */}
+                            {/* Use seus inputs já existentes aqui */}
                             <div className="form-group">
-                                <label htmlFor="nome">Nome Completo</label>
-                                <input
-                                    type="text"
-                                    id="nome"
-                                    name="nome"
-                                    value={formData.nome}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <label>Nome:</label>
+                                <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
                             </div>
-                            
                             <div className="form-group">
-                                <label htmlFor="cpf">CPF</label>
-                                <input
-                                    type="text"
-                                    id="cpf"
-                                    name="cpf"
-                                    value={formData.cpf}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="000.000.000-00"
-                                />
+                                <label>CPF:</label>
+                                <input type="text" name="cpf" value={formData.cpf} onChange={handleChange} required />
                             </div>
-                            
                             <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <label>Email:</label>
+                                <input type="email" name="email" value={formData.email} onChange={handleChange} required />
                             </div>
-                            
                             <div className="form-group">
-                                <label htmlFor="senha">Senha</label>
-                                <input
-                                    type="password"
-                                    id="senha"
-                                    name="senha"
-                                    value={formData.senha}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <label>Senha:</label>
+                                <input type="password" name="senha" value={formData.senha} onChange={handleChange} required />
                             </div>
-                            
                             <div className="form-group">
-                                <label htmlFor="endereco">Endereço</label>
-                                <input
-                                    type="text"
-                                    id="endereco"
-                                    name="endereco"
-                                    value={formData.endereco}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <label>Endereço:</label>
+                                <input type="text" name="endereco" value={formData.endereco} onChange={handleChange} required />
                             </div>
-                            
                             <div className="form-group">
-                                <label htmlFor="telefone">Telefone</label>
-                                <input
-                                    type="tel"
-                                    id="telefone"
-                                    name="telefone"
-                                    value={formData.telefone}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="(00) 00000-0000"
-                                />
+                                <label>Telefone:</label>
+                                <input type="tel" name="telefone" value={formData.telefone} onChange={handleChange} required />
                             </div>
-                            
-                            {message && (
-                                <div className={`message ${message.includes('sucesso') ? 'success' : 'error'}`}>
-                                    {message}
-                                </div>
-                            )}
-                            
-                            <div className="form-buttons">
-                                <button 
-                                    type="submit" 
-                                    className="submit-btn" 
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Cadastrando...' : 'Cadastrar'}
-                                </button>
-                                <button 
-                                    type="button" 
-                                    className="cancel-btn" 
-                                    onClick={toggleRegisterModal}
-                                >
-                                    Cancelar
-                                </button>
-                            </div>
+                            {message && <p>{message}</p>}
+                            <button type="submit" disabled={loading}>{loading ? 'Enviando...' : 'Cadastrar'}</button>
                         </form>
                     </div>
                 </div>
@@ -298,64 +218,20 @@ const Navbar = () => {
             {/* Modal de Login */}
             {showLoginModal && (
                 <div className="modal-overlay">
-                    <div className="modal login-modal">
+                    <div className="modal">
                         <button className="close-btn" onClick={toggleLoginModal}>×</button>
                         <h2>Login</h2>
-                        
                         <form onSubmit={handleLogin}>
                             <div className="form-group">
-                                <label htmlFor="login-email">E-mail</label>
-                                <input
-                                    type="email"
-                                    id="login-email"
-                                    name="email"
-                                    value={loginData.email}
-                                    onChange={handleLoginChange}
-                                    required
-                                />
+                                <label>Email:</label>
+                                <input type="email" name="email" value={loginData.email} onChange={handleLoginChange} required />
                             </div>
-                            
                             <div className="form-group">
-                                <label htmlFor="login-senha">Senha</label>
-                                <input
-                                    type="password"
-                                    id="login-senha"
-                                    name="senha"
-                                    value={loginData.senha}
-                                    onChange={handleLoginChange}
-                                    required
-                                />
+                                <label>Senha:</label>
+                                <input type="password" name="senha" value={loginData.senha} onChange={handleLoginChange} required />
                             </div>
-                            
-                            {loginMessage && (
-                                <div className={`message ${loginMessage.includes('sucesso') ? 'success' : 'error'}`}>
-                                    {loginMessage}
-                                </div>
-                            )}
-                            
-                            <div className="form-buttons">
-                                <button 
-                                    type="submit" 
-                                    className="submit-btn" 
-                                    disabled={loginLoading}
-                                >
-                                    {loginLoading ? 'Entrando...' : 'Entrar'}
-                                </button>
-                                <button 
-                                    type="button" 
-                                    className="cancel-btn" 
-                                    onClick={toggleLoginModal}
-                                >
-                                    Cancelar
-                                </button>
-                            </div>
-                            <p className="register-link">
-                                Não tem uma conta? <a href="#" onClick={(e) => {
-                                    e.preventDefault();
-                                    toggleLoginModal();
-                                    toggleRegisterModal();
-                                }}>Cadastre-se</a>
-                            </p>
+                            {loginMessage && <p>{loginMessage}</p>}
+                            <button type="submit" disabled={loginLoading}>{loginLoading ? 'Entrando...' : 'Entrar'}</button>
                         </form>
                     </div>
                 </div>
