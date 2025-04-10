@@ -11,7 +11,7 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
-    const usuarioLogado = JSON.parse(localStorage.getItem('usuarios'));
+    const [usuarioLogado, setUsuarioLogado] = useState(null);
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -112,7 +112,7 @@ const Navbar = () => {
         setLoginMessage('');
 
         try {
-            const response = await axios.post('/usuarios/login', loginData); // Rota de login real
+            const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
 
             localStorage.setItem('usuarios', JSON.stringify(usuario));
@@ -162,9 +162,9 @@ const Navbar = () => {
             </div>
 
             <nav className="navbar">
-                {usuarioLogado.nome ? (
+                {usuarioLogado ? (
                     <div className="usuario-logado">
-                       <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
+                       <button className="btn-usuario"> Olá, {usuarioLogado.nome}</button>
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
