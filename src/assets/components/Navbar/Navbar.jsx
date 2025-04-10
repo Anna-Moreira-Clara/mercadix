@@ -170,7 +170,7 @@ const Navbar = () => {
         className="btn sair-btn" 
         onClick={() => {
           localStorage.removeItem('usuario');
-          window.location.href = "/";
+          window.location.href = "http://localhost:5173/";
           /*baababjdbajdakjsd */
         }}
       >
