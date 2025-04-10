@@ -164,7 +164,7 @@ const Navbar = () => {
             <nav className="navbar">
                 {usuarioLogado ? (
                     <div className="usuario-logado">
-                       <button className="btn-usuario"> Olá, {loginData.nome}</button>
+                       <button className="btn-usuario"> Olá, {usuarioLogado.nome}</button>
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
