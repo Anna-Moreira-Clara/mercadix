@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const carrinhoController = require('../controllers/carrinhoController');
-const { MdOutlineElectricMoped } = require('react-icons/md');
+
 
 router.post('/',carrinhoController.adicionarItem);
 router.get('/:usuario_id', carrinhoController.listarCarrinho);
