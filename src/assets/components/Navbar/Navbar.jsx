@@ -112,7 +112,7 @@ const Navbar = () => {
             const usuario = response.data;
 
             // Armazena o usuário no localStorage
-            localStorage.setItem('usuarios', JSON.stringify(usuario));
+            localStorage.setItem('usuario', JSON.stringify(usuario));
 
             setLoginMessage('Login realizado com sucesso!');
 
@@ -161,30 +161,9 @@ const Navbar = () => {
             </div>  
 
             <nav className="navbar">
-  {localStorage.getItem('usuario') ? (
-    <div className="usuario-logado">
-      <span className="bem-vindo">
-        Olá, {JSON.parse(localStorage.getItem('usuario')).nome.split(" ")[0]}
-      </span>
-      <button 
-        className="btn sair-btn" 
-        onClick={() => {
-          localStorage.removeItem('usuarios');
-          window.location.href = "http://localhost:5173/";
-          /*baababjdbajdakjsd */
-        }}
-      >
-        Sair
-      </button>
-    </div>
-  ) : (
-    <>
-      <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-      <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-    </>
-  )}
-</nav>
-
+                <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+                <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+            </nav>
 
             {/* Modal de Cadastro */}
             {showRegisterModal && (
