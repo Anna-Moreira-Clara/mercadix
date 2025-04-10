@@ -11,7 +11,7 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
-    const [usuarioLogado, setUsuarioLogado] = useState(false);
+    const [usuarioLogado, setUsuarioLogado] = useState(null);
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -112,7 +112,7 @@ const Navbar = () => {
         setLoginMessage('');
 
         try {
-            const response = await axios.get('/usuarios', { params: loginData });
+            const response = await axios.post('/usuarios', loginData);
             const usuario = response.data;
 
             localStorage.setItem('usuarios', JSON.stringify(usuario));
