@@ -47,7 +47,7 @@ exports.listarUsuarios = (req, res) => {
 };
 
 // Login do usuário
-/*exports.loginUsuario = (req, res) => {
+exports.loginUsuario = (req, res) => {
     const { email, senha } = req.body;
 
     // Busca o usuário pelo email
@@ -75,7 +75,7 @@ exports.listarUsuarios = (req, res) => {
         });
     });
 };
-*/
+
 
 // Atualizar usuário
 exports.atualizarUsuario = (req, res) => {
@@ -117,16 +117,3 @@ exports.deletarUsuario = (req, res) => {
 };
 
 
-const loginUsuario = (req, res) => {
-    const { email, senha } = req.body;
-    const sql = 'SELECT * FROM usuarios WHERE email = ? AND senha = ?';
-  
-    db.query(sql, [email, senha], (err, results) => {
-      if (err) return res.status(500).json({ message: 'Erro no servidor.' });
-      if (results.length === 0) return res.status(401).json({ message: 'Email ou senha inválidos.' });
-  
-      // Sucesso — retorna o usuário completo
-      const usuario = results[0];
-      res.status(200).json(usuario); // isso deve conter o .nome
-    });
-  };

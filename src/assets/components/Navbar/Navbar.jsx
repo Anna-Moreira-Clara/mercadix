@@ -112,10 +112,12 @@ const Navbar = () => {
         setLoginMessage('');
 
         try {
-            const response = await axios.post('/usuarios/login', loginData);
+            const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
-            localStorage.setItem('usuarios', JSON.stringify(usuario));
+
+            localStorage.setItem('usuario', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
+            setLoginMessage('Login realizado com sucesso!');
 
             setTimeout(() => {
                 toggleLoginModal();
@@ -162,7 +164,7 @@ const Navbar = () => {
             <nav className="navbar">
                 {usuarioLogado ? (
                     <div className="usuario-logado">
-                       <button className="btn-usuario"> Olá, {usuarioLogado?.nome}</button>
+                       <button className="btn-usuario"> Olá, {usuarioLogado.nome}</button>
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
