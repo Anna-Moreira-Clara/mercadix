@@ -1,9 +1,14 @@
 import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
-import { User, Rocket, ChevronRight, Grid, Settings } from 'lucide-react';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import { User, Rocket, ChevronRight, Grid, Settings, FileText } from 'lucide-react';
 import "./dash.css";
 
 const AdminDashboard = () => {
+  const location = useLocation();
+
+  // Verifica se está na raiz do dashboard (exatamente "/dashboard")
+  const isDashboardHome = location.pathname === '/dashboard';
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -16,15 +21,14 @@ const AdminDashboard = () => {
         </div>
 
         {/* Navegação */}
-    
         <nav className="flex-1">
-        <Link to="/dashboard" className='bot'>
-          <div className="p-4">
-            <div className="flex items-center gap-3 px-4 py-2 bg-blue-700 rounded text-white">
-              <Grid className="h-5 w-5" />
-              <span>Dashboard</span>
+          <Link to="/dashboard" className='bot'>
+            <div className="p-4">
+              <div className="flex items-center gap-3 px-4 py-2 bg-blue-700 rounded text-white">
+                <Grid className="h-5 w-5" />
+                <span>Dashboard</span>
+              </div>
             </div>
-          </div>
           </Link>
 
           <div className="px-4 mt-2 mb-2">
@@ -40,7 +44,7 @@ const AdminDashboard = () => {
               </div>
             </Link>
 
-            <Link to="produtos" className='bot'> {/* Corrigido: sem / */}
+            <Link to="produtos" className='bot'>
               <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Settings className="h-5 w-5" />
@@ -50,7 +54,7 @@ const AdminDashboard = () => {
               </div>
             </Link>
 
-            <Link to="categorias" className='bot'> {/* Corrigido: sem / */}
+            <Link to="categorias" className='bot'>
               <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Settings className="h-5 w-5" />
@@ -78,7 +82,48 @@ const AdminDashboard = () => {
         </header>
 
         <main className="flex-1 overflow-auto p-6 bg-gray-100">
-          {/* Aqui aparece o conteúdo das rotas internas */}
+          {/* Cards aparecem somente na raiz de /dashboard */}
+          {isDashboardHome && (
+            <div className="grid grid-cols-4 gap-6 mb-6">
+              <div>
+                <button className="btn mais-vendidos-btn">Mais vendidos</button>
+              </div>
+
+              <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
+                <div>
+                  <p className="text-xs font-bold text-green-500">VENDAS MENSAL</p>
+                  <p className="text-2xl font-bold text-gray-700">R$000,00</p>
+                </div>
+                <div className="text-gray-300">
+                  <FileText className="h-12 w-12" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded border-l-4 border-teal-500 shadow flex items-center justify-between p-4">
+                <div>
+                  <p className="text-xs font-bold text-teal-500">TAREFAS</p>
+                  <p className="text-2xl font-bold text-gray-700">0%</p>
+                  <div className="w-32 h-2 bg-gray-200 mt-2 rounded">
+                    <div className="w-16 h-2 bg-teal-500 rounded"></div>
+                  </div>
+                </div>
+                <div className="text-gray-300">
+                  <FileText className="h-12 w-12" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded border-l-4 border-yellow-500 shadow flex items-center justify-between p-4">
+                <div>
+                  <p className="text-xs font-bold text-yellow-500">PEDIDOS PENDENTES</p>
+                  <p className="text-2xl font-bold text-gray-700">0</p>
+                </div>
+                <div className="text-gray-300">
+                  <FileText className="h-12 w-12" />
+                </div>
+              </div>
+            </div>
+          )}
+
           <Outlet />
         </main>
       </div>
