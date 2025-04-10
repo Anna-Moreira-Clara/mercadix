@@ -164,7 +164,7 @@ const Navbar = () => {
             <nav className="navbar">
                 {usuarioLogado ? (
                     <div className="usuario-logado">
-                        Olá, {usuarioLogado.nome}
+                       <h1> Olá, {usuarioLogado.nome}</h1>
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
