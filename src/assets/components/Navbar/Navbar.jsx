@@ -161,9 +161,29 @@ const Navbar = () => {
             </div>  
 
             <nav className="navbar">
-                <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-                <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-            </nav>
+  {localStorage.getItem('usuario') ? (
+    <div className="usuario-logado">
+      <span className="bem-vindo">
+        Olá, {JSON.parse(localStorage.getItem('usuario')).nome.split(" ")[0]}
+      </span>
+      <button 
+        className="btn sair-btn" 
+        onClick={() => {
+          localStorage.removeItem('usuario');
+          window.location.href = "/";
+        }}
+      >
+        Sair
+      </button>
+    </div>
+  ) : (
+    <>
+      <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+      <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+    </>
+  )}
+</nav>
+
 
             {/* Modal de Cadastro */}
             {showRegisterModal && (

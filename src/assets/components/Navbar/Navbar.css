@@ -173,3 +173,27 @@
   background-color: #30a107;
   color: white;
 }
+.usuario-logado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bem-vindo {
+  font-weight: bold;
+  color: white;
+}
+
+.sair-btn {
+  padding: 6px 12px;
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.sair-btn:hover {
+  background-color: #c0392b;
+}
