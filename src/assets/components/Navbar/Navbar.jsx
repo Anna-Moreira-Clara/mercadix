@@ -112,7 +112,7 @@ const Navbar = () => {
             const usuario = response.data;
 
             // Armazena o usuário no localStorage
-            localStorage.setItem('usuario', JSON.stringify(usuario));
+            localStorage.setItem('usuarios', JSON.stringify(usuario));
 
             setLoginMessage('Login realizado com sucesso!');
 
@@ -169,7 +169,7 @@ const Navbar = () => {
       <button 
         className="btn sair-btn" 
         onClick={() => {
-          localStorage.removeItem('usuario');
+          localStorage.removeItem('usuarios');
           window.location.href = "http://localhost:5173/";
           /*baababjdbajdakjsd */
         }}
