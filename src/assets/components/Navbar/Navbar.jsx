@@ -40,14 +40,7 @@ const Navbar = () => {
     useEffect(() => {
         const usuarioStorage = localStorage.getItem('usuarios');
         if (usuarioStorage) {
-            try {
-                const parsedUser = JSON.parse(usuarioStorage);
-                console.log("Usuário recuperado:", parsedUser); // Debug
-                setUsuarioLogado(parsedUser);
-            } catch (error) {
-                console.error("Erro ao parsear usuário:", error);
-                localStorage.removeItem('usuarios');
-            }
+            setUsuarioLogado(JSON.parse(usuarioStorage));
         }
     }, []);
 
@@ -120,15 +113,7 @@ const Navbar = () => {
 
         try {
             const response = await axios.get('/usuarios', { params: loginData });
-            console.log('Resposta do login:', response.data); // Debug
-            
-            // Verificando a estrutura da resposta
             const usuario = response.data;
-            
-            // Garantindo que temos um usuário válido com nome
-            if (!usuario || (typeof usuario === 'object' && !usuario.nome)) {
-                throw new Error('Dados de usuário inválidos na resposta');
-            }
 
             localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
@@ -151,28 +136,6 @@ const Navbar = () => {
         localStorage.removeItem('usuarios');
         setUsuarioLogado(null);
         navigate('/');
-    };
-
-    // Função auxiliar para obter o nome do usuário com segurança
-    const getUserName = () => {
-        if (!usuarioLogado) return 'Usuários';
-        
-        // Tenta diferentes formatos possíveis da resposta da API
-        if (typeof usuarioLogado === 'string') {
-            try {
-                const parsed = JSON.parse(usuarioLogado);
-                return parsed.nome || 'usuarios';
-            } catch {
-                return 'usuarios';
-            }
-        }
-        
-        // Se for um objeto, tenta acessar o nome diretamente ou em subestruturas comuns
-        if (usuarioLogado.nome) return usuarioLogado.nome;
-        if (usuarioLogado.user && usuarioLogado.user.nome) return usuarioLogado.user.nome;
-        if (usuarioLogado.data && usuarioLogado.data.nome) return usuarioLogado.data.nome;
-        
-        return 'usuarios';
     };
 
     return (
@@ -201,7 +164,7 @@ const Navbar = () => {
             <nav className="navbar">
                 {usuarioLogado ? (
                     <div className="usuario-logado">
-                       <button className="btn-usuario"> Olá, {getUserName()}</button>
+                       <button className="btn-usuario"> Olá, {usuarioLogado.nome}</button>
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
@@ -219,6 +182,8 @@ const Navbar = () => {
                         <button className="close-btn" onClick={toggleRegisterModal}>×</button>
                         <h2>Cadastro de Cliente</h2>
                         <form onSubmit={handleSubmit}>
+                            {/* Campos de cadastro... */}
+                            {/* Use seus inputs já existentes aqui */}
                             <div className="form-group">
                                 <label>Nome:</label>
                                 <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
