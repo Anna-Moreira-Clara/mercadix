@@ -197,13 +197,12 @@
   background-color: #c0392b;
 }
 
-.btn-usuario{
-  padding: 5px 10px;
-  background-color: #e74c3c;
-  border: none;
+.btn-usuario {
+  background: #30a107 ;
   color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  font-weight: bold;
+  border: none;
+  margin-right: 10px;
+  font-size: 16px;
 }
+
