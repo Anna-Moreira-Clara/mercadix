@@ -171,6 +171,7 @@ const Navbar = () => {
         onClick={() => {
           localStorage.removeItem('usuario');
           window.location.href = "/";
+          /*baababjdbajdakjsd */
         }}
       >
         Sair
