@@ -3,7 +3,6 @@ import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
 
-
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
 
@@ -25,6 +24,15 @@ const Navbar = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Estados para o modal de login
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [loginData, setLoginData] = useState({
+        email: '',
+        senha: ''
+    });
+    const [loginMessage, setLoginMessage] = useState('');
+    const [loginLoading, setLoginLoading] = useState(false);
+
     const toggleMenu = () => {
         setIsOpen((prev) => !prev);
     };
@@ -34,9 +42,22 @@ const Navbar = () => {
         setMessage('');
     };
 
+    const toggleLoginModal = () => {
+        setShowLoginModal(!showLoginModal);
+        setLoginMessage('');
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleLoginChange = (e) => {
+        const { name, value } = e.target;
+        setLoginData(prev => ({
             ...prev,
             [name]: value
         }));
@@ -81,6 +102,36 @@ const Navbar = () => {
         }
     };
 
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setLoginLoading(true);
+        setLoginMessage('');
+
+        try {
+            const response = await axios.get('/usuarios', loginData);
+            const usuario = response.data;
+
+            // Armazena o usuário no localStorage
+            localStorage.setItem('usuario', JSON.stringify(usuario));
+
+            setLoginMessage('Login realizado com sucesso!');
+
+            // Redirecionar com base no tipo de usuário após um breve delay
+            setTimeout(() => {
+                if (usuario.role === 'admin') {
+                    window.location.href = '/admin';
+                } else {
+                    window.location.href = '/';
+                }
+            }, 1500);
+        } catch (error) {
+            console.error('Erro ao logar:', error);
+            setLoginMessage(error.response?.data?.message || 'Email ou senha incorretos');
+        } finally {
+            setLoginLoading(false);
+        }
+    };
+
     return(
         <header className="header">
             <div className="container-logo">
@@ -110,9 +161,7 @@ const Navbar = () => {
             </div>  
 
             <nav className="navbar">
-                <a href="/login-cliente">
-                    <button className="btn login-btn">Login</button>
-                </a>
+                <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
                 <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
             </nav>
 
@@ -220,6 +269,72 @@ const Navbar = () => {
                                     Cancelar
                                 </button>
                             </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Login */}
+            {showLoginModal && (
+                <div className="modal-overlay">
+                    <div className="modal login-modal">
+                        <button className="close-btn" onClick={toggleLoginModal}>×</button>
+                        <h2>Login</h2>
+                        
+                        <form onSubmit={handleLogin}>
+                            <div className="form-group">
+                                <label htmlFor="login-email">E-mail</label>
+                                <input
+                                    type="email"
+                                    id="login-email"
+                                    name="email"
+                                    value={loginData.email}
+                                    onChange={handleLoginChange}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="form-group">
+                                <label htmlFor="login-senha">Senha</label>
+                                <input
+                                    type="password"
+                                    id="login-senha"
+                                    name="senha"
+                                    value={loginData.senha}
+                                    onChange={handleLoginChange}
+                                    required
+                                />
+                            </div>
+                            
+                            {loginMessage && (
+                                <div className={`message ${loginMessage.includes('sucesso') ? 'success' : 'error'}`}>
+                                    {loginMessage}
+                                </div>
+                            )}
+                            
+                            <div className="form-buttons">
+                                <button 
+                                    type="submit" 
+                                    className="submit-btn" 
+                                    disabled={loginLoading}
+                                >
+                                    {loginLoading ? 'Entrando...' : 'Entrar'}
+                                </button>
+                                <button 
+                                    type="button" 
+                                    className="cancel-btn" 
+                                    onClick={toggleLoginModal}
+                                >
+                                    Cancelar
+                                </button>
+                            </div>
+                            <p className="register-link">
+                                Não tem uma conta? <a href="#" onClick={(e) => {
+                                    e.preventDefault();
+                                    toggleLoginModal();
+                                    toggleRegisterModal();
+                                }}>Cadastre-se</a>
+                            </p>
                         </form>
                     </div>
                 </div>
