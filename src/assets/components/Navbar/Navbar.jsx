@@ -11,7 +11,7 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
-    const [usuarioLogado, setUsuarioLogado] = useState(null);
+    const [usuarioLogado, setUsuarioLogado] = useState(false);
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
