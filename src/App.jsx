@@ -34,6 +34,7 @@ function App() {
         
         {/* DASHBOARD como rota pai */}
         <Route path="/dashboard" element={<Dashboard />}>
+        
           <Route path="produtos" element={<ProdutosAdmin />} />
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
