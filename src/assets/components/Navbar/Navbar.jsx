@@ -11,7 +11,7 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuarios"));
+    const [usuarioLogado, setUsuarioLogado] = useState(null);
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -38,7 +38,7 @@ const Navbar = () => {
 
     // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
-        const usuarioStorage = localStorage.getItem('usuario');
+        const usuarioStorage = localStorage.getItem('usuarios');
         if (usuarioStorage) {
             setUsuarioLogado(JSON.parse(usuarioStorage));
         }
