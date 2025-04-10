@@ -115,7 +115,7 @@ const Navbar = () => {
             const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
 
-            localStorage.setItem('usuario', JSON.stringify(usuario));
+            localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
             setLoginMessage('Login realizado com sucesso!');
 
@@ -133,7 +133,7 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('usuario');
+        localStorage.removeItem('usuarios');
         setUsuarioLogado(null);
         navigate('/');
     };
