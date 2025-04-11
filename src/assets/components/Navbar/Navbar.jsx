@@ -152,7 +152,7 @@ const Navbar = () => {
                     <div className="menu-dropdown">
                         <ul>
                             <li><a href="/hortifruti">Hortifruti</a></li>
-                            <li><a href="/Acougue">Açougue</a></li>
+                            <li><a href="/acougue">Açougue</a></li>
                             <li><a href="/">Bebidas</a></li>
                             <li><a href="/">Limpeza</a></li>
                         </ul>
