@@ -54,3 +54,16 @@ const PORT = 5000;
 app.listen(PORT, () =>{ //Inicia o servidor e exibe uma mensagem no console
     console.log(`Servidor rodando na porta ${PORT} `);
 });
+app.put('/api/produtos/:id', (req, res) => {
+    const { id } = req.params;
+    const { produto, estoque, preco } = req.body;
+  
+    const sql = 'UPDATE produtos SET produto = ?, estoque = ?, preco = ? WHERE id = ?';
+    const values = [produto, quantidade, preco, id];
+  
+    db.query(sql, values, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: 'Produto atualizado com sucesso!' });
+    });
+  });
+  

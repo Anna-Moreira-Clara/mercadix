@@ -23,9 +23,19 @@ const Estoque = () => {
       <table className="min-w-full border bg-white">
         <thead className="bg-gray-100">
           <tr>
+          <th className="border px-4 py-2">ID</th>
+         
             <th className="border px-4 py-2">Produto</th>
             <th className="border px-4 py-2">Quantidade</th>
             <th className="border px-4 py-2">Preço</th>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td>15</td>
+            <td>15</td>
+            <td>15</td>
+
+
           </tr>
         </thead>
         <tbody>
