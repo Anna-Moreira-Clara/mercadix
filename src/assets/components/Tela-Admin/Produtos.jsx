@@ -25,7 +25,7 @@ function ProdutosAdmin() {
     setFormData({
       nome: produto.nome,
       estoque: produto.estoque,
-      preco: produto.preco
+      preco: produto.preco,
     });
   };
 
