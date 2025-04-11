@@ -15,7 +15,7 @@ function ProdutosAdmin() {
   }, []);
 
   const buscarProdutos = () => {
-    axios.get('http://localhost:5000/produtos')
+    axios.get('http://localhost:3000/dashboard/produtos')
       .then(res => setProdutos(res.data))
       .catch(err => console.error(err));
   };
