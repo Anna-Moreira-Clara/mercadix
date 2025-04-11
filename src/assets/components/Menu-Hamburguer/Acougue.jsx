@@ -24,7 +24,7 @@ const Produtos = () => {
         });
     }, []);
   
-    const nomesPermitidos = ["Picanha", "Liinguiça"];
+    const nomesPermitidos = ["Picanha", "Linguiça"];
     
       return (
         <section className="produtos-container">
