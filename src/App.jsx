@@ -1,6 +1,5 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import Navbar from "./assets/components/Navbar/Navbar.jsx";
 import Bane from "./assets/components/Banner/Baner.jsx";
 import NavBar from "./assets/components/Navbar2/navBar.jsx";
@@ -13,6 +12,11 @@ import ProdutosAdmin from "./assets/components/Tela-Admin/Produtos.jsx";
 import PedidosAdmin from "./assets/components/Tela-Admin/Pedidos.jsx"
 import CategoriasAdmin from "./assets/components/Tela-Admin/Categorias.jsx"
 import Estoque from './assets/components/Tela-Admin/Estoque.jsx';
+import Hortifruti from './assets/components/Menu-Hamburguer/Hortifruti.jsx'
+
+
+
+
 
 function Home() {
   return (
@@ -33,6 +37,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/login-cliente" element={<LoginCliente />} />
         <Route path="/cadastro-cliente" element={<CadastroCliente />} />
+        <Route path="/hortifruti" element={<Hortifruti />} />
         
         {/* DASHBOARD como rota pai */}
         <Route path="/dashboard" element={<Dashboard />}>
