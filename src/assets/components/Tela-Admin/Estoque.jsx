@@ -42,6 +42,7 @@ const Estoque = () => {
           {dados.map((item, index) => (
             <tr key={index}>
               <td className="border px-4 py-2">{item.Produto}</td>
+              <td className="border px-4 py-2">{item.Nome}</td>
               <td className="border px-4 py-2">{item.Quantidade}</td>
               <td className="border px-4 py-2">R$ {item.Preço}</td>
             </tr>
