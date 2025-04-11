@@ -10,8 +10,8 @@ const imagens = {
     "linguiça.jpg": linguica,
      
 };
-//picanha.png
-//linguiça.jpg
+//Picanha Montana
+//Linguiça Calabresa Seara
 
 const Produtos = () => {
   const [produtos, setProdutos] = useState([]);
