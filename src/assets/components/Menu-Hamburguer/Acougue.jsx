@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 const imagens = {
-  
+    
     "picanha.png": picanha,
     "linguiça.jpg": linguica,
-   
-   
-  };
+
+};
   
-  const Produtos = () => {
+const Produtos = () => {
     const [produtos, setProdutos] = useState([]);
   
     useEffect(() => {
