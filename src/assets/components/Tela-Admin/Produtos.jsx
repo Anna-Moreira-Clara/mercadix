@@ -5,7 +5,7 @@ function ProdutosAdmin() {
   const [produtos, setProdutos] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
   const [formData, setFormData] = useState({
-    produto: '',
+    nome: '',
     quantidade: '',
     preco: ''
   });
@@ -65,8 +65,8 @@ function ProdutosAdmin() {
                 {editandoId === prod.id ? (
                   <input
                     type="text"
-                    name="produto"
-                    value={formData.produto}
+                    name="nome"
+                    value={formData.nome}
                     onChange={handleChange}
                   />
                 ) : (
