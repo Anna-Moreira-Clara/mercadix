@@ -12,6 +12,8 @@ import CadastroCliente from "./assets/components/Cadastro/Cadastro.jsx"
 import ProdutosAdmin from "./assets/components/Tela-Admin/Produtos.jsx";
 import PedidosAdmin from "./assets/components/Tela-Admin/Pedidos.jsx"
 import CategoriasAdmin from "./assets/components/Tela-Admin/Categorias.jsx"
+import Estoque from './assets/components/Tela-Admin/Estoque.jsx';
+
 function Home() {
   return (
     <>
@@ -38,6 +40,7 @@ function App() {
           <Route path="produtos" element={<ProdutosAdmin />} />
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
+          <Route path="estoque" element={<Estoque />} />
           {/* Pode adicionar mais rotas filhas aqui, tipo: */}
           {/* <Route path="pedidos" element={<Pedidos />} /> */}
           {/* <Route path="categorias" element={<CategoriasAdmin />} /> */}
