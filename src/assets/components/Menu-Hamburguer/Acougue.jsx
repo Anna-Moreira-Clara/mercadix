@@ -1,4 +1,3 @@
-import React from "react";
 import picanha from "../Categorias/imagens/picanha.png";
 import linguica from "../Categorias/imagens/linguiça.jpg";
 import { useState, useEffect } from "react";
