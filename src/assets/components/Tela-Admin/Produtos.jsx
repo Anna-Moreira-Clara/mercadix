@@ -23,9 +23,10 @@ function ProdutosAdmin() {
   const handleEditarClick = (produto) => {
     setEditandoId(produto.id);
     setFormData({
+      produto: produto.produto,
       nome: produto.nome,
       estoque: produto.estoque,
-      preco: produto.preco,
+      preco: produto.preco
     });
   };
 
