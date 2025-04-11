@@ -6,8 +6,11 @@ function ProdutosAdmin() {
   const [editandoId, setEditandoId] = useState(null);
   const [formData, setFormData] = useState({
     nome: '',
-    quantidade: '',
-    preco: ''
+    descricao: '',
+    preco: '',
+    estoque: '',
+    imagem: '',
+    categoria_id: ''
   });
 
   useEffect(() => {
@@ -15,7 +18,7 @@ function ProdutosAdmin() {
   }, []);
 
   const buscarProdutos = () => {
-    axios.get('http://localhost:3000/dashboard/produtos')
+    axios.get('http://localhost:5000/produtos')
       .then(res => setProdutos(res.data))
       .catch(err => console.error(err));
   };
@@ -23,15 +26,17 @@ function ProdutosAdmin() {
   const handleEditarClick = (produto) => {
     setEditandoId(produto.id);
     setFormData({
-      produto: produto.produto,
       nome: produto.nome,
+      descricao: produto.descricao,
+      preco: produto.preco,
       estoque: produto.estoque,
-      preco: produto.preco
+      imagem: produto.imagem,
+      categoria_id: produto.categoria_id
     });
   };
 
   const handleSalvarClick = (id) => {
-    axios.put(`http://localhost:5173/dashboard/produtos/${id}`, formData)
+    axios.put(`http://localhost:5000/produtos/${id}`, formData)
       .then(() => {
         setEditandoId(null);
         buscarProdutos();
@@ -45,16 +50,18 @@ function ProdutosAdmin() {
 
   return (
     <div>
-      <h2></h2>
-      <table border="0" cellPadding="10">
+      <h2 className="text-xl font-bold mb-4">Gerenciar Produtos</h2>
+      <table className="min-w-full bg-white border border-gray-200" cellPadding="10">
         <thead>
           <tr>
-            <th className="border px-4 py-2">ID</th>
-            <th className="border px-4 py-2">nome</th>
-            <th className="border px-4 py-2">descrição</th>
-            <th className="border px-4 py-2">preço (R$)</th>
-            <th className="border px-4 py-2">estoque</th>
-            <th className="border px-4 py-2">categoria</th>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Preço (R$)</th>
+            <th>Estoque</th>
+            <th>Imagem</th>
+            <th>Categoria ID</th>
+            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -70,7 +77,32 @@ function ProdutosAdmin() {
                     onChange={handleChange}
                   />
                 ) : (
-                  prod.produto
+                  prod.nome
+                )}
+              </td>
+              <td>
+                {editandoId === prod.id ? (
+                  <input
+                    type="text"
+                    name="descricao"
+                    value={formData.descricao}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  prod.descricao
+                )}
+              </td>
+              <td>
+                {editandoId === prod.id ? (
+                  <input
+                    type="number"
+                    name="preco"
+                    step="0.01"
+                    value={formData.preco}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  `R$ ${parseFloat(prod.preco).toFixed(2)}`
                 )}
               </td>
               <td>
@@ -82,27 +114,38 @@ function ProdutosAdmin() {
                     onChange={handleChange}
                   />
                 ) : (
-                  prod.quantidade
+                  prod.estoque
+                )}
+              </td>
+              <td>
+                {editandoId === prod.id ? (
+                  <input
+                    type="text"
+                    name="imagem"
+                    value={formData.imagem}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  prod.imagem
                 )}
               </td>
               <td>
                 {editandoId === prod.id ? (
                   <input
                     type="number"
-                    step="0.01"
-                    name="preco"
-                    value={formData.preco}
+                    name="categoria_id"
+                    value={formData.categoria_id}
                     onChange={handleChange}
                   />
                 ) : (
-                  `R$ ${parseFloat(prod.preco).toFixed(2)}`
+                  prod.categoria_id
                 )}
               </td>
               <td>
                 {editandoId === prod.id ? (
-                  <button onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
+                  <button className="text-green-600" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
                 ) : (
-                  <button onClick={() => handleEditarClick(prod)}>Editar</button>
+                  <button className="text-blue-600" onClick={() => handleEditarClick(prod)}>Editar</button>
                 )}
               </td>
             </tr>
