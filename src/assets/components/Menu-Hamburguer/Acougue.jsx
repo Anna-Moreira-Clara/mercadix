@@ -11,6 +11,8 @@ const imagens = {
     "linguiça.jpg": linguica,
      
 };
+//picanha.png
+//linguiça.jpg
 
 const Produtos = () => {
   const [produtos, setProdutos] = useState([]);
