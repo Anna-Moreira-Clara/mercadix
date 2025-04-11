@@ -1,13 +1,14 @@
 import picanha from "../Categorias/imagens/picanha.png";
 import linguica from "../Categorias/imagens/linguiça.jpg";
+import morango from "../Categorias/imagens/morango.jpg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 // Mapeando imagens pelos nomes usados no banco
 const imagens = {
     "picanha.png": picanha,
-    "linguiça.jpg": linguica
-  
+    "linguiça.jpg": linguica,
+     "morango.jpg": morango,
 };
 
 const Produtos = () => {
