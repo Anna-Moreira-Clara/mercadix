@@ -121,7 +121,7 @@ const Navbar = () => {
 
             setTimeout(() => {
                 toggleLoginModal();
-                navigate("/");
+                navigate("/", "/hortifruti");
             }, 1500);
 
         } catch (error) {
@@ -151,8 +151,8 @@ const Navbar = () => {
                 {isOpen && (
                     <div className="menu-dropdown">
                         <ul>
-                            <li><a href="/">Hortifruti</a></li>
-                            <li><a href="/">Açogue</a></li>
+                            <li><a href="/hortifruti">Hortifruti</a></li>
+                            <li><a href="/Acougue">Açougue</a></li>
                             <li><a href="/">Bebidas</a></li>
                             <li><a href="/">Limpeza</a></li>
                         </ul>
