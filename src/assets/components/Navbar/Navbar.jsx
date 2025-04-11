@@ -3,6 +3,7 @@ import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { FaShoppingCart } from 'react-icons/fa';
 
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -162,18 +163,21 @@ const Navbar = () => {
             </div>
 
             <nav className="navbar">
-                {usuarioLogado ? (
-                    <div className="usuario-logado">
-                       <button className="btn-usuario"> Olá, {usuarioLogado.nome}</button>
-                        <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
-                    </div>
-                ) : (
-                    <>
-                        <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-                        <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-                    </>
-                )}
-            </nav>
+    <button className="btn cart-btn">
+        <FaShoppingCart size={20} />
+    </button>
+    {usuarioLogado ? (
+        <div className="usuario-logado">
+            <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
+            <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
+        </div>
+    ) : (
+        <>
+            <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+            <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+        </>
+    )}
+</nav>
 
             {/* Modal de Cadastro */}
             {showRegisterModal && (
