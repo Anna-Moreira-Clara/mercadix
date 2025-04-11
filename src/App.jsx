@@ -14,6 +14,7 @@ import CategoriasAdmin from "./assets/components/Tela-Admin/Categorias.jsx";
 import Estoque from './assets/components/Tela-Admin/Estoque.jsx';
 import Hortifruti from './assets/components/Menu-Hamburguer/Hortifruti.jsx';
 import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal.jsx'; // novo layout
+import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
 
 // Componente Home com o conteúdo da página inicial
 function Home() {
@@ -34,6 +35,8 @@ function App() {
         <Route element={<LayoutComNavbar />}>
           <Route path="/" element={<Home />} />
           <Route path="/hortifruti" element={<Hortifruti />} />
+          <Route path="/Acougue" element={<Acougue />} />
+        
         </Route>
 
         {/* Rotas sem Navbar */}
