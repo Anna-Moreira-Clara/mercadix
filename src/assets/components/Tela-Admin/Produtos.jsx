@@ -45,15 +45,15 @@ function ProdutosAdmin() {
   return (
     <div>
       <h2></h2>
-      <table border="1" cellPadding="10">
+      <table border="0" cellPadding="10">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>nome</th>
-            <th>descrição</th>
-            <th>preço (R$)</th>
-            <th>estoque</th>
-            <th>categoria</th>
+            <th className="border px-4 py-2">ID</th>
+            <th className="border px-4 py-2">nome</th>
+            <th className="border px-4 py-2">descrição</th>
+            <th className="border px-4 py-2">preço (R$)</th>
+            <th className="border px-4 py-2">estoque</th>
+            <th className="border px-4 py-2">categoria</th>
           </tr>
         </thead>
         <tbody>
