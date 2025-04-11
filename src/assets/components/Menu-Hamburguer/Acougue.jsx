@@ -8,7 +8,7 @@ import axios from "axios";
 const imagens = {
     "picanha.png": picanha,
     "linguiça.jpg": linguica,
-     "morango.jpg": morango,
+     
 };
 
 const Produtos = () => {
