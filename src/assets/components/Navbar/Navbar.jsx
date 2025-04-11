@@ -175,17 +175,22 @@ const toggleCartMenu = () => {
 </button>
 
 {showCartMenu && (
-    <div className="cart-menu">
-        <button className="close-cart" onClick={toggleCartMenu}>×</button>
-        <h3>Meu Carrinho</h3>
-        <ul className="cart-items">
-            {/* Exemplo fixo, pode ser dinâmico */}
-            <li>Maçã - 2 unidades</li>
-            <li>Arroz - 1 pacote</li>
-            <li>Sabonete - 3 unidades</li>
-        </ul>
-        <button className="btn finalizar-btn">Finalizar Compra</button>
-    </div>
+  <div className="cart-menu">
+    <button className="close-cart" onClick={toggleCartMenu}>×</button>
+    <h3>Meu Carrinho</h3>
+    <ul className="cart-items">
+      {carrinho.length === 0 ? (
+        <li>Carrinho vazio</li>
+      ) : (
+        carrinho.map((item) => (
+          <li key={item.id}>
+            {item.nome} - {item.quantidade} un.
+          </li>
+        ))
+      )}
+    </ul>
+    <button className="btn finalizar-btn">Finalizar Compra</button>
+  </div>
 )}
 
     {usuarioLogado ? (
