@@ -1,14 +1,13 @@
-import batata from "../Categorias/imagens/batata.jpg";
-import morango from "../Categorias/imagens/morango.jpg";
-import uva from "../Categorias/imagens/uva.jpg";
+import picanha from "../Categorias/imagens/picanha.png";
+import linguica from "../Categorias/imagens/linguiça.jpg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 // Mapeando imagens pelos nomes usados no banco
 const imagens = {
-  "batata.jpg": batata,
-  "morango.jpg": morango,
-  "uva.jpg": uva,
+  "linguiça.jpg": linguica,
+  "picanha.png": picanha,
+  
 };
 
 const Produtos = () => {
@@ -26,7 +25,7 @@ const Produtos = () => {
   }, []);
 
   // Lista de nomes que você deseja mostrar
-  const nomesPermitidos = ["Batata", "Morango", "Uva"];
+  const nomesPermitidos = ["Linguiça", "Picanha"];
 
   return (
     <section className="produtos-container">
