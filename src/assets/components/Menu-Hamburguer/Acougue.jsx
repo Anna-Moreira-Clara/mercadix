@@ -5,8 +5,8 @@ import axios from "axios";
 
 // Mapeando imagens pelos nomes usados no banco
 const imagens = {
-  "linguiça.jpg": linguica,
-  "picanha.png": picanha,
+    "picanha.png": picanha,
+    "linguiça.jpg": linguica
   
 };
 

@@ -35,7 +35,7 @@ function App() {
         <Route element={<LayoutComNavbar />}>
           <Route path="/" element={<Home />} />
           <Route path="/hortifruti" element={<Hortifruti />} />
-          <Route path="/Acougue" element={<Acougue />} />
+          <Route path="/acougue" element={<Acougue />} />
         
         </Route>
 
