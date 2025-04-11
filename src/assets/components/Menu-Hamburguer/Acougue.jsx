@@ -29,7 +29,7 @@ const Produtos = () => {
   }, []);
 
   // Lista de nomes que você deseja mostrar
-  const nomesPermitidos = ["Linguiça", "Picanha"];
+  const nomesPermitidos = ["Linguiça Calabresa Seara", "Picanha Montana"];
 
   return (
     <section className="produtos-container">
