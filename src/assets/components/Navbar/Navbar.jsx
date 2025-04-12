@@ -162,17 +162,6 @@ const adicionarAoCarrinho = (produto) => {
     });
   };
 
-  useEffect(() => {
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
-  }, [carrinho]);
-
-  useEffect(() => {
-    const carrinhoSalvo = localStorage.getItem('carrinho');
-    if (carrinhoSalvo) {
-      setCarrinho(JSON.parse(carrinhoSalvo));
-    }
-  }, []);
-
     return (
         <header className="header">
             <div className="container-logo">
@@ -207,16 +196,11 @@ const adicionarAoCarrinho = (produto) => {
         <button className="close-cart" onClick={toggleCartMenu}>×</button>
         <h3>Meu Carrinho</h3>
         <ul className="cart-items">
-  {carrinho.length === 0 ? (
-    <li>Carrinho vazio</li>
-  ) : (
-    carrinho.map(item => (
-      <li key={item.id}>
-        {item.nome} - {item.quantidade} {item.quantidade > 1 ? 'unidades' : 'unidade'}
-      </li>
-    ))
-  )}
-</ul>
+            {/* Exemplo fixo, pode ser dinâmico */}
+            <li>Maçã - 2 unidades</li>
+            <li>Arroz - 1 pacote</li>
+            <li>Sabonete - 3 unidades</li>
+        </ul>
         <button className="btn finalizar-btn">Finalizar Compra</button>
     </div>
 )}
