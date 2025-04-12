@@ -36,31 +36,6 @@ const Produtos = () => {
       });
   }, []);
 
-  const adicionarAoCarrinho = async (produto) => {
-    try {
-      const usuario = JSON.parse(localStorage.getItem('usuarios'));
-  
-      if (!usuario) {
-        alert("Você precisa estar logado para adicionar produtos ao carrinho.");
-        return;
-      }
-  
-      const payload = {
-        usuario_id: usuario.id,
-        produto_id: produto.id,
-        quantidade: 1, // ou você pode usar um input do usuário
-      };
-  
-      const response = await axios.post('http://localhost:5000/carrinho', payload);
-  
-      alert(response.data.message); // Mensagem: Item adicionado ao carrinho!
-    } catch (error) {
-      console.error("Erro ao adicionar ao carrinho:", error);
-      alert("Erro ao adicionar item. Verifique sua conexão ou login.");
-    }
-  };
-  
-
   return (
     <section className="produtos-container">
       {produtos.map((produto) => (
@@ -72,9 +47,7 @@ const Produtos = () => {
           />
           <p>{produto.nome}</p>
           <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
-          <button onClick={() => adicionarAoCarrinho(produto)} className="add-to-cart">
-  Adicionar
-</button>
+          <button className="add-to-cart">Adicionar</button>
         </div>
       ))}
     </section>

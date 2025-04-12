@@ -1,5 +1,6 @@
 import whisky from "../Categorias/imagens/whisky.jpg";
 import gin from "../Categorias/imagens/gin rose.jpg";
+import morango from "../Categorias/imagens/morango.jpg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
