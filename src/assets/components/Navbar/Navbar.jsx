@@ -160,7 +160,7 @@ const toggleCartMenu = () => {
                         <ul>
                             <li><a href="/hortifruti">Hortifruti</a></li>
                             <li><a href="/acougue">Açougue</a></li>
-                            <li><a href="/">Bebidas</a></li>
+                            <li><a href="/bebidas">Bebidas</a></li>
                             <li><a href="/">Limpeza</a></li>
                         </ul>
                     </div>
@@ -187,6 +187,7 @@ const toggleCartMenu = () => {
         <button className="btn finalizar-btn">Finalizar Compra</button>
     </div>
 )}
+
 
     {usuarioLogado ? (
         <div className="usuario-logado">
