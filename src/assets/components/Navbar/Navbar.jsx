@@ -145,6 +145,34 @@ const toggleCartMenu = () => {
     setShowCartMenu(prev => !prev);
 };
 
+const [carrinho, setCarrinho] = useState([]);
+
+const adicionarAoCarrinho = (produto) => {
+    setCarrinho(prev => {
+      const itemExistente = prev.find(item => item.id === produto.id);
+      if (itemExistente) {
+        // Aumenta a quantidade se já existir
+        return prev.map(item =>
+          item.id === produto.id ? { ...item, quantidade: item.quantidade + 1 } : item
+        );
+      } else {
+        // Adiciona novo item
+        return [...prev, { ...produto, quantidade: 1 }];
+      }
+    });
+  };
+
+  useEffect(() => {
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+  }, [carrinho]);
+
+  useEffect(() => {
+    const carrinhoSalvo = localStorage.getItem('carrinho');
+    if (carrinhoSalvo) {
+      setCarrinho(JSON.parse(carrinhoSalvo));
+    }
+  }, []);
+
     return (
         <header className="header">
             <div className="container-logo">
@@ -179,11 +207,16 @@ const toggleCartMenu = () => {
         <button className="close-cart" onClick={toggleCartMenu}>×</button>
         <h3>Meu Carrinho</h3>
         <ul className="cart-items">
-            {/* Exemplo fixo, pode ser dinâmico */}
-            <li>Maçã - 2 unidades</li>
-            <li>Arroz - 1 pacote</li>
-            <li>Sabonete - 3 unidades</li>
-        </ul>
+  {carrinho.length === 0 ? (
+    <li>Carrinho vazio</li>
+  ) : (
+    carrinho.map(item => (
+      <li key={item.id}>
+        {item.nome} - {item.quantidade} {item.quantidade > 1 ? 'unidades' : 'unidade'}
+      </li>
+    ))
+  )}
+</ul>
         <button className="btn finalizar-btn">Finalizar Compra</button>
     </div>
 )}
