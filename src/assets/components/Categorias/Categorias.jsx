@@ -36,7 +36,7 @@ const Produtos = () => {
       });
   }, []);
 
-
+  
 
   return (
     <section className="produtos-container">
@@ -49,9 +49,7 @@ const Produtos = () => {
           />
           <p>{produto.nome}</p>
           <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
-          <button className="add-to-cart" onClick={() => adicionarAoCarrinho(produto.id)}>
-  Adicionar
-</button>
+          <button className="add-to-cart">Adicionar</button>
         </div>
       ))}
     </section>
