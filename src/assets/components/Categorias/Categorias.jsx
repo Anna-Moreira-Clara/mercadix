@@ -37,7 +37,7 @@ const Produtos = () => {
   }, []);
 
   const adicionarAoCarrinho = async (produtoId) => {
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const usuario = JSON.parse(localStorage.getItem('usuarios'));
     if (!usuario) {
       alert("Você precisa estar logado para adicionar ao carrinho.");
       return;
