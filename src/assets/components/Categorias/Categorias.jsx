@@ -36,25 +36,7 @@ const Produtos = () => {
       });
   }, []);
 
-  const adicionarAoCarrinho = async (produtoId) => {
-    const usuario = JSON.parse(localStorage.getItem('usuarios'));
-    if (!usuario) {
-      alert("Você precisa estar logado para adicionar ao carrinho.");
-      return;
-    }
-  
-    try {
-      await axios.post('/carrinho', {
-        usuario_id: usuario.id,
-        produto_id: produtoId,
-        quantidade: 1 // ou uma quantidade selecionada
-      });
-      alert("Produto adicionado ao carrinho!");
-    } catch (error) {
-      console.error("Erro ao adicionar ao carrinho:", error);
-      alert("Erro ao adicionar ao carrinho.");
-    }
-  };
+
 
   return (
     <section className="produtos-container">
