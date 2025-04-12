@@ -1,6 +1,5 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
 import Bane from "./assets/components/Banner/Baner.jsx";
 import NavBar2 from "./assets/components/Navbar2/navBar.jsx";
 import Produtos from './assets/components/Categorias/Categorias';
