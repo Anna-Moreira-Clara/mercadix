@@ -1,7 +1,8 @@
 import amaciante from "../Categorias/imagens/amaciante-ype.jpg";
 import detergente from "../Categorias/imagens/detergente-surf.jpg";
 import sabao from "../Categorias/imagens/tixan-ype.jpg";
-import papel from "../Categorias/imagens/sulleg-toalha.jpg"
+import papel from "../Categorias/imagens/sulleg-toalha.jpg";
+import morango from "../Categorias/imagens/morango.jpg";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
