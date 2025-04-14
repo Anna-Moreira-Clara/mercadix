@@ -15,7 +15,7 @@ import Hortifruti from './assets/components/Menu-Hamburguer/Hortifruti.jsx';
 import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal.jsx'; // novo layout
 import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
 import Bebidas from './assets/components/Menu-Hamburguer/Bebidas.jsx';
-
+import Limpeza from './assets/components/Menu-Hamburguer/Limpeza.jsx';
 
 // Componente Home com o conteúdo da página inicial
 function Home() {
@@ -38,6 +38,7 @@ function App() {
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
+          <Route path='/limpeza' element={<Limpeza />} />
          
         
         </Route>
