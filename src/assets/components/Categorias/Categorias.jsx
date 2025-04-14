@@ -6,6 +6,10 @@ import whisky from "../Categorias/imagens/whisky.jpg";
 import morango from "../Categorias/imagens/morango.jpg";
 import uva from "../Categorias/imagens/uva.jpg";
 import gin from "../Categorias/imagens/gin rose.jpg";
+import amaciante from "../Categorias/imagens/amaciante-ype.jpg";
+import detergente from "../Categorias/imagens/detergente-surf.jpg";
+import sabao from "../Categorias/imagens/tixan-ype.jpg";
+import papel from "../Categorias/imagens/sulleg-toalha.jpg";
 import "./categorias.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -20,6 +24,10 @@ const imagens = {
   "morango.jpg": morango,
   "uva.jpg": uva,
   "gin rose.jpg": gin,
+  "amaciante-ype.jpg": amaciante,
+  "detergente-surf.jpg": detergente,
+  "tixan-ype.jpg": sabao,
+  "sulleg-toalha.jpg": papel,
 };
 
 const Produtos = () => {
