@@ -26,6 +26,10 @@ app.use('/produtos', produtosRouter);
 const carrinhoRouter = require('./routes/carrinho');
 app.use('/carrinho', carrinhoRouter);
 
+//rota pedidos
+const pedidosRouter = require('./routes/pedidos');
+app.use('/pedidos', pedidosRouter);
+
 //Conexão com o Banco de Dados
 const db = mysql.createConnection({ //Cria a conexão com o banco de dados MySQL.
     host: process.env.DB_HOST,
