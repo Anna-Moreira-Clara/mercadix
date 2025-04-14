@@ -38,6 +38,10 @@ function App() {
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
+<<<<<<< HEAD
+=======
+          
+>>>>>>> 782af362a7a90aa3618bc558d2081790f75fa19f
          
         
         </Route>

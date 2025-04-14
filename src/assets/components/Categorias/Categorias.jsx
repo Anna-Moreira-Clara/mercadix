@@ -20,6 +20,7 @@ const imagens = {
   "morango.jpg": morango,
   "uva.jpg": uva,
   "gin rose.jpg": gin,
+  
 };
 
 const Produtos = () => {
