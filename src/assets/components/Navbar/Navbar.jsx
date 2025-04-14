@@ -188,7 +188,7 @@ const adicionarAoCarrinho = (produto) => {
             <nav className="navbar">
             <button className="btn cart-btn" onClick={toggleCartMenu}>
     <FaShoppingCart size={20} />
-    <span className="cart-count">3</span> {/* pode ser dinâmico */}
+    <span className="cart-count">0</span> {/* pode ser dinâmico */}
 </button>
 
 {showCartMenu && (
@@ -197,9 +197,7 @@ const adicionarAoCarrinho = (produto) => {
         <h3>Meu Carrinho</h3>
         <ul className="cart-items">
             {/* Exemplo fixo, pode ser dinâmico */}
-            <li>Maçã - 2 unidades</li>
-            <li>Arroz - 1 pacote</li>
-            <li>Sabonete - 3 unidades</li>
+           
         </ul>
         <button className="btn finalizar-btn">Finalizar Compra</button>
     </div>
