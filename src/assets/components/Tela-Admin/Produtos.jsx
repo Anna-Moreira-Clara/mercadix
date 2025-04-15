@@ -4,6 +4,7 @@ import axios from 'axios';
 function ProdutosAdmin() {
   const [produtos, setProdutos] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
+  const [modalAberto, setModalAberto] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
     descricao: '',
@@ -48,9 +49,152 @@ function ProdutosAdmin() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const abrirModal = () => {
+    setFormData({
+      nome: '',
+      descricao: '',
+      preco: '',
+      estoque: '',
+      imagem: '',
+      categoria_id: ''
+    });
+    setModalAberto(true);
+  };
+
+  const fecharModal = () => {
+    setModalAberto(false);
+  };
+
+  const handleAdicionarProduto = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:5000/produtos', formData)
+      .then(() => {
+        fecharModal();
+        buscarProdutos();
+      })
+      .catch(err => console.error(err));
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Gerenciar Produtos</h2>
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Gerenciar Produtos</h2>
+        <button 
+          onClick={abrirModal}
+          className="botao"
+        >
+          Adicionar Produto
+        </button>
+      </div>
+
+      {/* Modal para adicionar produto */}
+      {modalAberto && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold">Adicionar Novo Produto</h3>
+              <button 
+                onClick={fecharModal}
+                className="botao"
+              >
+                &times;
+              </button>
+            </div>
+            
+            <form onSubmit={handleAdicionarProduto}>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
+                <input
+                  type="text"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Descrição:</label>
+                <textarea
+                  name="descricao"
+                  value={formData.descricao}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  rows="3"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Preço (R$):</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  name="preco"
+                  value={formData.preco}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Estoque:</label>
+                <input
+                  type="number"
+                  name="estoque"
+                  value={formData.estoque}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">URL da Imagem:</label>
+                <input
+                  type="text"
+                  name="imagem"
+                  value={formData.imagem}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Categoria ID:</label>
+                <input
+                  type="number"
+                  name="categoria_id"
+                  value={formData.categoria_id}
+                  onChange={handleChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  required
+                />
+              </div>
+              
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={fecharModal}
+                  className="botao"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="botao"
+                >
+                  Salvar Produto
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <table className="min-w-full bg-white border border-gray-200" cellPadding="10">
         <thead>
           <tr>
