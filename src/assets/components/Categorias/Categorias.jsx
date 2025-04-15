@@ -9,8 +9,8 @@ import gin from "../Categorias/imagens/gin rose.jpg";
 import "./categorias.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { adicionarAoCarrinhoLocal } from "../utils/carrinhoLocal";
 
-// Mapeando imagens pelos nomes usados no banco
 const imagens = {
   "batata.jpg": batata,
   "leiteninho.jpg": leite,
@@ -20,11 +20,11 @@ const imagens = {
   "morango.jpg": morango,
   "uva.jpg": uva,
   "gin rose.jpg": gin,
-  
 };
 
 const Produtos = () => {
   const [produtos, setProdutos] = useState([]);
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
 
   useEffect(() => {
     axios
@@ -35,22 +35,46 @@ const Produtos = () => {
       .catch((error) => {
         console.error("Erro ao buscar produtos:", error);
       });
+
+    const usuario = localStorage.getItem("usuario");
+    if (usuario) {
+      setUsuarioLogado(JSON.parse(usuario));
+    }
   }, []);
 
-  
+  const adicionarAoCarrinho = async (produto) => {
+    if (usuarioLogado) {
+      try {
+        await axios.post("http://localhost:5000/carrinho", {
+          usuario_id: usuarioLogado.id,
+          produto_id: produto.id,
+          quantidade: 1,
+        });
+        alert(`${produto.nome} adicionado ao carrinho`);
+      } catch (error) {
+        console.error("Erro ao adicionar ao carrinho:", error);
+        alert("Erro ao adicionar ao carrinho.");
+      }
+    } else {
+      adicionarAoCarrinhoLocal(produto);
+      alert(`${produto.nome} adicionado ao carrinho local`);
+    }
+  };
 
   return (
     <section className="produtos-container">
       {produtos.map((produto) => (
         <div key={produto.id} className="produto">
           <img
-            src={imagens[produto.imagem] || morango} // usa imagem local ou imagem padrão
+            src={imagens[produto.imagem] || morango}
             alt={produto.nome}
             className="imagem-produto"
           />
           <p>{produto.nome}</p>
           <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
-          <button className="add-to-cart">Adicionar</button>
+          <button className="add-to-cart" onClick={() => adicionarAoCarrinho(produto)}>
+            Adicionar
+          </button>
         </div>
       ))}
     </section>
