@@ -37,10 +37,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
-          <Route path='/bebidas' element={<Bebidas />} />
-         
-        
-        </Route>
+          <Route path='/bebidas' element={<Bebidas />} />  </Route>
 
         {/* Rotas sem Navbar */}
         <Route path="/login" element={<Login />} />
