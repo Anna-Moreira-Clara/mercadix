@@ -6,6 +6,7 @@ import whisky from "../Categorias/imagens/whisky.jpg";
 import morango from "../Categorias/imagens/morango.jpg";
 import uva from "../Categorias/imagens/uva.jpg";
 import gin from "../Categorias/imagens/gin rose.jpg";
+import fanta from"../Categorias/imagens/fantauva.jpg";
 import "./categorias.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -20,6 +21,7 @@ const imagens = {
   "morango.jpg": morango,
   "uva.jpg": uva,
   "gin rose.jpg": gin,
+  "fantauva.jpg":fanta,
   
 };
 
