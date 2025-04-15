@@ -24,7 +24,7 @@ const Navbar = () => {
     const [carrinho, setCarrinho] = useState([]);
 
     useEffect(() => {
-        const usuarioStorage = localStorage.getItem('usuario');
+        const usuarioStorage = localStorage.getItem('usuarios');
         if (usuarioStorage) {
             setUsuarioLogado(JSON.parse(usuarioStorage));
         }
@@ -72,7 +72,7 @@ const Navbar = () => {
         try {
             const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
-            localStorage.setItem('usuario', JSON.stringify(usuario));
+            localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
             setLoginMessage('Login realizado com sucesso!');
 
