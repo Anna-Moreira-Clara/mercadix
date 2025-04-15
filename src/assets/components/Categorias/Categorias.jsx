@@ -11,7 +11,7 @@ import amaciante from "../Categorias/imagens/amaciante ype.jpg"
 import toalhapapel from "../Categorias/imagens/sulleg-toalha.jpg";
 import lavaroupas from "../Categorias/imagens/tixan-ype.jpg";
 import banana from "../Categorias/imagens/192347-500-auto.webp";
-import  cenoura from "../Categorias/imagens/192373-500-auto.webp";
+import cenoura from "../Categorias/imagens/192373-500-auto.webp";
 import tomate from "../Categorias/imagens/192388-500-auto.webp";
 import alho from "../Categorias/imagens/192396-500-auto.webp";
 import filefrango from "../Categorias/imagens/filedefrango.jpg";
@@ -62,8 +62,6 @@ const imagens = {
   "kapo.jpg":sucokapo,
   "sucouvabento.jpg":sucobento,
 
-  
-  
 };
 
 const Produtos = () => {
