@@ -4,40 +4,25 @@ import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart } from 'react-icons/fa';
+import { adicionarAoCarrinhoLocal } from '../utils/carrinhoLocal';
 
-// Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
 
 const Navbar = () => {
     const navigate = useNavigate();
-
     const [isOpen, setIsOpen] = useState(false);
     const [usuarioLogado, setUsuarioLogado] = useState(null);
-
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
-
-    const [formData, setFormData] = useState({
-        nome: '',
-        cpf: '',
-        email: '',
-        senha: '',
-        endereco: '',
-        telefone: '',
-        role: 'cliente'
-    });
-
-    const [loginData, setLoginData] = useState({
-        email: '',
-        senha: ''
-    });
-
+    const [formData, setFormData] = useState({ nome: '', cpf: '', email: '', senha: '', endereco: '', telefone: '', role: 'cliente' });
+    const [loginData, setLoginData] = useState({ email: '', senha: '' });
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [loginMessage, setLoginMessage] = useState('');
     const [loginLoading, setLoginLoading] = useState(false);
+    const [showCartMenu, setShowCartMenu] = useState(false);
+    const [carrinho, setCarrinho] = useState([]);
 
-    // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
         const usuarioStorage = localStorage.getItem('usuario');
         if (usuarioStorage) {
@@ -45,60 +30,33 @@ const Navbar = () => {
         }
     }, []);
 
-    const toggleMenu = () => {
-        setIsOpen((prev) => !prev);
-    };
+    useEffect(() => {
+        if (usuarioLogado) {
+            axios.get(`/carrinho/${usuarioLogado.id}`)
+                .then((res) => setCarrinho(res.data))
+                .catch((err) => console.error("Erro ao buscar carrinho:", err));
+        }
+    }, [usuarioLogado]);
 
-    const toggleRegisterModal = () => {
-        setShowRegisterModal(!showRegisterModal);
-        setMessage('');
-    };
+    const toggleMenu = () => setIsOpen(prev => !prev);
+    const toggleRegisterModal = () => { setShowRegisterModal(!showRegisterModal); setMessage(''); };
+    const toggleLoginModal = () => { setShowLoginModal(!showLoginModal); setLoginMessage(''); };
+    const toggleCartMenu = () => setShowCartMenu(prev => !prev);
 
-    const toggleLoginModal = () => {
-        setShowLoginModal(!showLoginModal);
-        setLoginMessage('');
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleLoginChange = (e) => {
-        const { name, value } = e.target;
-        setLoginData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const handleLoginChange = (e) => setLoginData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage('');
-
         try {
             const response = await axios.post('/usuarios', formData);
             setMessage(response.data.message);
-            setFormData({
-                nome: '',
-                cpf: '',
-                email: '',
-                senha: '',
-                endereco: '',
-                telefone: '',
-                role: 'cliente'
-            });
-
+            setFormData({ nome: '', cpf: '', email: '', senha: '', endereco: '', telefone: '', role: 'cliente' });
             setTimeout(() => {
-                if (response.data.message.includes('sucesso')) {
-                    toggleRegisterModal();
-                }
+                if (response.data.message.includes('sucesso')) toggleRegisterModal();
             }, 2000);
-
         } catch (error) {
             console.error('Erro ao cadastrar:', error);
             setMessage(error.response?.data?.error || 'Erro ao cadastrar usuário.');
@@ -111,18 +69,26 @@ const Navbar = () => {
         e.preventDefault();
         setLoginLoading(true);
         setLoginMessage('');
-
         try {
             const response = await axios.get('/usuarios', { params: loginData });
             const usuario = response.data;
-
             localStorage.setItem('usuario', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
             setLoginMessage('Login realizado com sucesso!');
 
+            const carrinhoLocal = JSON.parse(localStorage.getItem("carrinho_local")) || [];
+            for (const item of carrinhoLocal) {
+                await axios.post("/carrinho", {
+                    usuario_id: usuario.id,
+                    produto_id: item.id,
+                    quantidade: item.quantidade
+                });
+            }
+            localStorage.removeItem("carrinho_local");
+
             setTimeout(() => {
                 toggleLoginModal();
-                navigate("/", "/hortifruti");
+                navigate("/");
             }, 1500);
 
         } catch (error) {
@@ -139,29 +105,6 @@ const Navbar = () => {
         navigate('/');
     };
 
-    const [showCartMenu, setShowCartMenu] = useState(false);
-
-const toggleCartMenu = () => {
-    setShowCartMenu(prev => !prev);
-};
-
-const [carrinho, setCarrinho] = useState([]);
-
-const adicionarAoCarrinho = (produto) => {
-    setCarrinho(prev => {
-      const itemExistente = prev.find(item => item.id === produto.id);
-      if (itemExistente) {
-        // Aumenta a quantidade se já existir
-        return prev.map(item =>
-          item.id === produto.id ? { ...item, quantidade: item.quantidade + 1 } : item
-        );
-      } else {
-        // Adiciona novo item
-        return [...prev, { ...produto, quantidade: 1 }];
-      }
-    });
-  };
-
     return (
         <header className="header">
             <div className="container-logo">
@@ -169,7 +112,6 @@ const adicionarAoCarrinho = (produto) => {
                     <img src={Logo} alt="logoo" className="logo" />
                 </a>
             </div>
-
             <div className="pesquisa">
                 <button className="botao-menu" onClick={toggleMenu}>☰</button>
                 {isOpen && (
@@ -186,48 +128,49 @@ const adicionarAoCarrinho = (produto) => {
             </div>
 
             <nav className="navbar">
-            <button className="btn cart-btn" onClick={toggleCartMenu}>
-    <FaShoppingCart size={20} />
-    <span className="cart-count"></span> {/* pode ser dinâmico */}
-</button>
+                <button className="btn cart-btn" onClick={toggleCartMenu}>
+                    <FaShoppingCart size={20} />
+                    <span className="cart-count">{carrinho.length}</span>
+                </button>
 
-{showCartMenu && (
-    <div className="cart-menu">
-        <button className="close-cart" onClick={toggleCartMenu}>×</button>
-        <h3>Meu Carrinho</h3>
-        <ul className="cart-items">
-            {/* Exemplo fixo, pode ser dinâmico */}
-            <li></li>
-            <li></li>
-            <li></li>
-        </ul>
-        <button className="btn finalizar-btn">Finalizar Compra</button>
-    </div>
-)}
+                {showCartMenu && (
+                    <div className="cart-menu">
+                        <button className="close-cart" onClick={toggleCartMenu}>×</button>
+                        <h3>Meu Carrinho</h3>
+                        <ul className="cart-items">
+                            {carrinho.length === 0 ? (
+                                <li>Carrinho vazio</li>
+                            ) : (
+                                carrinho.map((item) => (
+                                    <li key={item.id}>
+                                        {item.nome} - {item.quantidade} {item.quantidade > 1 ? "unidades" : "unidade"}
+                                    </li>
+                                ))
+                            )}
+                        </ul>
+                        <button className="btn finalizar-btn">Finalizar Compra</button>
+                    </div>
+                )}
 
+                {usuarioLogado ? (
+                    <div className="usuario-logado">
+                        <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
+                        <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
+                    </div>
+                ) : (
+                    <>
+                        <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+                        <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+                    </>
+                )}
+            </nav>
 
-    {usuarioLogado ? (
-        <div className="usuario-logado">
-            <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
-            <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
-        </div>
-    ) : (
-        <>
-            <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-            <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-        </>
-    )}
-</nav>
-
-            {/* Modal de Cadastro */}
             {showRegisterModal && (
                 <div className="modal-overlay">
                     <div className="modal">
                         <button className="close-btn" onClick={toggleRegisterModal}>×</button>
                         <h2>Cadastro de Cliente</h2>
                         <form onSubmit={handleSubmit}>
-                            {/* Campos de cadastro... */}
-                            {/* Use seus inputs já existentes aqui */}
                             <div className="form-group">
                                 <label>Nome:</label>
                                 <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
@@ -259,7 +202,6 @@ const adicionarAoCarrinho = (produto) => {
                 </div>
             )}
 
-            {/* Modal de Login */}
             {showLoginModal && (
                 <div className="modal-overlay">
                     <div className="modal">
