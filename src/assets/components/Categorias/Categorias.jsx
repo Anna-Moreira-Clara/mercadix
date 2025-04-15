@@ -1,7 +1,6 @@
 import batata from "../Categorias/imagens/batata.jpg";
 import leite from "../Categorias/imagens/leiteninho.jpg";
 import picanha from "../Categorias/imagens/picanha.png";
-import linguica from "../Categorias/imagens/linguiça.jpg";
 import whisky from "../Categorias/imagens/whisky.jpg";
 import morango from "../Categorias/imagens/morango.jpg";
 import uva from "../Categorias/imagens/uva.jpg";
@@ -17,6 +16,14 @@ import tomate from "../Categorias/imagens/192388-500-auto.webp";
 import alho from "../Categorias/imagens/192396-500-auto.webp";
 import filefrango from "../Categorias/imagens/filedefrango.jpg";
 import filepeito from "../Categorias/imagens/filedepeito.jpg";
+import peitofrango from "../Categorias/imagens/peitodefrango.jpg";
+import presunto from "../Categorias/imagens/presuntoperdigao.jpg";
+import salsicha from "../Categorias/imagens/salsichasadia.jpg";
+import hamburguer from "../Categorias/imagens/hamburguerperdigao.jpg";
+import salsichaperd from "../Categorias/imagens/salsichaperdigao.jpg";
+import linguica from "../Categorias/imagens/linguiça.jpg";
+import leitepo from "../Categorias/imagens/quataleite.jpg";
+import leiteitalac from "../Categorias/imagens/italacleitempo.jpg";
 
 
 import "./categorias.css";
@@ -28,7 +35,6 @@ const imagens = {
   "batata.jpg": batata,
   "leiteninho.jpg": leite,
   "picanha.png": picanha,
-  "linguiça.jpg": linguica,
   "whisky.jpg": whisky,
   "morango.jpg": morango,
   "uva.jpg": uva,
@@ -44,7 +50,14 @@ const imagens = {
   "192396-500-auto.webp": alho,
   "filedefrango.jpg":filefrango,
   "filedepeito.jpg":filepeito,
-  
+  "peitodefrango.jpg":peitofrango,
+  "presuntoperdigao.jpg":presunto,
+  "salsichasadia.jpg":salsicha,
+  "hamburguerperdigao.jpg":hamburguer,
+  "salsichaperdigao.jpg":salsichaperd,
+  "linguiça.jpg": linguica,
+  "quataleite.jpg":leitepo,
+  "italacleitempo.jpg":leiteitalac,
 
   
   
