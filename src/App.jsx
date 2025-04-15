@@ -10,7 +10,7 @@ import CadastroCliente from "./assets/components/Cadastro/Cadastro.jsx";
 import ProdutosAdmin from "./assets/components/Tela-Admin/Produtos.jsx";
 import PedidosAdmin from "./assets/components/Tela-Admin/Pedidos.jsx";
 import CategoriasAdmin from "./assets/components/Tela-Admin/Categorias.jsx";
-import Estoque from './assets/components/Tela-Admin/Estoque.jsx';
+
 import Hortifruti from './assets/components/Menu-Hamburguer/Hortifruti.jsx';
 import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal.jsx'; // novo layout
 import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
@@ -49,7 +49,7 @@ function App() {
           <Route path="produtos" element={<ProdutosAdmin />} />
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
-          <Route path="estoque" element={<Estoque />} />
+        
         </Route>
       </Routes>
     </Router>

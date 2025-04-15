@@ -70,4 +70,16 @@ app.put('/api/produtos/:id', (req, res) => {
       res.json({ message: 'Produto atualizado com sucesso!' });
     });
   });
+  router.get('/categorias', (req, res) => {
+    // Faça a consulta ao banco de dados para buscar todas as categorias
+    db.query('SELECT * FROM categorias', (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar categorias:', err);
+        return res.status(500).json({ error: 'Erro ao buscar categorias' });
+      }
+      
+      // Retorne as categorias como JSON
+      res.json(results);
+    });
+  });
   

@@ -64,15 +64,7 @@ const AdminDashboard = () => {
                 <ChevronRight className="h-4 w-4" />
               </div>
             </Link>
-            <Link to="estoque" className='bot'>
-              <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <Settings className="h-5 w-5" />
-                  <span>Estoque</span>
-                </div>
-                <ChevronRight className="h-4 w-4" />
-              </div>
-            </Link>
+            
           </div>
         </nav>
       </div>
@@ -109,18 +101,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded border-l-4 border-teal-500 shadow flex items-center justify-between p-4">
-                <div>
-                  <p className="text-xs font-bold text-teal-500">TAREFAS</p>
-                  <p className="text-2xl font-bold text-gray-700">0%</p>
-                  <div className="w-32 h-2 bg-gray-200 mt-2 rounded">
-                    <div className="w-16 h-2 bg-teal-500 rounded"></div>
-                  </div>
-                </div>
-                <div className="text-gray-300">
-                  <FileText className="h-12 w-12" />
-                </div>
-              </div>
+              
 
               <div className="bg-white rounded border-l-4 border-yellow-500 shadow flex items-center justify-between p-4">
                 <div>

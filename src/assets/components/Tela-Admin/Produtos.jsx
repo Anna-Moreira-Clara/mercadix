@@ -3,6 +3,7 @@ import axios from 'axios';
 
 function ProdutosAdmin() {
   const [produtos, setProdutos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [formData, setFormData] = useState({
@@ -16,12 +17,27 @@ function ProdutosAdmin() {
 
   useEffect(() => {
     buscarProdutos();
+    buscarCategorias();
   }, []);
 
   const buscarProdutos = () => {
     axios.get('http://localhost:5000/produtos')
       .then(res => setProdutos(res.data))
-      .catch(err => console.error(err));
+      .catch(err => console.error('Erro ao buscar produtos:', err));
+  };
+
+  const buscarCategorias = () => {
+    axios.get('http://localhost:5000/categorias')
+      .then(res => {
+        setCategorias(res.data);
+        console.log('Categorias carregadas:', res.data);
+      })
+      .catch(err => console.error('Erro ao buscar categorias:', err));
+  };
+
+  const getCategoryNameById = (categoryId) => {
+    const categoria = categorias.find(cat => cat.id === Number(categoryId));
+    return categoria ? categoria.nome : 'Categoria não encontrada';
   };
 
   const handleEditarClick = (produto) => {
@@ -42,7 +58,7 @@ function ProdutosAdmin() {
         setEditandoId(null);
         buscarProdutos();
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error('Erro ao atualizar produto:', err));
   };
 
   const handleChange = (e) => {
@@ -56,7 +72,7 @@ function ProdutosAdmin() {
       preco: '',
       estoque: '',
       imagem: '',
-      categoria_id: ''
+      categoria_id: categorias.length > 0 ? categorias[0].id : ''
     });
     setModalAberto(true);
   };
@@ -72,7 +88,7 @@ function ProdutosAdmin() {
         fecharModal();
         buscarProdutos();
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error('Erro ao adicionar produto:', err));
   };
 
   return (
@@ -164,24 +180,28 @@ function ProdutosAdmin() {
               </div>
               
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Categoria ID:</label>
-                <input
-                  type="number"
+                <label className="block text-gray-700 text-sm font-bold mb-2">Categoria:</label>
+                <select
                   name="categoria_id"
                   value={formData.categoria_id}
                   onChange={handleChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
-                />
+                >
+                  <option value="">Selecione uma categoria</option>
+                  {categorias.map(categoria => (
+                    <option key={categoria.id} value={categoria.id}>
+                      {categoria.nome}
+                    </option>
+                  ))}
+                </select>
               </div>
               
-           
-             
               <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={fecharModal}
-                  className="botao"
+                  className="botao mr-2"
                 >
                   Cancelar
                 </button>
@@ -206,7 +226,7 @@ function ProdutosAdmin() {
             <th>Preço (R$)</th>
             <th>Estoque</th>
             <th>Imagem</th>
-            <th>Categoria ID</th>
+            <th>Categoria</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -221,6 +241,7 @@ function ProdutosAdmin() {
                     name="nome"
                     value={formData.nome}
                     onChange={handleChange}
+                    className="border px-2 py-1 w-full"
                   />
                 ) : (
                   prod.nome
@@ -233,6 +254,7 @@ function ProdutosAdmin() {
                     name="descricao"
                     value={formData.descricao}
                     onChange={handleChange}
+                    className="border px-2 py-1 w-full"
                   />
                 ) : (
                   prod.descricao
@@ -246,6 +268,7 @@ function ProdutosAdmin() {
                     step="0.01"
                     value={formData.preco}
                     onChange={handleChange}
+                    className="border px-2 py-1 w-full"
                   />
                 ) : (
                   `R$ ${parseFloat(prod.preco).toFixed(2)}`
@@ -258,6 +281,7 @@ function ProdutosAdmin() {
                     name="estoque"
                     value={formData.estoque}
                     onChange={handleChange}
+                    className="border px-2 py-1 w-full"
                   />
                 ) : (
                   prod.estoque
@@ -270,28 +294,38 @@ function ProdutosAdmin() {
                     name="imagem"
                     value={formData.imagem}
                     onChange={handleChange}
+                    className="border px-2 py-1 w-full"
                   />
                 ) : (
-                  prod.imagem
+                  <div className="truncate max-w-xs">{prod.imagem}</div>
                 )}
               </td>
               <td>
                 {editandoId === prod.id ? (
-                  <input
-                    type="number"
+                  <select
                     name="categoria_id"
                     value={formData.categoria_id}
                     onChange={handleChange}
-                  />
+                    className="border px-2 py-1 w-full"
+                  >
+                    {categorias.map(categoria => (
+                      <option key={categoria.id} value={categoria.id}>
+                        {categoria.nome}
+                      </option>
+                    ))}
+                  </select>
                 ) : (
-                  prod.categoria_id
+                  getCategoryNameById(prod.categoria_id)
                 )}
               </td>
               <td>
                 {editandoId === prod.id ? (
-                  <button className="text-green-600" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
+                  <button className="text-green-600 hover:underline" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
                 ) : (
-                  <button className="text-blue-600" onClick={() => handleEditarClick(prod)}>Editar</button>
+                  <div className="flex space-x-2">
+                    <button className="text-blue-600 hover:underline" onClick={() => handleEditarClick(prod)}>Editar</button>
+                    <button className="text-red-600 hover:underline" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
+                  </div>
                 )}
               </td>
             </tr>
@@ -300,6 +334,17 @@ function ProdutosAdmin() {
       </table>
     </div>
   );
+  
+  // Função para excluir produto
+  function handleExcluirClick(id) {
+    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+      axios.delete(`http://localhost:5000/produtos/${id}`)
+        .then(() => {
+          buscarProdutos();
+        })
+        .catch(err => console.error('Erro ao excluir produto:', err));
+    }
+  }
 }
 
 export default ProdutosAdmin;
