@@ -24,7 +24,8 @@ import salsichaperd from "../Categorias/imagens/salsichaperdigao.jpg";
 import linguica from "../Categorias/imagens/linguiça.jpg";
 import leitepo from "../Categorias/imagens/quataleite.jpg";
 import leiteitalac from "../Categorias/imagens/italacleitempo.jpg";
-
+import sucokapo from "../Categorias/imagens/kapo.jpg";
+import sucobento from "../Categorias/imagens/sucouvabento.jpg";
 
 import "./categorias.css";
 import { useState, useEffect } from "react";
@@ -58,6 +59,8 @@ const imagens = {
   "linguiça.jpg": linguica,
   "quataleite.jpg":leitepo,
   "italacleitempo.jpg":leiteitalac,
+  "kapo.jpg":sucokapo,
+  "sucouvabento.jpg":sucobento,
 
   
   
