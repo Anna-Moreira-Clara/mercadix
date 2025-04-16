@@ -37,6 +37,31 @@ app.get('/', (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+app.listen(PORT, () =>{ //Inicia o servidor e exibe uma mensagem no console
+    console.log(`Servidor rodando na porta ${PORT} `);
 });
+app.put('/api/produtos/:id', (req, res) => {
+    const { id } = req.params;
+    const { produto, estoque, preco } = req.body;
+  
+    const sql = 'UPDATE produtos SET produto = ?, estoque = ?, preco = ? WHERE id = ?';
+    const values = [produto, quantidade, preco, id];
+  
+    db.query(sql, values, (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: 'Produto atualizado com sucesso!' });
+    });
+  });
+  router.get('/categorias', (req, res) => {
+    // Faça a consulta ao banco de dados para buscar todas as categorias
+    db.query('SELECT * FROM categorias', (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar categorias:', err);
+        return res.status(500).json({ error: 'Erro ao buscar categorias' });
+      }
+      
+      // Retorne as categorias como JSON
+      res.json(results);
+    });
+  });
+  
