@@ -6,8 +6,7 @@ function CategoriasAdmin() {
   const [editandoId, setEditandoId] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [formData, setFormData] = useState({
-    nome: '',
-    slug: ''
+    nome: ''
   });
 
   useEffect(() => {
@@ -51,8 +50,7 @@ function CategoriasAdmin() {
 
   const abrirModal = () => {
     setFormData({
-      nome: '',
-      slug: ''
+      nome: ''
     });
     setModalAberto(true);
   };
