@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Bane from "./assets/components/Banner/Baner.jsx";
 import NavBar2 from "./assets/components/Navbar2/navBar.jsx";
-import Produtos from './assets/components/Tela-Admin/Produtos'; // Adjust this path to where Produtos is actually located
+import Produtos from './assets/components/Produtos';
 import Login from './assets/components/Login/Login.jsx';
 import Dashboard from "./assets/components/Tela-Admin/Dashboard.jsx";
 import LoginCliente from "./assets/components/Tela-login-cliente/Login.jsx";
