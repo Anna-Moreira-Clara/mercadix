@@ -38,8 +38,8 @@ function App() {
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
           <Route path="/bebidas" element={<Bebidas />} />
-          {/* Adicionar rota para produtos por categoria */}
-          <Route path="/categoria/:slug" element={<Produtos />} />
+         
+       
           <Route path="/produtos" element={<Produtos />} />
         </Route>
 
