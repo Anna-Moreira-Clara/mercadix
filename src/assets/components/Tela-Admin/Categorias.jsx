@@ -121,16 +121,16 @@ function CategoriasAdmin() {
               </div>
               
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Slug (URL):</label>
+                <label className="block text-gray-700 text-sm font-bold mb-2">Descrição:</label>
                 <input
                   type="text"
-                  name="slug"
-                  value={formData.slug}
+                  name="desc"
+                  value={formData.descricao}
                   onChange={handleChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
                 />
-                <p className="text-xs text-gray-500 mt-1">O slug será usado na URL (ex: /categoria/nome-da-categoria)</p>
+              
               </div>
               
               <div className="flex justify-end">
@@ -158,7 +158,7 @@ function CategoriasAdmin() {
           <tr>
             <th>ID</th>
             <th>Nome</th>
-            <th>Slug</th>
+            <th>Descrição</th>
             <th>Ações</th>
           </tr>
         </thead>
@@ -184,7 +184,7 @@ function CategoriasAdmin() {
                   <input
                     type="text"
                     name="slug"
-                    value={formData.slug}
+                    value={formData.descricao}
                     onChange={handleChange}
                     className="border px-2 py-1 w-full"
                   />
