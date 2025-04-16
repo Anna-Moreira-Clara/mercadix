@@ -87,9 +87,7 @@ const AdminDashboard = () => {
           {/* Cards aparecem somente na raiz de /dashboard */}
           {isDashboardHome && (
             <div className="grid grid-cols-4 gap-6 mb-6">
-              <div>
-                <button className="btn mais-vendidos-btn">Mais vendidos</button>
-              </div>
+              
 
               <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
                 <div>
