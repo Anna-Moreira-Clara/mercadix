@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Bane from "./assets/components/Banner/Baner.jsx";
 import NavBar2 from "./assets/components/Navbar2/navBar.jsx";
-import Produtos from './assets/components/Categorias/Categorias';
+import Produtos from './assets/components/Tela-Admin/Produtos'; // Adjust this path to where Produtos is actually located
 import Login from './assets/components/Login/Login.jsx';
 import Dashboard from "./assets/components/Tela-Admin/Dashboard.jsx";
 import LoginCliente from "./assets/components/Tela-login-cliente/Login.jsx";
@@ -12,10 +12,10 @@ import PedidosAdmin from "./assets/components/Tela-Admin/Pedidos.jsx";
 import CategoriasAdmin from "./assets/components/Tela-Admin/Categorias.jsx";
 
 import Hortifruti from './assets/components/Menu-Hamburguer/Hortifruti.jsx';
-import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal.jsx'; // novo layout
+import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal.jsx';
 import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
 import Bebidas from './assets/components/Menu-Hamburguer/Bebidas.jsx';
-
+import Categorias from './assets/components/Categorias/Categorias';
 
 // Componente Home com o conteúdo da página inicial
 function Home() {
@@ -37,7 +37,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
-          <Route path='/bebidas' element={<Bebidas />} />  </Route>
+          <Route path="/bebidas" element={<Bebidas />} />
+          {/* Adicionar rota para produtos por categoria */}
+          <Route path="/categoria/:slug" element={<Produtos />} />
+          <Route path="/produtos" element={<Produtos />} />
+        </Route>
 
         {/* Rotas sem Navbar */}
         <Route path="/login" element={<Login />} />
@@ -46,10 +50,10 @@ function App() {
 
         {/* Dashboard e suas rotas filhas (sem Navbar) */}
         <Route path="/dashboard" element={<Dashboard />}>
-        {/* <Route path="/categoria/:slug" element={<Produtos />} />*/}
+          <Route index element={<ProdutosAdmin />} />
+          <Route path="produtos" element={<ProdutosAdmin />} />
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
-        {/* <Route path="/categoria/:slug" element={<Produtos />} />*/ }
         </Route>
       </Routes>
     </Router>
