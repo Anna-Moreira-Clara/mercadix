@@ -356,11 +356,11 @@ function ProdutosAdmin() {
               </td>
               <td>
                 {editandoId === prod.id ? (
-                  <button className="text-green-600 hover:underline" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
+                  <button className="botao" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
                 ) : (
                   <div className="flex space-x-2">
-                    <button className="text-blue-600 hover:underline" onClick={() => handleEditarClick(prod)}>Editar</button>
-                    <button className="text-red-600 hover:underline" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
+                    <button className="botao" onClick={() => handleEditarClick(prod)}>Editar</button>
+                    <button className="botao" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
                   </div>
                 )}
               </td>
