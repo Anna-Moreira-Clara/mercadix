@@ -49,6 +49,7 @@ function App() {
         {/* <Route path="/categoria/:slug" element={<Produtos />} />*/}
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
+          <Route path="produtos" element={<ProdutosAdmin />} />
         {/* <Route path="/categoria/:slug" element={<Produtos />} />*/ }
         </Route>
       </Routes>
