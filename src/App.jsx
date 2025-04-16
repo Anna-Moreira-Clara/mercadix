@@ -46,9 +46,10 @@ function App() {
 
         {/* Dashboard e suas rotas filhas (sem Navbar) */}
         <Route path="/dashboard" element={<Dashboard />}>
-        <Route path="/categoria/:slug" element={<Produtos />} />
+        {/* <Route path="/categoria/:slug" element={<Produtos />} />*/}
           <Route path="pedidos" element={<PedidosAdmin />} />
-          <Route path="/admin/categorias" element={<CategoriasAdmin />} />
+          <Route path="categorias" element={<CategoriasAdmin />} />
+        {/* <Route path="/categoria/:slug" element={<Produtos />} />*/ }
         </Route>
       </Routes>
     </Router>

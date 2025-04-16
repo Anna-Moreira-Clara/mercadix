@@ -130,7 +130,19 @@ app.put('/api/produtos/:id', (req, res) => {
       res.json(results[0]);
     });
   });
+  // Rota para buscar produtos por categoria_id
+router.get('/produtos/categoria/:categoriaId', (req, res) => {
+  const { categoriaId } = req.params;
   
+  db.query('SELECT * FROM produtos WHERE categoria_id = ?', [categoriaId], (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar produtos da categoria:', err);
+      return res.status(500).json({ error: 'Erro ao buscar produtos da categoria' });
+    }
+    
+    res.json(results);
+  });
+});
   // Rota para adicionar categoria
   router.post('/categorias', (req, res) => {
     const { nome, slug } = req.body;
