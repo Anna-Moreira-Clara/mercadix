@@ -3,7 +3,6 @@ import linguica from "../Categorias/imagens/linguiça.jpg";
 import morango from "../Categorias/imagens/morango.jpg";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 
 // Mapeando imagens pelos nomes usados no banco
 const imagens = {
@@ -13,49 +12,38 @@ const imagens = {
 
 const Produtos = () => {
   const [produtos, setProdutos] = useState([]);
-  const [categoria, setCategoria] = useState(null);
-  const { slug } = useParams(); // Pega o slug da categoria da URL
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Primeiro busca a categoria pelo slug
+    setLoading(true);
     axios
-      .get(`http://localhost:5000/categorias/slug/${slug}`)
-      .then((response) => {
-        setCategoria(response.data);
-        
-        // Com o ID da categoria, busca os produtos dessa categoria
-        return axios.get(`http://localhost:5000/produtos/categoria/${response.data.id}`);
-      })
+      .get("http://localhost:5000/produtos")
       .then((response) => {
         setProdutos(response.data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.error("Erro ao buscar categoria ou produtos:", error);
+        console.error("Erro ao buscar produtos:", error);
+        setError("Falha ao carregar produtos");
+        setLoading(false);
       });
-  }, [slug]);
+  }, []);
 
-  // Caso não tenha o parâmetro slug na URL, buscará todos os produtos
-  useEffect(() => {
-    if (!slug) {
-      axios
-        .get("http://localhost:5000/produtos")
-        .then((response) => {
-          setProdutos(response.data);
-        })
-        .catch((error) => {
-          console.error("Erro ao buscar produtos:", error);
-        });
-    }
-  }, [slug]);
+  // Lista de nomes que você deseja mostrar
+  const nomesPermitidos = ["Linguiça Calabresa Seara", "Picanha Montana"];
+
+  if (loading) return <div>Carregando produtos...</div>;
+  if (error) return <div>Erro: {error}</div>;
+
+  const produtosFiltrados = produtos.filter((produto) => 
+    nomesPermitidos.includes(produto.nome)
+  );
 
   return (
     <section className="produtos-container">
-      {categoria && <h2 className="categoria-titulo">{categoria.nome}</h2>}
-      
-      {produtos.length === 0 ? (
-        <p className="sem-produtos">Nenhum produto encontrado nesta categoria.</p>
-      ) : (
-        produtos.map((produto) => (
+      {produtosFiltrados.length > 0 ? (
+        produtosFiltrados.map((produto) => (
           <div key={produto.id} className="produto">
             <img
               src={imagens[produto.imagem] || morango} // usa imagem local ou imagem padrão
@@ -67,6 +55,8 @@ const Produtos = () => {
             <button className="add-to-cart">Adicionar</button>
           </div>
         ))
+      ) : (
+        <div>Nenhum produto encontrado</div>
       )}
     </section>
   );
