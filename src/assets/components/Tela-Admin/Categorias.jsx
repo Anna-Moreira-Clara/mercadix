@@ -6,7 +6,8 @@ function CategoriasAdmin() {
   const [editandoId, setEditandoId] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [formData, setFormData] = useState({
-    nome: ''
+    nome: '',
+    descricao:''
   });
 
   useEffect(() => {
@@ -23,7 +24,7 @@ function CategoriasAdmin() {
     setEditandoId(categoria.id);
     setFormData({
       nome: categoria.nome,
-      slug: categoria.slug || ''
+     descricao: categoria.descricao
     });
   };
 
@@ -42,7 +43,7 @@ function CategoriasAdmin() {
     if (name === 'nome' && !editandoId) {
       // Gera um slug automaticamente a partir do nome
       const slug = value.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      setFormData({ ...formData, [name]: value, slug });
+      setFormData({ ...formData, [name]: value});
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -50,7 +51,8 @@ function CategoriasAdmin() {
 
   const abrirModal = () => {
     setFormData({
-      nome: ''
+      nome: '',
+      descricao:''
     });
     setModalAberto(true);
   };
@@ -135,7 +137,7 @@ function CategoriasAdmin() {
                 <button
                   type="button"
                   onClick={fecharModal}
-                  className="botao mr-2"
+                  className="botao "
                 >
                   Cancelar
                 </button>
@@ -187,7 +189,7 @@ function CategoriasAdmin() {
                     className="border px-2 py-1 w-full"
                   />
                 ) : (
-                  cat.slug || '-'
+                  cat.descricao || '-'
                 )}
               </td>
               <td>
