@@ -83,3 +83,160 @@ app.put('/api/produtos/:id', (req, res) => {
     });
   });
   
+
+  router.get('/categorias', (req, res) => {
+    db.query('SELECT * FROM categorias ORDER BY nome', (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar categorias:', err);
+        return res.status(500).json({ error: 'Erro ao buscar categorias' });
+      }
+      
+      res.json(results);
+    });
+  });
+  
+  // Rota para buscar categoria pelo ID
+  router.get('/categorias/:id', (req, res) => {
+    const { id } = req.params;
+    
+    db.query('SELECT * FROM categorias WHERE id = ?', [id], (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar categoria:', err);
+        return res.status(500).json({ error: 'Erro ao buscar categoria' });
+      }
+      
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Categoria não encontrada' });
+      }
+      
+      res.json(results[0]);
+    });
+  });
+  
+  // Rota para buscar categoria pelo slug
+  router.get('/categorias/slug/:slug', (req, res) => {
+    const { slug } = req.params;
+    
+    db.query('SELECT * FROM categorias WHERE slug = ?', [slug], (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar categoria pelo slug:', err);
+        return res.status(500).json({ error: 'Erro ao buscar categoria' });
+      }
+      
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Categoria não encontrada' });
+      }
+      
+      res.json(results[0]);
+    });
+  });
+  
+  // Rota para adicionar categoria
+  router.post('/categorias', (req, res) => {
+    const { nome, slug } = req.body;
+    
+    // Verifica se o slug já existe
+    db.query('SELECT * FROM categorias WHERE slug = ?', [slug], (err, results) => {
+      if (err) {
+        console.error('Erro ao verificar slug:', err);
+        return res.status(500).json({ error: 'Erro ao verificar slug' });
+      }
+      
+      if (results.length > 0) {
+        return res.status(400).json({ error: 'Já existe uma categoria com este slug' });
+      }
+      
+      // Insere a nova categoria
+      db.query('INSERT INTO categorias (nome, slug) VALUES (?, ?)', [nome, slug], (err, result) => {
+        if (err) {
+          console.error('Erro ao adicionar categoria:', err);
+          return res.status(500).json({ error: 'Erro ao adicionar categoria' });
+        }
+        
+        res.status(201).json({ 
+          id: result.insertId,
+          nome,
+          slug
+        });
+      });
+    });
+  });
+  
+  // Rota para atualizar categoria
+  router.put('/categorias/:id', (req, res) => {
+    const { id } = req.params;
+    const { nome, slug } = req.body;
+    
+    // Verifica se o slug já existe (exceto para a própria categoria)
+    db.query('SELECT * FROM categorias WHERE slug = ? AND id != ?', [slug, id], (err, results) => {
+      if (err) {
+        console.error('Erro ao verificar slug:', err);
+        return res.status(500).json({ error: 'Erro ao verificar slug' });
+      }
+      
+      if (results.length > 0) {
+        return res.status(400).json({ error: 'Já existe outra categoria com este slug' });
+      }
+      
+      // Atualiza a categoria
+      db.query('UPDATE categorias SET nome = ?, slug = ? WHERE id = ?', [nome, slug, id], (err) => {
+        if (err) {
+          console.error('Erro ao atualizar categoria:', err);
+          return res.status(500).json({ error: 'Erro ao atualizar categoria' });
+        }
+        
+        res.json({ 
+          id: Number(id),
+          nome,
+          slug
+        });
+      });
+    });
+  });
+  
+  // Rota para excluir categoria
+  router.delete('/categorias/:id', (req, res) => {
+    const { id } = req.params;
+    
+    // Verificar se existem produtos associados a esta categoria
+    db.query('SELECT COUNT(*) AS total FROM produtos WHERE categoria_id = ?', [id], (err, results) => {
+      if (err) {
+        console.error('Erro ao verificar produtos:', err);
+        return res.status(500).json({ error: 'Erro ao verificar produtos' });
+      }
+      
+      if (results[0].total > 0) {
+        return res.status(400).json({ 
+          error: 'Não é possível excluir esta categoria pois existem produtos associados a ela',
+          produtosAssociados: results[0].total
+        });
+      }
+      
+      // Exclui a categoria
+      db.query('DELETE FROM categorias WHERE id = ?', [id], (err) => {
+        if (err) {
+          console.error('Erro ao excluir categoria:', err);
+          return res.status(500).json({ error: 'Erro ao excluir categoria' });
+        }
+        
+        res.json({ message: 'Categoria excluída com sucesso' });
+      });
+    });
+  });
+  
+  // Rota para buscar produtos por categoria
+  router.get('/produtos/categoria/:categoriaId', (req, res) => {
+    const { categoriaId } = req.params;
+    
+    db.query('SELECT * FROM produtos WHERE categoria_id = ?', [categoriaId], (err, results) => {
+      if (err) {
+        console.error('Erro ao buscar produtos da categoria:', err);
+        return res.status(500).json({ error: 'Erro ao buscar produtos da categoria' });
+      }
+      
+      res.json(results);
+    });
+  });
+  
+  // Exporte o router ou adicione ao app
+  module.exports = router;

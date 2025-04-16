@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function ProdutosAdmin() {
+  const navigate = useNavigate();
   const [produtos, setProdutos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
@@ -40,6 +42,11 @@ function ProdutosAdmin() {
     return categoria ? categoria.nome : 'Categoria não encontrada';
   };
 
+  const getCategorySlugById = (categoryId) => {
+    const categoria = categorias.find(cat => cat.id === Number(categoryId));
+    return categoria ? categoria.slug || categoria.nome.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
+  };
+
   const handleEditarClick = (produto) => {
     setEditandoId(produto.id);
     setFormData({
@@ -57,6 +64,9 @@ function ProdutosAdmin() {
       .then(() => {
         setEditandoId(null);
         buscarProdutos();
+        // Redirecionar para a página da categoria
+        const categoriaSlug = getCategorySlugById(formData.categoria_id);
+        navigate(`/categoria/${categoriaSlug}`);
       })
       .catch(err => console.error('Erro ao atualizar produto:', err));
   };
@@ -66,6 +76,9 @@ function ProdutosAdmin() {
   };
 
   const abrirModal = () => {
+    // Atualiza a lista de categorias quando abrir o modal
+    buscarCategorias();
+    
     setFormData({
       nome: '',
       descricao: '',
@@ -87,8 +100,28 @@ function ProdutosAdmin() {
       .then(() => {
         fecharModal();
         buscarProdutos();
+        // Redirecionar para a página da categoria
+        const categoriaSlug = getCategorySlugById(formData.categoria_id);
+        navigate(`/categoria/${categoriaSlug}`);
       })
       .catch(err => console.error('Erro ao adicionar produto:', err));
+  };
+
+  const handleExcluirClick = (id) => {
+    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+      axios.delete(`http://localhost:5000/produtos/${id}`)
+        .then(() => {
+          buscarProdutos();
+        })
+        .catch(err => console.error('Erro ao excluir produto:', err));
+    }
+  };
+
+  const handleAdicionarCategoriaClick = () => {
+    // Armazena o estado atual para retornar depois
+    sessionStorage.setItem('produtoFormTemp', JSON.stringify(formData));
+    // Redireciona para página de categorias
+    navigate('/admin/categorias');
   };
 
   return (
@@ -180,7 +213,10 @@ function ProdutosAdmin() {
               </div>
               
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">Categoria:</label>
+                <div className="flex justify-between items-center">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Categoria:</label>
+                 
+                </div>
                 <select
                   name="categoria_id"
                   value={formData.categoria_id}
@@ -320,11 +356,11 @@ function ProdutosAdmin() {
               </td>
               <td>
                 {editandoId === prod.id ? (
-                  <button className="botao" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
+                  <button className="text-green-600 hover:underline" onClick={() => handleSalvarClick(prod.id)}>Salvar</button>
                 ) : (
                   <div className="flex space-x-2">
-                    <button className="botao" onClick={() => handleEditarClick(prod)}>Editar</button>
-                    <button className="botao" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
+                    <button className="text-blue-600 hover:underline" onClick={() => handleEditarClick(prod)}>Editar</button>
+                    <button className="text-red-600 hover:underline" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
                   </div>
                 )}
               </td>
@@ -334,17 +370,6 @@ function ProdutosAdmin() {
       </table>
     </div>
   );
-  
-  // Função para excluir produto
-  function handleExcluirClick(id) {
-    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      axios.delete(`http://localhost:5000/produtos/${id}`)
-        .then(() => {
-          buscarProdutos();
-        })
-        .catch(err => console.error('Erro ao excluir produto:', err));
-    }
-  }
 }
 
 export default ProdutosAdmin;
