@@ -1,65 +1,35 @@
-import picanha from "../Categorias/imagens/picanha.png";
-import linguica from "../Categorias/imagens/linguiça.jpg";
-import morango from "../Categorias/imagens/morango.jpg";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-// Mapeando imagens pelos nomes usados no banco
-const imagens = {
-  "picanha.png": picanha,
-  "linguiça.jpg": linguica,
-};
-
-const Produtos = () => {
-  const [produtos, setProdutos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const Açougue = () => {
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("http://localhost:5000/produtos")
-      .then((response) => {
-        setProdutos(response.data);
-        setLoading(false);
+    // Buscar a categoria Açougue pelo nome
+    axios.get('http://localhost:5000/categorias')
+      .then(response => {
+        const categorias = response.data;
+        // Encontrar a categoria Açougue (ajuste o nome conforme seu banco)
+        const açougueCategoria = categorias.find(cat => cat.nome.toLowerCase() === 'açougue');
+        
+        if (açougueCategoria) {
+          // Redirecionar para a categoria correta
+          navigate(`/categoria/${açougueCategoria.id}`);
+        } else {
+          console.error('Categoria Açougue não encontrada');
+          // Redirecionar para a página principal se não encontrar
+          navigate('/');
+        }
       })
-      .catch((error) => {
-        console.error("Erro ao buscar produtos:", error);
-        setError("Falha ao carregar produtos");
-        setLoading(false);
+      .catch(error => {
+        console.error('Erro ao buscar categorias:', error);
+        navigate('/');
       });
-  }, []);
+  }, [navigate]);
 
-  // Lista de nomes que você deseja mostrar
-  const nomesPermitidos = ["Linguiça Calabresa Seara", "Picanha Montana"];
-
-  if (loading) return <div>Carregando produtos...</div>;
-  if (error) return <div>Erro: {error}</div>;
-
-  const produtosFiltrados = produtos.filter((produto) => 
-    nomesPermitidos.includes(produto.nome)
-  );
-
-  return (
-    <section className="produtos-container">
-      {produtosFiltrados.length > 0 ? (
-        produtosFiltrados.map((produto) => (
-          <div key={produto.id} className="produto">
-            <img
-              src={imagens[produto.imagem] || morango} // usa imagem local ou imagem padrão
-              alt={produto.nome}
-              className="imagem-produto"
-            />
-            <p>{produto.nome}</p>
-            <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
-            <button className="add-to-cart">Adicionar</button>
-          </div>
-        ))
-      ) : (
-        <div>Nenhum produto encontrado</div>
-      )}
-    </section>
-  );
+  // Renderizar um componente de carregamento enquanto redireciona
+  return <div className="carregando">Carregando produtos de Açougue...</div>;
 };
 
-export default Produtos;
+export default Açougue;

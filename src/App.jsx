@@ -35,9 +35,11 @@ function App() {
         {/* Rotas que usam o Navbar */}
         <Route element={<LayoutComNavbar />}>
           <Route path="/" element={<Home />} />
+          <Route path="/categoria/:categoriaId" element={<Produtos />} /> {/* Nova rota */}
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
-          <Route path='/bebidas' element={<Bebidas />} />  </Route>
+          <Route path='/bebidas' element={<Bebidas />} />
+        </Route>
 
         {/* Rotas sem Navbar */}
         <Route path="/login" element={<Login />} />
@@ -46,11 +48,9 @@ function App() {
 
         {/* Dashboard e suas rotas filhas (sem Navbar) */}
         <Route path="/dashboard" element={<Dashboard />}>
-        {/* <Route path="/categoria/:slug" element={<Produtos />} />*/}
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<CategoriasAdmin />} />
           <Route path="produtos" element={<ProdutosAdmin />} />
-        {/* <Route path="/categoria/:slug" element={<Produtos />} />*/ }
         </Route>
       </Routes>
     </Router>

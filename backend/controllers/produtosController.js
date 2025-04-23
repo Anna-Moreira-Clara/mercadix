@@ -67,3 +67,15 @@ exports.deletarProduto = (req, res) => {
     res.json({ message: 'Produto excluído com sucesso!' });
   });
 };
+// Adicione esta função ao arquivo backend/controllers/produtosController.js
+
+// Busca produtos por categoria_id
+exports.buscarProdutosPorCategoria = (req, res) => {
+  const categoriaId = req.params.categoriaId;
+  
+  db.query('SELECT * FROM produtos WHERE categoria_id = ?', [categoriaId], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    
+    res.json(results); // Retorna os produtos da categoria
+  });
+};

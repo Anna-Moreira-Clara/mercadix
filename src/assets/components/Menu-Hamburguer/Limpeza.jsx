@@ -2,22 +2,22 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Hortifruti = () => {
+const Limpeza = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Buscar a categoria Hortifruti pelo nome
+    // Buscar a categoria Limpeza pelo nome
     axios.get('http://localhost:5000/categorias')
       .then(response => {
         const categorias = response.data;
-        // Encontrar a categoria Hortifruti (ajuste o nome conforme seu banco)
-        const hortifrutiCategoria = categorias.find(cat => cat.nome.toLowerCase() === 'hortifruti');
+        // Encontrar a categoria Limpeza (ajuste o nome conforme seu banco)
+        const limpezaCategoria = categorias.find(cat => cat.nome.toLowerCase() === 'limpeza');
         
-        if (hortifrutiCategoria) {
+        if (limpezaCategoria) {
           // Redirecionar para a categoria correta
-          navigate(`/categoria/${hortifrutiCategoria.id}`);
+          navigate(`/categoria/${limpezaCategoria.id}`);
         } else {
-          console.error('Categoria Hortifruti não encontrada');
+          console.error('Categoria Limpeza não encontrada');
           // Redirecionar para a página principal se não encontrar
           navigate('/');
         }
@@ -29,7 +29,7 @@ const Hortifruti = () => {
   }, [navigate]);
 
   // Renderizar um componente de carregamento enquanto redireciona
-  return <div className="carregando">Carregando produtos de Hortifruti...</div>;
+  return <div className="carregando">Carregando produtos de Limpeza...</div>;
 };
 
-export default Hortifruti;
+export default Limpeza;
