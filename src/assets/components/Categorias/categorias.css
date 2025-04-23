@@ -29,10 +29,45 @@
 
 .add-to-cart {
     background: hsl(135, 90%, 42%);
-    color: #fff;
+    color: #171616;
     border: none;
-    padding: 5px 10px;
+    padding: 5px 8px;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 5px;
 }
+.bot{
+
+
+    background-color: hwb(135 77% 15%);
+
+    color: rgba(255, 255, 255, 0.985);
+    padding: 2px 4px;
+    text-align: center;
+
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+ 
+  
+
+}
+.bot:hover {
+    background: hsl(135, 90%, 42%);
+  
+  }
+.controle-quantidade {
+    display: inline-block;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+.controle-quantidade span {
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+  }

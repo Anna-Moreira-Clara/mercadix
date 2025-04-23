@@ -125,6 +125,22 @@ const Produtos = () => {
   const selecionarCategoria = (id) => {
     navigate(`/categoria/${id}`);
   };
+  const [quantidades, setQuantidades] = useState({});
+
+const aumentarQuantidade = (id) => {
+  setQuantidades((prev) => ({
+    ...prev,
+    [id]: (prev[id] || 0) + 1,
+  }));
+};
+
+const diminuirQuantidade = (id) => {
+  setQuantidades((prev) => ({
+    ...prev,
+    [id]: Math.max((prev[id] || 0) - 1, 0),
+  }));
+};
+
 
   return (
     <div className="produtos-pagina">
@@ -134,23 +150,30 @@ const Produtos = () => {
         <div className="carregando">Carregando produtos...</div>
       ) : (
         <section className="produtos-container">
-          {produtos.length > 0 ? (
-            produtos.map((produto) => (
-              <div key={produto.id} className="produto">
-                <img
-                  src={imagens[produto.imagem] || morango} // usa imagem local ou imagem padrão
-                  alt={produto.nome}
-                  className="imagem-produto"
-                />
-                <p>{produto.nome}</p>
-                <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
+        {produtos.length > 0 ? (
+          produtos.map((produto) => (
+            <div key={produto.id} className="produto">
+              <img
+                src={imagens[produto.imagem] || morango} // usa imagem local ou imagem padrão
+                alt={produto.nome}
+                className="imagem-produto"
+              />
+              <p>{produto.nome}</p>
+              <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
+      
+              <div className="controle-quantidade">
+                <button className="bot" onClick={() => diminuirQuantidade(produto.id)}>-</button>
+                <span>{quantidades[produto.id] || 0}</span>
+                <button className="bot" onClick={() => aumentarQuantidade(produto.id)}>+</button>
                 <button className="add-to-cart">Adicionar</button>
               </div>
-            ))
-          ) : (
-            <div className="sem-produtos">Nenhum produto encontrado nesta categoria</div>
-          )}
-        </section>
+            </div>
+          ))
+        ) : (
+          <div className="sem-produtos">Nenhum produto encontrado nesta categoria</div>
+        )}
+      </section>
+      
       )}
     </div>
   );
