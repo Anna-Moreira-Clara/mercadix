@@ -3,7 +3,7 @@ import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaShoppingCart } from 'react-icons/fa';
 
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -118,8 +118,6 @@ const Navbar = () => {
 
             localStorage.setItem('usuario', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
-            
-            // Transfere o carrinho local para o backend após login
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local'));
             if (carrinhoLocal && carrinhoLocal.length > 0) {
                 for (const item of carrinhoLocal) {
@@ -128,12 +126,10 @@ const Navbar = () => {
                         produto_id: item.id,
                         quantidade: item.quantidade
                     });
-                }
+                }         
                 localStorage.removeItem('carrinho_local');
             }
-            
             setLoginMessage('Login realizado com sucesso!');
-            carregarCarrinho();
 
             setTimeout(() => {
                 toggleLoginModal();
@@ -156,133 +152,26 @@ const Navbar = () => {
     };
 
     const [showCartMenu, setShowCartMenu] = useState(false);
-    const [carrinho, setCarrinho] = useState([]);
-    const [carrinhoTotal, setCarrinhoTotal] = useState(0);
 
-    const toggleCartMenu = () => {
-        setShowCartMenu(prev => !prev);
-        carregarCarrinho();
-    };
+const toggleCartMenu = () => {
+    setShowCartMenu(prev => !prev);
+    carregarCarrinho();
+};
 
-    const carregarCarrinho = async () => {
-        if (usuarioLogado) {
-            try {
-                const res = await axios.get(`/carrinho/${usuarioLogado.id}`);
-                setCarrinho(res.data);
-                calcularTotal(res.data);
-            } catch (err) {
-                console.error("Erro ao buscar carrinho:", err);
-            }
-        } else {
-            const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
-            setCarrinho(carrinhoLocal);
-            calcularTotal(carrinhoLocal);
-        }
-    };
+const [carrinho, setCarrinho] = useState([]);
 
-    const calcularTotal = (itens) => {
-        const total = itens.reduce((acc, item) => acc + parseFloat(item.subtotal || 0), 0);
-        setCarrinhoTotal(total);
-    };
-
-    // Função para atualizar quantidade de um item no carrinho
-    const atualizarQuantidade = async (item, novaQuantidade) => {
-        if (novaQuantidade <= 0) {
-            removerItem(item);
-            return;
-        }
-
-        if (usuarioLogado) {
-            try {
-                await axios.put(`/carrinho/${item.id}`, { quantidade: novaQuantidade });
-                carregarCarrinho();
-            } catch (err) {
-                console.error("Erro ao atualizar quantidade:", err);
-            }
-        } else {
-            const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
-            const itemIndex = carrinhoLocal.findIndex(i => i.id === item.id);
-            
-            if (itemIndex !== -1) {
-                carrinhoLocal[itemIndex].quantidade = novaQuantidade;
-                carrinhoLocal[itemIndex].subtotal = carrinhoLocal[itemIndex].preco * novaQuantidade;
-                localStorage.setItem('carrinho_local', JSON.stringify(carrinhoLocal));
-                setCarrinho(carrinhoLocal);
-                calcularTotal(carrinhoLocal);
-            }
-        }
-    };
-
-    // Função para remover um item do carrinho
-    const removerItem = async (item) => {
-        if (usuarioLogado) {
-            try {
-                await axios.delete(`/carrinho/${item.id}`);
-                carregarCarrinho();
-            } catch (err) {
-                console.error("Erro ao remover item:", err);
-            }
-        } else {
-            const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
-            const newCarrinho = carrinhoLocal.filter(i => i.id !== item.id);
-            localStorage.setItem('carrinho_local', JSON.stringify(newCarrinho));
-            setCarrinho(newCarrinho);
-            calcularTotal(newCarrinho);
-        }
-    };
-
-    // Função para limpar carrinho
-    const limparCarrinho = async () => {
-        if (usuarioLogado) {
-            try {
-                await axios.delete(`/carrinho/limpar/${usuarioLogado.id}`);
-                setCarrinho([]);
-                setCarrinhoTotal(0);
-            } catch (err) {
-                console.error("Erro ao limpar carrinho:", err);
-            }
-        } else {
-            localStorage.removeItem('carrinho_local');
-            setCarrinho([]);
-            setCarrinhoTotal(0);
-        }
-    };
-
-    // Função para finalizar compra
-    const finalizarCompra = () => {
-        if (carrinho.length === 0) {
-            alert("Seu carrinho está vazio!");
-            return;
-        }
-
-        if (!usuarioLogado) {
-            alert("Faça login para finalizar a compra!");
-            toggleLoginModal();
-            return;
-        }
-
-        // Aqui você implementaria a lógica de finalização de compra
-        alert("Compra finalizada com sucesso! Total: R$ " + carrinhoTotal.toFixed(2));
-        limparCarrinho();
-        setShowCartMenu(false);
-    };
-
-    // Carregar o carrinho ao iniciar o componente
-    useEffect(() => {
-        carregarCarrinho();
-        
-        // Adicionar listener para atualização do carrinho de outros componentes
-        const handleCarrinhoAtualizado = () => {
-            carregarCarrinho();
-        };
-        
-        window.addEventListener('carrinhoAtualizado', handleCarrinhoAtualizado);
-        
-        return () => {
-            window.removeEventListener('carrinhoAtualizado', handleCarrinhoAtualizado);
-        };
-    }, [usuarioLogado]);
-
+useEffect(() => {
+    if (usuarioLogado) {
+      axios
+        .get(`/carrinho/${usuarioLogado.id}`)
+        .then((res) => setCarrinho(res.data))
+        .catch((err) => console.error("Erro ao buscar carrinho:", err));
+    } else {
+      const local = localStorage.getItem('carrinho_local');
+      if (local) setCarrinho(JSON.parse(local));
+    }
+  }, [usuarioLogado]);
+  
     return (
         <header className="header">
             <div className="container-logo">
@@ -307,82 +196,43 @@ const Navbar = () => {
             </div>
 
             <nav className="navbar">
-                <button className="btn cart-btn" onClick={toggleCartMenu}>
-                    <FaShoppingCart size={20} />
-                    <span className="cart-count">{carrinho.length}</span>
-                </button>
+            <button className="btn cart-btn" onClick={toggleCartMenu}>
+    <FaShoppingCart size={20} />
+    <span className="cart-count"></span> {/* pode ser dinâmico */}
+</button>
 
-                {showCartMenu && (
-                    <div className="cart-menu">
-                        <button className="close-cart" onClick={toggleCartMenu}>×</button>
-                        <h3>Meu Carrinho</h3>
-                        
-                        {carrinho.length === 0 ? (
-                            <p className="carrinho-vazio">Seu carrinho está vazio</p>
-                        ) : (
-                            <>
-                                <ul className="cart-items">
-                                    {carrinho.map((item) => (
-                                        <li key={item.id} className="cart-item">
-                                            <div className="item-info">
-                                                <span className="item-nome">{item.nome}</span>
-                                                <span className="item-preco">R$ {parseFloat(item.preco).toFixed(2)}</span>
-                                            </div>
-                                            <div className="item-actions">
-                                                <button 
-                                                    className="qty-btn"
-                                                    onClick={() => atualizarQuantidade(item, item.quantidade - 1)}
-                                                >
-                                                    <FaMinus size={10} />
-                                                </button>
-                                                <span className="item-qty">{item.quantidade}</span>
-                                                <button 
-                                                    className="qty-btn"
-                                                    onClick={() => atualizarQuantidade(item, item.quantidade + 1)}
-                                                >
-                                                    <FaPlus size={10} />
-                                                </button>
-                                                <button 
-                                                    className="remove-btn"
-                                                    onClick={() => removerItem(item)}
-                                                >
-                                                    <FaTrash size={14} />
-                                                </button>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                                
-                                <div className="cart-total">
-                                    <span>Total:</span>
-                                    <span>R$ {carrinhoTotal.toFixed(2)}</span>
-                                </div>
-                                
-                                <div className="cart-actions">
-                                    <button className="limpar-btn" onClick={limparCarrinho}>
-                                        Limpar Carrinho
-                                    </button>
-                                    <button className="finalizar-btn" onClick={finalizarCompra}>
-                                        Finalizar Compra
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                )}
+{showCartMenu && (
+    <div className="cart-menu">
+        <button className="close-cart" onClick={toggleCartMenu}>×</button>
+        <h3>Meu Carrinho</h3>
+        <ul className="cart-items">
+  {carrinho.length === 0 ? (
+    <li>Carrinho vazio</li>
+  ) : (
+    carrinho.map((item) => (
+      <li key={item.id}>
+        {item.nome} - {item.quantidade} {item.quantidade > 1 ? "unidades" : "unidade"}
+      </li>
+    ))
+  )}
+</ul>
+        <button className="btn finalizar-btn">Finalizar Compra</button>
+    </div>
+)}
 
-                {usuarioLogado ? (
-                    <div className="usuario-logado">
-                        <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
-                        <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
-                    </div>
-                ) : (
-                    <>
-                        <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
-                        <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
-                    </>
-                )}
-            </nav>
+
+    {usuarioLogado ? (
+        <div className="usuario-logado">
+            <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
+            <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
+        </div>
+    ) : (
+        <>
+            <button className="btn login-btn" onClick={toggleLoginModal}>Login</button>
+            <button className="btn cadastrar-btn" onClick={toggleRegisterModal}>Cadastrar</button>
+        </>
+    )}
+</nav>
 
             {/* Modal de Cadastro */}
             {showRegisterModal && (
@@ -391,7 +241,8 @@ const Navbar = () => {
                         <button className="close-btn" onClick={toggleRegisterModal}>×</button>
                         <h2>Cadastro de Cliente</h2>
                         <form onSubmit={handleSubmit}>
-                            
+                            {/* Campos de cadastro... */}
+                            {/* Use seus inputs já existentes aqui */}
                             <div className="form-group">
                                 <label>Nome:</label>
                                 <input type="text" name="nome" value={formData.nome} onChange={handleChange} required />
