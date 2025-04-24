@@ -31,12 +31,37 @@ const Produtos = () => {
     buscarProdutos();
   }, [categoriaId]);
 
+<<<<<<< HEAD
+=======
+  // Manipulador de clique na categoria
+  const selecionarCategoria = (id) => {
+    navigate(`/categoria/${id}`);
+  };
+  const [quantidades, setQuantidades] = useState({});
+
+const aumentarQuantidade = (id) => {
+  setQuantidades((prev) => ({
+    ...prev,
+    [id]: (prev[id] || 0) + 1,
+  }));
+};
+
+const diminuirQuantidade = (id) => {
+  setQuantidades((prev) => ({
+    ...prev,
+    [id]: Math.max((prev[id] || 0) - 1, 0),
+  }));
+};
+
+
+>>>>>>> c1b1e699f1fa099606f6abeaf95a352ed8b6a963
   return (
     <div className="produtos-pagina">
       {carregando ? (
         <div className="carregando">Carregando produtos...</div>
       ) : (
         <section className="produtos-container">
+<<<<<<< HEAD
           {produtos.length > 0 ? (
             produtos.map((produto) => (
               <div key={produto.id} className="produto">
@@ -58,6 +83,32 @@ const Produtos = () => {
             </div>
           )}
         </section>
+=======
+        {produtos.length > 0 ? (
+          produtos.map((produto) => (
+            <div key={produto.id} className="produto">
+              <img
+                src={imagens[produto.imagem] || morango} // usa imagem local ou imagem padrão
+                alt={produto.nome}
+                className="imagem-produto"
+              />
+              <p>{produto.nome}</p>
+              <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
+      
+              <div className="controle-quantidade">
+                <button className="bot" onClick={() => diminuirQuantidade(produto.id)}>-</button>
+                <span>{quantidades[produto.id] || 0}</span>
+                <button className="bot" onClick={() => aumentarQuantidade(produto.id)}>+</button>
+                <button className="add-to-cart">Adicionar</button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="sem-produtos">Nenhum produto encontrado nesta categoria</div>
+        )}
+      </section>
+      
+>>>>>>> c1b1e699f1fa099606f6abeaf95a352ed8b6a963
       )}
     </div>
   );

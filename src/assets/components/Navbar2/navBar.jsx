@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import "./navbarr.css";
 
-
 const navBar = () => {
   
     const filtrarCategoria = (categoria) => {
@@ -15,7 +14,7 @@ const navBar = () => {
 
         <div>
                 <button className='botao' onClick={() => filtrarCategoria('Todos')}>Todos</button>
-                <button className='botao' onClick={() => filtrarCategoria('Frutas e Verduras')}>Frutas e Verduras</button>
+                <button className='botao' onClick={() => filtrarCategoria('hortfrut')}>Frutas e Verduras</button>
                 <button className='botao' onClick={() => filtrarCategoria('Bebidas')}>Bebidas</button>
               </div>
     </nav>
