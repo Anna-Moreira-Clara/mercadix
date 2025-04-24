@@ -37,25 +37,26 @@ const Produtos = () => {
   // Função para adicionar produto ao carrinho
   const adicionarAoCarrinho = (produto) => {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuario"));
+
+    console.log("Usuário logado:", usuarioLogado); // Adicione para depuração
+    console.log("Produto:", produto); // Adicione para depuração
     
     if (usuarioLogado) {
-      // Usuário está logado, adicionar ao carrinho no backend
       axios
-        .post(`http://localhost:5000/carrinho`, {
-          usuario_id: usuarioLogado.id,
-          produto_id: produto.id,
-          quantidade: 1
-        })
-        .then((res) => {
-          setMensagem(`${produto.nome} adicionado ao carrinho!`);
-          // Limpar mensagem após 3 segundos
-          setTimeout(() => setMensagem(""), 3000);
-          // Disparar evento para atualizar a contagem do carrinho na Navbar
-          window.dispatchEvent(new Event('carrinhoAtualizado'));
-        })
-        .catch((err) => {
-          console.error("Erro ao adicionar ao carrinho:", err);
-          setMensagem("Erro ao adicionar ao carrinho");
+      .post(`http://localhost:5000/carrinho`, {
+        usuario_id: usuarioLogado.id,
+        produto_id: produto.id,
+        quantidade: 1
+      })
+      .then((res) => {
+        console.log("Resposta:", res.data); // Adicione para depuração
+        setMensagem(`${produto.nome} adicionado ao carrinho!`);
+        setTimeout(() => setMensagem(""), 3000);
+        window.dispatchEvent(new Event('carrinhoAtualizado'));
+      })
+      .catch((err) => {
+        console.error("Erro ao adicionar ao carrinho:", err.response?.data || err.message);
+        setMensagem("Erro ao adicionar ao carrinho: " + (err.response?.data?.message || err.message));
         });
     } else {
       // Usuário não logado, salvar no localStorage
