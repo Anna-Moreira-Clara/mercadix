@@ -37,17 +37,7 @@ function CategoriasAdmin() {
       .catch(err => console.error('Erro ao atualizar categoria:', err));
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    
-    if (name === 'nome' && !editandoId) {
-      // Gera um slug automaticamente a partir do nome
-      const slug = value.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      setFormData({ ...formData, [name]: value});
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
+  
 
   const abrirModal = () => {
     setFormData({

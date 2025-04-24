@@ -45,4 +45,21 @@ exports.criarPedido = (req, res) => {
             });
         });
     });
+    // Listar todos os pedidos de um usuário
+    exports.listarPedidosPorUsuario = (req, res) => {
+        const { usuario_id } = req.params;
+
+        const sql = `
+        SELECT p.id AS pedido_id, p.total, p.status, p.data_pedido
+        FROM pedidos p
+        WHERE p.usuario_id = ?
+        ORDER BY p.data_pedido DESC
+    `;
+
+        db.query(sql, [usuario_id], (err, results) => {
+            if (err) return res.status(500).json({ error: 'Erro ao listar pedidos' });
+
+            res.json(results);
+        });
+    };
 };
