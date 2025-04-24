@@ -44,20 +44,46 @@ exports.criarPedido = (req, res) => {
     });
 };
 
-// Listar Pedidos por Usuário
+// Listar Pedidos por Usuário (com detalhes dos itens)
 exports.listarPedidosPorUsuario = (req, res) => {
     const { usuario_id } = req.params;
 
-    const sql = `
-        SELECT p.id AS pedido_id, p.total, p.status, p.data_pedido
+    const sqlPedidos = `
+        SELECT p.id AS pedido_id, p.data_pedido, p.status, p.total,
+               pi.produto_id, pr.nome AS nome_produto, pi.quantidade, pi.preco
         FROM pedidos p
+        JOIN pedido_itens pi ON p.id = pi.pedido_id
+        JOIN produtos pr ON pi.produto_id = pr.id
         WHERE p.usuario_id = ?
         ORDER BY p.data_pedido DESC
     `;
 
-    db.query(sql, [usuario_id], (err, results) => {
-        if (err) return res.status(500).json({ error: 'Erro ao listar pedidos' });
+    db.query(sqlPedidos, [usuario_id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
 
-        res.json(results);
+        // Agrupar os itens por pedido
+        const pedidos = {};
+
+        results.forEach(row => {
+            if (!pedidos[row.pedido_id]) {
+                pedidos[row.pedido_id] = {
+                    pedido_id: row.pedido_id,
+                    data_pedido: row.data_pedido,
+                    status: row.status,
+                    total: row.total,
+                    itens: []
+                };
+            }
+
+            pedidos[row.pedido_id].itens.push({
+                produto_id: row.produto_id,
+                nome: row.nome_produto,
+                quantidade: row.quantidade,
+                preco: row.preco
+            });
+        });
+
+        res.json(Object.values(pedidos));
     });
 };
+
