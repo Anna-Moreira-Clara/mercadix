@@ -50,6 +50,8 @@ const Produtos = () => {
           setMensagem(`${produto.nome} adicionado ao carrinho!`);
           // Limpar mensagem após 3 segundos
           setTimeout(() => setMensagem(""), 3000);
+          // Disparar evento para atualizar a contagem do carrinho na Navbar
+          window.dispatchEvent(new Event('carrinhoAtualizado'));
         })
         .catch((err) => {
           console.error("Erro ao adicionar ao carrinho:", err);
@@ -65,6 +67,7 @@ const Produtos = () => {
       if (produtoExistente) {
         // Atualizar quantidade
         produtoExistente.quantidade += 1;
+        produtoExistente.subtotal = produtoExistente.quantidade * produtoExistente.preco;
       } else {
         // Adicionar novo item
         carrinhoLocal.push({

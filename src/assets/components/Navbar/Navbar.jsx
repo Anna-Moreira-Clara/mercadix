@@ -114,6 +114,11 @@ const Navbar = () => {
 
         try {
             const response = await axios.get('/usuarios', { params: loginData });
+            
+            if (!response.data || response.data.error) {
+                throw new Error(response.data?.error || 'Erro ao fazer login');
+            }
+            
             const usuario = response.data;
 
             localStorage.setItem('usuario', JSON.stringify(usuario));
@@ -123,11 +128,15 @@ const Navbar = () => {
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local'));
             if (carrinhoLocal && carrinhoLocal.length > 0) {
                 for (const item of carrinhoLocal) {
-                    await axios.post('/carrinho', {
-                        usuario_id: usuario.id,
-                        produto_id: item.id,
-                        quantidade: item.quantidade
-                    });
+                    try {
+                        await axios.post('/carrinho', {
+                            usuario_id: usuario.id,
+                            produto_id: item.id,
+                            quantidade: item.quantidade
+                        });
+                    } catch (err) {
+                        console.error('Erro ao transferir item do carrinho:', err);
+                    }
                 }
                 localStorage.removeItem('carrinho_local');
             }
@@ -137,12 +146,12 @@ const Navbar = () => {
 
             setTimeout(() => {
                 toggleLoginModal();
-                navigate("/", "/hortifruti");
+                navigate("/");
             }, 1500);
 
         } catch (error) {
             console.error('Erro ao logar:', error);
-            setLoginMessage(error.response?.data?.message || 'Email ou senha incorretos');
+            setLoginMessage(error.message || 'Email ou senha incorretos');
         } finally {
             setLoginLoading(false);
         }
@@ -165,9 +174,11 @@ const Navbar = () => {
     };
 
     const carregarCarrinho = async () => {
-        if (usuarioLogado) {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        
+        if (usuario) {
             try {
-                const res = await axios.get(`/carrinho/${usuarioLogado.id}`);
+                const res = await axios.get(`/carrinho/${usuario.id}`);
                 setCarrinho(res.data);
                 calcularTotal(res.data);
             } catch (err) {
@@ -181,7 +192,7 @@ const Navbar = () => {
     };
 
     const calcularTotal = (itens) => {
-        const total = itens.reduce((acc, item) => acc + parseFloat(item.subtotal || 0), 0);
+        const total = itens.reduce((acc, item) => acc + parseFloat(item.subtotal || item.preco * item.quantidade || 0), 0);
         setCarrinhoTotal(total);
     };
 
@@ -192,7 +203,9 @@ const Navbar = () => {
             return;
         }
 
-        if (usuarioLogado) {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        
+        if (usuario) {
             try {
                 await axios.put(`/carrinho/${item.id}`, { quantidade: novaQuantidade });
                 carregarCarrinho();
@@ -215,7 +228,9 @@ const Navbar = () => {
 
     // Função para remover um item do carrinho
     const removerItem = async (item) => {
-        if (usuarioLogado) {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        
+        if (usuario) {
             try {
                 await axios.delete(`/carrinho/${item.id}`);
                 carregarCarrinho();
@@ -233,9 +248,11 @@ const Navbar = () => {
 
     // Função para limpar carrinho
     const limparCarrinho = async () => {
-        if (usuarioLogado) {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        
+        if (usuario) {
             try {
-                await axios.delete(`/carrinho/limpar/${usuarioLogado.id}`);
+                await axios.delete(`/carrinho/limpar/${usuario.id}`);
                 setCarrinho([]);
                 setCarrinhoTotal(0);
             } catch (err) {
@@ -255,7 +272,9 @@ const Navbar = () => {
             return;
         }
 
-        if (!usuarioLogado) {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        
+        if (!usuario) {
             alert("Faça login para finalizar a compra!");
             toggleLoginModal();
             return;
@@ -267,7 +286,7 @@ const Navbar = () => {
         setShowCartMenu(false);
     };
 
-    // Carregar o carrinho ao iniciar o componente
+    // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
     useEffect(() => {
         carregarCarrinho();
         
