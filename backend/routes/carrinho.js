@@ -3,7 +3,7 @@ const router = express.Router();
 const carrinhoController = require('../controllers/carrinhoController');
 
 
-router.post('/carrinho',carrinhoController.adicionarItem);
+router.post('/',carrinhoController.adicionarItem);
 router.get('/:usuario_id', carrinhoController.listarCarrinho);
 router.put('/:id',carrinhoController.atualizarQuantidade);
 router.delete('/:id',carrinhoController.removerItem);
