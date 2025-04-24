@@ -186,7 +186,7 @@ useEffect(() => {
                             <li><a href="/hortifruti">Hortifruti</a></li>
                             <li><a href="/acougue">Açougue</a></li>
                             <li><a href="/bebidas">Bebidas</a></li>
-                            <li><a href="/">Limpeza</a></li>
+                            <li><a href="/limpeza">Limpeza</a></li>
                         </ul>
                     </div>
                 )}
