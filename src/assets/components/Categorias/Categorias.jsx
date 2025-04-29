@@ -36,35 +36,40 @@ const Produtos = () => {
 
   // Função para adicionar produto ao carrinho
   const adicionarAoCarrinho = (produto) => {
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuario"));
-
-    console.log("Usuário logado:", usuarioLogado); // Adicione para depuração
-    console.log("Produto:", produto); // Adicione para depuração
+    let usuarioLogado = JSON.parse(localStorage.getItem("usuarios"));
     
+    // CORREÇÃO: Se for array, pega o primeiro usuário
+    if (Array.isArray(usuarioLogado)) {
+      usuarioLogado = usuarioLogado[0];
+    }
+
+    console.log("Usuário logado:", usuarioLogado); 
+    console.log("Produto:", produto);
+
     if (usuarioLogado) {
       axios
-      .post(`http://localhost:5000/carrinho`, {
-        usuario_id: usuarioLogado.id,
-        produto_id: produto.id,
-        quantidade: 1
-      })
-      .then((res) => {
-        console.log("Resposta:", res.data); // Adicione para depuração
-        setMensagem(`${produto.nome} adicionado ao carrinho!`);
-        setTimeout(() => setMensagem(""), 3000);
-        window.dispatchEvent(new Event('carrinhoAtualizado'));
-      })
-      .catch((err) => {
-        console.error("Erro ao adicionar ao carrinho:", err.response?.data || err.message);
-        setMensagem("Erro ao adicionar ao carrinho: " + (err.response?.data?.message || err.message));
+        .post(`http://localhost:5000/carrinho`, {
+          usuario_id: usuarioLogado.id,
+          produto_id: produto.id,
+          quantidade: 1
+        })
+        .then((res) => {
+          console.log("Resposta:", res.data);
+          setMensagem(`${produto.nome} adicionado ao carrinho!`);
+          setTimeout(() => setMensagem(""), 3000);
+          window.dispatchEvent(new Event('carrinhoAtualizado'));
+        })
+        .catch((err) => {
+          console.error("Erro ao adicionar ao carrinho:", err.response?.data || err.message);
+          setMensagem("Erro ao adicionar ao carrinho: " + (err.response?.data?.message || err.message));
         });
     } else {
       // Usuário não logado, salvar no localStorage
       const carrinhoLocal = JSON.parse(localStorage.getItem("carrinho_local")) || [];
-      
+
       // Verificar se o produto já está no carrinho
       const produtoExistente = carrinhoLocal.find(item => item.id === produto.id);
-      
+
       if (produtoExistente) {
         // Atualizar quantidade
         produtoExistente.quantidade += 1;
@@ -79,15 +84,13 @@ const Produtos = () => {
           subtotal: produto.preco
         });
       }
-      
+
       // Salvar no localStorage
       localStorage.setItem("carrinho_local", JSON.stringify(carrinhoLocal));
-      
+
       setMensagem(`${produto.nome} adicionado ao carrinho!`);
-      // Limpar mensagem após 3 segundos
       setTimeout(() => setMensagem(""), 3000);
-      
-      // Força atualização do componente Navbar através de um evento personalizado
+
       window.dispatchEvent(new Event('carrinhoAtualizado'));
     }
   };
@@ -99,7 +102,7 @@ const Produtos = () => {
           {mensagem}
         </div>
       )}
-      
+
       {carregando ? (
         <div className="carregando">Carregando produtos...</div>
       ) : (
