@@ -250,7 +250,7 @@ const Navbar = () => {
             calcularTotal(newCarrinho);
         }
     };
-
+    //o
     // Função para limpar carrinho
     const limparCarrinho = async () => {
         const usuario = JSON.parse(localStorage.getItem('usuarios'));
