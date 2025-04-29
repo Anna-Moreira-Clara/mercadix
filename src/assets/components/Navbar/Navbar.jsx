@@ -381,7 +381,7 @@ const Navbar = () => {
                                     <button className="limpar-btn" onClick={limparCarrinho}>
                                         Limpar Carrinho
                                     </button>
-                                    <button className="finalizar-btn" onClick={finalizarCompra}>
+                                    <button className="finalizar-btn" onClick={finalizarCompra} href="/carrinho">
                                         Finalizar Compra
                                     </button>
                                 </div>
