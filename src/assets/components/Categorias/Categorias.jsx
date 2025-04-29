@@ -130,10 +130,7 @@ const Produtos = () => {
                   alt={produto.nome}
                   className="imagem-produto"
                 />
-                <p>{produto.nome}</p>
-                <p className="preco">
-                  R$ {parseFloat(produto.preco).toFixed(2)}
-                </p>
+               
                 <p>{produto.nome}</p>
               <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
       
