@@ -124,6 +124,9 @@ const Navbar = () => {
             localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
 
+            console.log("Usuário logado:", usuario.nome);
+            
+
             // Transfere o carrinho local para o backend após login
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local'));
             if (carrinhoLocal && carrinhoLocal.length > 0) {
@@ -388,7 +391,7 @@ const Navbar = () => {
                                     <button className="limpar-btn" onClick={limparCarrinho}>
                                         Limpar Carrinho
                                     </button>
-                                    <button className="finalizar-btn" onClick={finalizarCompra} href="/carrinho">
+                                    <button className="finalizar-btn" onClick={finalizarCompra}>
                                         Finalizar Compra
                                     </button>
                                 </div>
@@ -400,6 +403,7 @@ const Navbar = () => {
                 {usuarioLogado ? (
                     <div className="usuario-logado">
                         <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
+                        
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
