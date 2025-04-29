@@ -33,6 +33,21 @@ const Produtos = () => {
   useEffect(() => {
     buscarProdutos();
   }, [categoriaId]);
+  const [quantidades, setQuantidades] = useState({});
+
+  const aumentarQuantidade = (id) => {
+    setQuantidades((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1,
+    }));
+  };
+  
+  const diminuirQuantidade = (id) => {
+    setQuantidades((prev) => ({
+      ...prev,
+      [id]: Math.max((prev[id] || 0) - 1, 0),
+    }));
+  };
 
   // Função para adicionar produto ao carrinho
   const adicionarAoCarrinho = (produto) => {
@@ -119,12 +134,20 @@ const Produtos = () => {
                 <p className="preco">
                   R$ {parseFloat(produto.preco).toFixed(2)}
                 </p>
+                <p>{produto.nome}</p>
+              <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
+      
+              <div className="controle-quantidade">
+                <button className="bot" onClick={() => diminuirQuantidade(produto.id)}>-</button>
+                <span>{quantidades[produto.id] || 0}</span>
+                <button className="bot" onClick={() => aumentarQuantidade(produto.id)}>+</button>
                 <button 
                   className="add-to-cart"
                   onClick={() => adicionarAoCarrinho(produto)}
                 >
                   Adicionar
                 </button>
+                </div>
               </div>
             ))
           ) : (
