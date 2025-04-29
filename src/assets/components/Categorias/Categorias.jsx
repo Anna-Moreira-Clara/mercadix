@@ -9,8 +9,8 @@ const Produtos = () => {
   const { categoriaId } = useParams();
   const navigate = useNavigate();
 
-  // Estado para mensagem de feedback
   const [mensagem, setMensagem] = useState("");
+  const [quantidades, setQuantidades] = useState({});
 
   const buscarProdutos = () => {
     setCarregando(true);
@@ -33,7 +33,6 @@ const Produtos = () => {
   useEffect(() => {
     buscarProdutos();
   }, [categoriaId]);
-  const [quantidades, setQuantidades] = useState({});
 
   const aumentarQuantidade = (id) => {
     setQuantidades((prev) => ({
@@ -41,7 +40,7 @@ const Produtos = () => {
       [id]: (prev[id] || 0) + 1,
     }));
   };
-  
+
   const diminuirQuantidade = (id) => {
     setQuantidades((prev) => ({
       ...prev,
@@ -49,74 +48,63 @@ const Produtos = () => {
     }));
   };
 
-  // Função para adicionar produto ao carrinho
   const adicionarAoCarrinho = (produto) => {
+    const quantidade = quantidades[produto.id] || 1; // Padrão 1 se não selecionado
     let usuarioLogado = JSON.parse(localStorage.getItem("usuarios"));
-    
-    // CORREÇÃO: Se for array, pega o primeiro usuário
+
     if (Array.isArray(usuarioLogado)) {
       usuarioLogado = usuarioLogado[0];
     }
-
-    console.log("Usuário logado:", usuarioLogado); 
-    console.log("Produto:", produto);
 
     if (usuarioLogado) {
       axios
         .post(`http://localhost:5000/carrinho`, {
           usuario_id: usuarioLogado.id,
           produto_id: produto.id,
-          quantidade: 1
+          quantidade: quantidade,
         })
         .then((res) => {
-          console.log("Resposta:", res.data);
           setMensagem(`${produto.nome} adicionado ao carrinho!`);
           setTimeout(() => setMensagem(""), 3000);
-          window.dispatchEvent(new Event('carrinhoAtualizado'));
+          window.dispatchEvent(new Event("carrinhoAtualizado"));
         })
         .catch((err) => {
           console.error("Erro ao adicionar ao carrinho:", err.response?.data || err.message);
           setMensagem("Erro ao adicionar ao carrinho: " + (err.response?.data?.message || err.message));
         });
     } else {
-      // Usuário não logado, salvar no localStorage
       const carrinhoLocal = JSON.parse(localStorage.getItem("carrinho_local")) || [];
-
-      // Verificar se o produto já está no carrinho
-      const produtoExistente = carrinhoLocal.find(item => item.id === produto.id);
+      const produtoExistente = carrinhoLocal.find((item) => item.id === produto.id);
 
       if (produtoExistente) {
-        // Atualizar quantidade
-        produtoExistente.quantidade += 1;
+        produtoExistente.quantidade += quantidade;
         produtoExistente.subtotal = produtoExistente.quantidade * produtoExistente.preco;
       } else {
-        // Adicionar novo item
         carrinhoLocal.push({
           id: produto.id,
           nome: produto.nome,
           preco: produto.preco,
-          quantidade: 1,
-          subtotal: produto.preco
+          quantidade: quantidade,
+          subtotal: produto.preco * quantidade,
         });
       }
 
-      // Salvar no localStorage
       localStorage.setItem("carrinho_local", JSON.stringify(carrinhoLocal));
-
       setMensagem(`${produto.nome} adicionado ao carrinho!`);
       setTimeout(() => setMensagem(""), 3000);
-
-      window.dispatchEvent(new Event('carrinhoAtualizado'));
+      window.dispatchEvent(new Event("carrinhoAtualizado"));
     }
+
+    // Reseta a quantidade após adicionar
+    setQuantidades((prev) => ({
+      ...prev,
+      [produto.id]: 0,
+    }));
   };
 
   return (
     <div className="produtos-pagina">
-      {mensagem && (
-        <div className="mensagem-feedback">
-          {mensagem}
-        </div>
-      )}
+      {mensagem && <div className="mensagem-feedback">{mensagem}</div>}
 
       {carregando ? (
         <div className="carregando">Carregando produtos...</div>
@@ -130,20 +118,19 @@ const Produtos = () => {
                   alt={produto.nome}
                   className="imagem-produto"
                 />
-               
                 <p>{produto.nome}</p>
-              <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
-      
-              <div className="controle-quantidade">
-                <button className="bot" onClick={() => diminuirQuantidade(produto.id)}>-</button>
-                <span>{quantidades[produto.id] || 0}</span>
-                <button className="bot" onClick={() => aumentarQuantidade(produto.id)}>+</button>
-                <button 
-                  className="add-to-cart"
-                  onClick={() => adicionarAoCarrinho(produto)}
-                >
-                  Adicionar
-                </button>
+                <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
+
+                <div className="controle-quantidade">
+                  <button className="bot" onClick={() => diminuirQuantidade(produto.id)}>-</button>
+                  <span>{quantidades[produto.id] || 0}</span>
+                  <button className="bot" onClick={() => aumentarQuantidade(produto.id)}>+</button>
+                  <button
+                    className="add-to-cart"
+                    onClick={() => adicionarAoCarrinho(produto)}
+                  >
+                    Adicionar
+                  </button>
                 </div>
               </div>
             ))

@@ -38,6 +38,7 @@ function App() {
         <Route element={<LayoutComNavbar />}>
           <Route path="/" element={<Home />} />
           <Route path="/categoria/:categoriaId" element={<Produtos />} /> {/* Nova rota */}
+          
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/acougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
