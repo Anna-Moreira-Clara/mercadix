@@ -285,10 +285,6 @@ const Navbar = () => {
             return;
         }
 
-        // Aqui você implementaria a lógica de finalização de compra
-        alert("Compra finalizada com sucesso! Total: R$ " + carrinhoTotal.toFixed(2));
-        limparCarrinho();
-        setShowCartMenu(false);
     };
 
     // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
@@ -388,9 +384,10 @@ const Navbar = () => {
                                     <button className="limpar-btn" onClick={limparCarrinho}>
                                         Limpar Carrinho
                                     </button>
-                                    <button className="finalizar-btn" onClick={finalizarCompra} href="/carrinho">
-                                        Finalizar Compra
-                                    </button>
+                                    <a className="finalizar-btn" href="../carrinho">
+  Finalizar Compra
+</a>
+
                                 </div>
                             </>
                         )}

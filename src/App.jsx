@@ -16,6 +16,7 @@ import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal
 import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
 import Bebidas from './assets/components/Menu-Hamburguer/Bebidas.jsx';
 import Limpeza from './assets/components/Menu-Hamburguer/Limpeza.jsx';
+import Carrinho from './assets/components/carrinho/carrinho.jsx';
 
 
 // Componente Home com o conteúdo da página inicial
@@ -41,6 +42,7 @@ function App() {
           <Route path="/acougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
           <Route path='/limpeza' element={<Limpeza />} />
+          <Route path='/Carrinho' element={<Carrinho />} />
         </Route>
 
         {/* Rotas sem Navbar */}
