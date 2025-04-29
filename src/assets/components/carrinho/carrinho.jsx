@@ -1,4 +1,4 @@
-// Produtos.jsx
+
 import React from 'react';
 
 const Carrinho = () => {
