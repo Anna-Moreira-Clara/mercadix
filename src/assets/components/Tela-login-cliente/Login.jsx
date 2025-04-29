@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import './login.css';
 
-axios.defaults.baseURL = 'http://localhost:5000/usuarios'; // Ajuste conforme necessário
+axios.defaults.baseURL = 'http://localhost:5000'; // Ajuste conforme necessário
 
 function LoginUsuario() {
   const [formData, setFormData] = useState({
@@ -31,7 +31,7 @@ function LoginUsuario() {
       const usuario = response.data;
 
       // Armazena o usuário no localStorage
-      localStorage.setItem('usuario', JSON.stringify(usuario));
+      localStorage.setItem('usuarios', JSON.stringify(usuario));
 
       setMessage('Login realizado com sucesso!');
 

@@ -3,7 +3,7 @@ import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaMinus, FaPlus, FaTrash} from 'react-icons/fa';
+import { FaShoppingCart, FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -39,7 +39,7 @@ const Navbar = () => {
 
     // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
-        const usuarioStorage = localStorage.getItem('usuario');
+        const usuarioStorage = localStorage.getItem('usuarios');
         if (usuarioStorage) {
             setUsuarioLogado(JSON.parse(usuarioStorage));
         }
@@ -114,16 +114,16 @@ const Navbar = () => {
 
         try {
             const response = await axios.get('/usuarios', { params: loginData });
-            
+
             if (!response.data || response.data.error) {
                 throw new Error(response.data?.error || 'Erro ao fazer login');
             }
-            
+
             const usuario = response.data;
 
-            localStorage.setItem('usuario', JSON.stringify(usuario));
+            localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
-            
+
             // Transfere o carrinho local para o backend após login
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local'));
             if (carrinhoLocal && carrinhoLocal.length > 0) {
@@ -140,7 +140,7 @@ const Navbar = () => {
                 }
                 localStorage.removeItem('carrinho_local');
             }
-            
+
             setLoginMessage('Login realizado com sucesso!');
             carregarCarrinho();
 
@@ -158,7 +158,7 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('usuario');
+        localStorage.removeItem('usuarios');
         setUsuarioLogado(null);
         setCarrinho([]);
         navigate('/');
@@ -174,8 +174,13 @@ const Navbar = () => {
     };
 
     const carregarCarrinho = async () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        
+        let usuario = JSON.parse(localStorage.getItem('usuarios'));
+
+        // CORREÇÃO: Se for array, pega o primeiro usuário
+        if (Array.isArray(usuario)) {
+            usuario = usuario[0];
+        }
+
         if (usuario) {
             try {
                 const res = await axios.get(`/carrinho/${usuario.id}`);
@@ -203,8 +208,8 @@ const Navbar = () => {
             return;
         }
 
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        
+        const usuario = JSON.parse(localStorage.getItem('usuarios'));
+
         if (usuario) {
             try {
                 await axios.put(`/carrinho/${item.id}`, { quantidade: novaQuantidade });
@@ -215,7 +220,7 @@ const Navbar = () => {
         } else {
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
             const itemIndex = carrinhoLocal.findIndex(i => i.id === item.id);
-            
+
             if (itemIndex !== -1) {
                 carrinhoLocal[itemIndex].quantidade = novaQuantidade;
                 carrinhoLocal[itemIndex].subtotal = carrinhoLocal[itemIndex].preco * novaQuantidade;
@@ -228,8 +233,8 @@ const Navbar = () => {
 
     // Função para remover um item do carrinho
     const removerItem = async (item) => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        
+        const usuario = JSON.parse(localStorage.getItem('usuarios'));
+
         if (usuario) {
             try {
                 await axios.delete(`/carrinho/${item.id}`);
@@ -245,14 +250,14 @@ const Navbar = () => {
             calcularTotal(newCarrinho);
         }
     };
-
+    //o
     // Função para limpar carrinho
     const limparCarrinho = async () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        
+        const usuario = JSON.parse(localStorage.getItem('usuarios'));
+
         if (usuario) {
             try {
-                await axios.delete(`/carrinho/limpar/${usuario.id}`);
+                await axios.delete(`/carrinho/usuario/${usuario.id}`);
                 setCarrinho([]);
                 setCarrinhoTotal(0);
             } catch (err) {
@@ -272,8 +277,8 @@ const Navbar = () => {
             return;
         }
 
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        
+        const usuario = JSON.parse(localStorage.getItem('usuarios'));
+
         if (!usuario) {
             alert("Faça login para finalizar a compra!");
             toggleLoginModal();
@@ -289,18 +294,20 @@ const Navbar = () => {
     // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
     useEffect(() => {
         carregarCarrinho();
-        
+
         // Adicionar listener para atualização do carrinho de outros componentes
         const handleCarrinhoAtualizado = () => {
             carregarCarrinho();
         };
-        
+
         window.addEventListener('carrinhoAtualizado', handleCarrinhoAtualizado);
-        
+
         return () => {
             window.removeEventListener('carrinhoAtualizado', handleCarrinhoAtualizado);
         };
     }, [usuarioLogado]);
+
+
 
     return (
         <header className="header">
@@ -335,7 +342,7 @@ const Navbar = () => {
                     <div className="cart-menu">
                         <button className="close-cart" onClick={toggleCartMenu}>×</button>
                         <h3>Meu Carrinho</h3>
-                        
+
                         {carrinho.length === 0 ? (
                             <p className="carrinho-vazio">Seu carrinho está vazio</p>
                         ) : (
@@ -348,20 +355,20 @@ const Navbar = () => {
                                                 <span className="item-preco">R$ {parseFloat(item.preco).toFixed(2)}</span>
                                             </div>
                                             <div className="item-actions">
-                                                <button 
+                                                <button
                                                     className="qty-btn"
                                                     onClick={() => atualizarQuantidade(item, item.quantidade - 1)}
                                                 >
                                                     <FaMinus size={10} />
                                                 </button>
                                                 <span className="item-qty">{item.quantidade}</span>
-                                                <button 
+                                                <button
                                                     className="qty-btn"
                                                     onClick={() => atualizarQuantidade(item, item.quantidade + 1)}
                                                 >
                                                     <FaPlus size={10} />
                                                 </button>
-                                                <button 
+                                                <button
                                                     className="remove-btn"
                                                     onClick={() => removerItem(item)}
                                                 >
@@ -371,12 +378,12 @@ const Navbar = () => {
                                         </li>
                                     ))}
                                 </ul>
-                                
+
                                 <div className="cart-total">
                                     <span>Total:</span>
                                     <span>R$ {carrinhoTotal.toFixed(2)}</span>
                                 </div>
-                                
+
                                 <div className="cart-actions">
                                     <button className="limpar-btn" onClick={limparCarrinho}>
                                         Limpar Carrinho
