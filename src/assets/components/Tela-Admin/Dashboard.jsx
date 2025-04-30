@@ -23,7 +23,7 @@ const AdminDashboard = () => {
 
         {/* Navegação */}
         <nav className="flex-1">
-          <Link to="/dashboard" className='bot'>
+          <Link to="/dashboard" className='bota'>
             <div className="p-4">
               <div className="flex items-center gap-3 px-4 py-2 bg-blue-700 rounded text-white">
                 <Grid className="h-5 w-5" />
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
           <div className="px-4 mt-2 mb-2">
             <p className="text-xs text-blue-300 px-4 mb-2">INTERFACE</p>
 
-            <Link to="pedidos" className='bot'>
+            <Link to="pedidos" className='bota'>
               <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Settings className="h-5 w-5" />
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
               </div>
             </Link>
 
-            <Link to="produtos" className='bot'>
+            <Link to="produtos" className='bota'>
               <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Settings className="h-5 w-5" />
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
               </div>
             </Link>
 
-            <Link to="categorias" className='bot'>
+            <Link to="categorias" className='bota'>
               <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
                 <div className="flex items-center gap-3">
                   <Settings className="h-5 w-5" />

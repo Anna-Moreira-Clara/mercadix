@@ -439,6 +439,7 @@ body {
 .bot {
   text-decoration: none;
   color: inherit;
+  border:none;
 }
 
 .link-content {
@@ -471,4 +472,9 @@ body {
 text-align: center;
 
 
+}
+.bota{
+  text-decoration: none;
+  color: inherit;
+  border:none;
 }
