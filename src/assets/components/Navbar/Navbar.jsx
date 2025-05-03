@@ -278,21 +278,43 @@ const Navbar = () => {
     
 
     // Função para finalizar compra
-    const finalizarCompra = () => {
+    const finalizarCompra = async () => {
         if (carrinho.length === 0) {
             alert("Seu carrinho está vazio!");
             return;
         }
-
-        const usuario = JSON.parse(localStorage.getItem('usuarios'));
-
+    
+        let usuario = JSON.parse(localStorage.getItem('usuarios'));
+    
+        if (Array.isArray(usuario)) {
+            usuario = usuario[0];
+        }
+    
         if (!usuario) {
             alert("Faça login para finalizar a compra!");
             toggleLoginModal();
             return;
         }
-
+    
+        try {
+            await axios.post('/pedidos/finalizar', {
+                usuario_id: usuario.id,
+                itens: carrinho.map(item => ({
+                    produto_id: item.produto_id,
+                    quantidade: item.quantidade,
+                    preco: item.preco
+                }))
+            });
+    
+            alert("Compra finalizada com sucesso!");
+            setCarrinho([]);
+            setCarrinhoTotal(0);
+        } catch (error) {
+            console.error("Erro ao finalizar compra:", error);
+            alert("Erro ao finalizar compra.");
+        }
     };
+    
 
     // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
     useEffect(() => {
