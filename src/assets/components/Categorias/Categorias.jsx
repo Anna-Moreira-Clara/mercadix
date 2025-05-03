@@ -12,6 +12,8 @@ const Produtos = () => {
   const [mensagem, setMensagem] = useState("");
   const [quantidades, setQuantidades] = useState({});
 
+  
+  
   const buscarProdutos = () => {
     setCarregando(true);
     const url = categoriaId

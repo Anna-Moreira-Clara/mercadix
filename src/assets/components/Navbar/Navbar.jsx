@@ -256,9 +256,11 @@ const Navbar = () => {
     //o
     // Função para limpar carrinho
     const limparCarrinho = async () => {
-        const usuario = JSON.parse(localStorage.getItem('usuarios'));
-
-        if (usuario) {
+        const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+    
+        if (usuarios && Array.isArray(usuarios) && usuarios.length > 0) {
+            const usuario = usuarios[0]; // Pegando o primeiro usuário do array
+    
             try {
                 await axios.delete(`/carrinho/usuario/${usuario.id}`);
                 setCarrinho([]);
@@ -267,11 +269,13 @@ const Navbar = () => {
                 console.error("Erro ao limpar carrinho:", err);
             }
         } else {
+            // Se não estiver logado, limpa o carrinho local
             localStorage.removeItem('carrinho_local');
             setCarrinho([]);
             setCarrinhoTotal(0);
         }
     };
+    
 
     // Função para finalizar compra
     const finalizarCompra = () => {

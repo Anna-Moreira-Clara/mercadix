@@ -1,17 +1,33 @@
 const db = require('../db');
 
 //adicionar item ao carrinho
-exports.adicionarItem = (req,res)=>{
-    const{usuario_id, produto_id, quantidade} = req.body;
-    const sql = 'INSERT INTO carrinho (usuario_id, produto_id, quantidade) VALUES(?,?,?)';
+exports.adicionarItem = (req, res) => {
+    const { usuario_id, produto_id, quantidade } = req.body;
 
-    db.query(sql,[usuario_id, produto_id, quantidade], (err,result)=>{
-        if(err) return res.status(500).json({error: err.message});
+    // Verifica se o produto já está no carrinho
+    const verificarSQL = 'SELECT * FROM carrinho WHERE usuario_id = ? AND produto_id = ?';
+    db.query(verificarSQL, [usuario_id, produto_id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
 
-        res.status(201).json({message: 'Item adicionado ao carrinho!', id:result.insertId});
-        
+        if (results.length > 0) {
+            // Atualiza a quantidade se o item já existe
+            const novaQuantidade = results[0].quantidade + quantidade;
+            const updateSQL = 'UPDATE carrinho SET quantidade = ? WHERE id = ?';
+            db.query(updateSQL, [novaQuantidade, results[0].id], (err2) => {
+                if (err2) return res.status(500).json({ error: err2.message });
+                return res.json({ message: 'Quantidade atualizada no carrinho!' });
+            });
+        } else {
+            // Insere novo item
+            const insertSQL = 'INSERT INTO carrinho (usuario_id, produto_id, quantidade) VALUES (?, ?, ?)';
+            db.query(insertSQL, [usuario_id, produto_id, quantidade], (err3, result) => {
+                if (err3) return res.status(500).json({ error: err3.message });
+                return res.status(201).json({ message: 'Item adicionado ao carrinho!', id: result.insertId });
+            });
+        }
     });
 };
+
 
 //listar todos os itens do carrinho do usuário
 exports.listarCarrinho = (req,res)=>{
