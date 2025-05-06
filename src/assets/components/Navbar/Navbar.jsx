@@ -297,7 +297,7 @@ const Navbar = () => {
         }
     
         try {
-            await axios.post('/pedidos/finalizar', {
+            await axios.post('/pedidos', {
                 usuario_id: usuario.id,
                 itens: carrinho.map(item => ({
                     produto_id: item.produto_id,
@@ -424,7 +424,8 @@ const Navbar = () => {
 
                 {usuarioLogado ? (
                     <div className="usuario-logado">
-                        <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
+                        <button className="btn-usuario">Olá,{usuarioLogado.nome}</button>
+                      
                         
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
