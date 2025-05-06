@@ -310,7 +310,11 @@ const Navbar = () => {
             alert("Compra finalizada com sucesso!");
             setCarrinho([]);
             setCarrinhoTotal(0);
-            navigate('/pedidos'); 
+    
+            // Aguarde um pequeno tempo antes de redirecionar, para garantir que estado e alert sejam processados
+            setTimeout(() => {
+                navigate('/pedidos');
+            }, 100);
         } catch (error) {
             console.error("Erro ao finalizar compra:", error);
             alert("Erro ao finalizar compra.");
