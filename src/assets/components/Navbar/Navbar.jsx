@@ -122,8 +122,8 @@ const Navbar = () => {
             const usuario = response.data;
 
             localStorage.setItem('usuarios', JSON.stringify(usuario));
-            setUsuarioLogado(usuario);
-
+            setUsuarioLogado(usuario);    
+            setUsuarioLogado({ nome: "João" });
             console.log("Usuário logado:", usuario.nome);
             
 
