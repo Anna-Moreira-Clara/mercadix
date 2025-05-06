@@ -123,7 +123,7 @@ const Navbar = () => {
 
             localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);    
-            setUsuarioLogado({ nome: "João" });
+            setUsuarioLogado({ nome: usuario });
             console.log("Usuário logado:", usuario.nome);
             
 
