@@ -278,6 +278,7 @@ const Navbar = () => {
     
 
     // Função para finalizar compra
+    
     const finalizarCompra = async () => {
         if (carrinho.length === 0) {
             alert("Seu carrinho está vazio!");
@@ -309,11 +310,13 @@ const Navbar = () => {
             alert("Compra finalizada com sucesso!");
             setCarrinho([]);
             setCarrinhoTotal(0);
+            navigate('/pedidos'); 
         } catch (error) {
             console.error("Erro ao finalizar compra:", error);
             alert("Erro ao finalizar compra.");
         }
     };
+    
     
 
     // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
