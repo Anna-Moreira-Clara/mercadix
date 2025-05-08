@@ -96,7 +96,7 @@ const Produtos = () => {
       setTimeout(() => setMensagem(""), 3000);
       window.dispatchEvent(new Event("carrinhoAtualizado"));
     }
-
+ //
     // Reseta a quantidade após adicionar
     setQuantidades((prev) => ({
       ...prev,
