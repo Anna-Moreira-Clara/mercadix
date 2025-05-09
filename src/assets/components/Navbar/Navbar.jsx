@@ -129,16 +129,17 @@ const Navbar = () => {
         e.preventDefault();
         setLoginLoading(true);
         setLoginMessage('');
-
+    
         try {
-            const response = await axios.get('/usuarios', { params: loginData });
-
+            // Aqui está a correção: use POST em vez de GET e o endpoint correto
+            const response = await axios.post('/usuarios/login', loginData);
+    
             if (!response.data || response.data.error) {
                 throw new Error(response.data?.error || 'Erro ao fazer login');
             }
-
+    
             const usuario = response.data;
-
+    
             // Armazena o usuário corretamente no localStorage
             localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
@@ -152,37 +153,34 @@ const Navbar = () => {
                     try {
                         await axios.post('/carrinho', {
                             usuario_id: usuario.id,
-                            produto_id: item.produto_id || item.id, // Corrigido para usar o ID correto
+                            produto_id: item.produto_id || item.id,
                             quantidade: item.quantidade,
-                            preco: item.preco // Adiciona o preço para cálculo correto
+                            preco: item.preco
                         });
                     } catch (err) {
                         console.error('Erro ao transferir item do carrinho:', err);
                     }
                 }
                 localStorage.removeItem('carrinho_local');
-                // Disparar evento para atualizar o carrinho em outros componentes
                 window.dispatchEvent(new Event('carrinhoAtualizado'));
             }
-
+    
             setLoginMessage('Login realizado com sucesso!');
             
-            // Carregar o carrinho atualizado
             await carregarCarrinho();
-
+    
             setTimeout(() => {
                 toggleLoginModal();
                 navigate("/");
             }, 1500);
-
+    
         } catch (error) {
             console.error('Erro ao logar:', error);
-            setLoginMessage(error.message || 'Email ou senha incorretos');
+            setLoginMessage(error.response?.data?.message || 'Email ou senha incorretos');
         } finally {
             setLoginLoading(false);
         }
     };
-
     const [showCartMenu, setShowCartMenu] = useState(false);
     const [carrinho, setCarrinho] = useState([]);
     const [carrinhoTotal, setCarrinhoTotal] = useState(0);
