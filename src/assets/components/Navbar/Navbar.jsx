@@ -311,10 +311,7 @@ const Navbar = () => {
             setCarrinho([]);
             setCarrinhoTotal(0);
     
-            // Aguarde um pequeno tempo antes de redirecionar, para garantir que estado e alert sejam processados
-            setTimeout(() => {
-                navigate('/pedidos');
-            }, 100);
+            
         } catch (error) {
             console.error("Erro ao finalizar compra:", error);
             alert("Erro ao finalizar compra.");
@@ -350,7 +347,7 @@ const Navbar = () => {
             </div>
 
             <div className="pesquisa">
-                <button className="botao-menu" onClick={toggleMenu}>☰</button>
+                <button className="botao-menu" onClick={toggleMenu}>☰ CATEGORIAS</button>
                 {isOpen && (
                     <div className="menu-dropdown">
                         <ul>
@@ -361,7 +358,7 @@ const Navbar = () => {
                         </ul>
                     </div>
                 )}
-                <input type="text" className="search-bar" placeholder="Pesquisar Produtos..." />
+               
             </div>
 
             <nav className="navbar">
