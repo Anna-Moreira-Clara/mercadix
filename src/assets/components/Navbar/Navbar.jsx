@@ -45,6 +45,24 @@ const Navbar = () => {
         }
     }, []);
 
+    // Adiciona a função de logout que estava faltando
+    const handleLogout = () => {
+        localStorage.removeItem('usuarios');
+        setUsuarioLogado(null);
+        
+        // Limpa carrinho local se houver
+        if (localStorage.getItem('carrinho_local')) {
+            localStorage.removeItem('carrinho_local');
+        }
+        
+        // Atualiza o estado do carrinho
+        setCarrinho([]);
+        setCarrinhoTotal(0);
+        
+        // Redireciona para a página inicial
+        navigate("/");
+    };
+
     const toggleMenu = () => {
         setIsOpen((prev) => !prev);
     };
@@ -121,31 +139,36 @@ const Navbar = () => {
 
             const usuario = response.data;
 
+            // Armazena o usuário corretamente no localStorage
             localStorage.setItem('usuarios', JSON.stringify(usuario));
-            setUsuarioLogado(usuario);    
-            setUsuarioLogado({ nome: usuario });
+            setUsuarioLogado(usuario);
             console.log("Usuário logado:", usuario.nome);
             
-
             // Transfere o carrinho local para o backend após login
-            const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local'));
-            if (carrinhoLocal && carrinhoLocal.length > 0) {
+            const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
+            if (carrinhoLocal.length > 0) {
+                console.log("Transferindo carrinho local:", carrinhoLocal);
                 for (const item of carrinhoLocal) {
                     try {
                         await axios.post('/carrinho', {
                             usuario_id: usuario.id,
-                            produto_id: item.id,
-                            quantidade: item.quantidade
+                            produto_id: item.produto_id || item.id, // Corrigido para usar o ID correto
+                            quantidade: item.quantidade,
+                            preco: item.preco // Adiciona o preço para cálculo correto
                         });
                     } catch (err) {
                         console.error('Erro ao transferir item do carrinho:', err);
                     }
                 }
                 localStorage.removeItem('carrinho_local');
+                // Disparar evento para atualizar o carrinho em outros componentes
+                window.dispatchEvent(new Event('carrinhoAtualizado'));
             }
 
             setLoginMessage('Login realizado com sucesso!');
-            carregarCarrinho();
+            
+            // Carregar o carrinho atualizado
+            await carregarCarrinho();
 
             setTimeout(() => {
                 toggleLoginModal();
@@ -158,13 +181,6 @@ const Navbar = () => {
         } finally {
             setLoginLoading(false);
         }
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem('usuarios');
-        setUsuarioLogado(null);
-        setCarrinho([]);
-        navigate('/');
     };
 
     const [showCartMenu, setShowCartMenu] = useState(false);
@@ -253,16 +269,18 @@ const Navbar = () => {
             calcularTotal(newCarrinho);
         }
     };
-    //o
+
     // Função para limpar carrinho
     const limparCarrinho = async () => {
-        const usuarios = JSON.parse(localStorage.getItem('usuarios'));
+        const usuario = JSON.parse(localStorage.getItem('usuarios'));
     
-        if (usuarios && Array.isArray(usuarios) && usuarios.length > 0) {
-            const usuario = usuarios[0]; // Pegando o primeiro usuário do array
-    
+        // Corrigido: Verifica se o usuário existe antes de tentar acessar propriedades
+        if (usuario) {
+            // Determina o ID do usuário dependendo se é objeto ou array
+            const usuarioId = Array.isArray(usuario) ? usuario[0].id : usuario.id;
+            
             try {
-                await axios.delete(`/carrinho/usuario/${usuario.id}`);
+                await axios.delete(`/carrinho/usuario/${usuarioId}`);
                 setCarrinho([]);
                 setCarrinhoTotal(0);
             } catch (err) {
@@ -278,7 +296,6 @@ const Navbar = () => {
     
 
     // Função para finalizar compra
-    
     const finalizarCompra = async () => {
         if (carrinho.length === 0) {
             alert("Seu carrinho está vazio!");
@@ -298,31 +315,32 @@ const Navbar = () => {
         }
     
         try {
+            // Primeiro, salve os dados do carrinho em localStorage para o componente Carrinho acessar
+            localStorage.setItem('carrinho_completo', JSON.stringify({
+                itens: carrinho,
+                total: carrinhoTotal
+            }));
+            
+            // Se você também quiser criar um pedido no backend:
             await axios.post('/pedidos', {
                 usuario_id: usuario.id,
                 itens: carrinho.map(item => ({
-                    produto_id: item.produto_id,
+                    produto_id: item.produto_id || item.id, // Usa qualquer um que estiver disponível
                     quantidade: item.quantidade,
                     preco: item.preco
                 }))
             });
     
-            alert("Compra finalizada com sucesso!");
-            setCarrinho([]);
-            setCarrinhoTotal(0);
-    
-            // Aguarde um pequeno tempo antes de redirecionar, para garantir que estado e alert sejam processados
-            setTimeout(() => {
-                navigate('/pedidos');
-            }, 100);
+            setShowCartMenu(false); // Fecha o mini-carrinho
+            
+            // Redireciona para a página de carrinho completo
+            navigate('/carrinho');
         } catch (error) {
             console.error("Erro ao finalizar compra:", error);
             alert("Erro ao finalizar compra.");
         }
     };
     
-    
-
     // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
     useEffect(() => {
         carregarCarrinho();
@@ -420,7 +438,7 @@ const Navbar = () => {
                                     <button className="limpar-btn" onClick={limparCarrinho}>
                                         Limpar Carrinho
                                     </button>
-                                    <button className="finalizar-btn" onClick={finalizarCompra} href="/carrinho">
+                                    <button className="finalizar-btn" onClick={finalizarCompra}>
                                         Finalizar Compra
                                     </button>
                                 </div>
@@ -431,9 +449,7 @@ const Navbar = () => {
 
                 {usuarioLogado ? (
                     <div className="usuario-logado">
-                        <button className="btn-usuario">Olá,{usuarioLogado.nome}</button>
-                      
-                        
+                        <button className="btn-usuario">Olá, {usuarioLogado.nome}</button>
                         <button className="btn sair-btn" onClick={handleLogout}>Sair</button>
                     </div>
                 ) : (
