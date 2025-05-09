@@ -366,7 +366,7 @@ const Navbar = () => {
             </div>
 
             <div className="pesquisa">
-                <button className="botao-menu" onClick={toggleMenu}>☰</button>
+                <button className="botao-menu" onClick={toggleMenu}>☰ CATEGORIAS</button>
                 {isOpen && (
                     <div className="menu-dropdown">
                         <ul>
@@ -377,7 +377,7 @@ const Navbar = () => {
                         </ul>
                     </div>
                 )}
-                <input type="text" className="search-bar" placeholder="Pesquisar Produtos..." />
+               
             </div>
 
             <nav className="navbar">
