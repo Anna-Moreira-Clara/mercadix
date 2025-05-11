@@ -16,9 +16,12 @@
       display: flex;
       gap: 0.8rem;
       transform: translateX(-150px);
+      border: 0;
+      cursor: pointer;
 
       .logo{
           width: auto;
+          
       }
   }
 }

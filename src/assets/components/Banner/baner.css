@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* ocupa a tela toda */
+    height: 70vh; /* ocupa a tela toda */
   }
   
   .banner {

@@ -355,14 +355,17 @@ const Navbar = () => {
         };
     }, [usuarioLogado]);
 
+         const voltarParaCompras = () => {
+            navigate('/');
+         };
 
 
     return (
         <header className="header">
             <div className="container-logo">
-                <a href="/" className="redirect-link">
+                <button className="redirect-link" onClick={voltarParaCompras}>
                     <img src={Logo} alt="logoo" className="logo" />
-                </a>
+                </button>
             </div>
 
             <div className="pesquisa">
