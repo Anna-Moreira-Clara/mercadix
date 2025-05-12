@@ -29,13 +29,13 @@
 
 .btn {
   font-size: 12px;
-  padding: 12px 24px;
-  margin: 5px;
+  padding: 6px 15px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: bold;
+  transform: translateX(50px);
 }
 
 .login-btn {
@@ -68,6 +68,7 @@
 .sair-btn {
   background-color: #e74c3c; /* Vermelho */
   color: white;
+  transform: translateX(120px);
 }
 
 .sair-btn:hover {
@@ -213,9 +214,11 @@ font-weight: bold;
 border: none;
 margin-right: 10px;
 font-size: 16px;
+transform: translateX(120px);
 }
 
 .cart-btn {
+transform: translateY(30px);
 background: none;
 border: none;
 color: #0c7e11;
