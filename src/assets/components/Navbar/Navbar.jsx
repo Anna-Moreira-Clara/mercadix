@@ -139,11 +139,22 @@ const Navbar = () => {
             }
     
             const usuario = response.data;
+
+             // Redireciona com base no tipo de usuário
+
     
             // Armazena o usuário corretamente no localStorage
             localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
             console.log("Usuário logado:", usuario.nome);
+
+             // Redireciona com base no tipo de usuário
+      if (usuario.role === 'admin') {
+        window.location.href = '/dashboard';
+      } else {
+        window.location.href = '/';
+      }
+
             
             // Transfere o carrinho local para o backend após login
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
