@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './carrinho.css'; // Você pode criar este arquivo de estilo depois
 
 const Carrinho = () => {
+  const FRETE_FIXO = 10.0;
   const navigate = useNavigate();
   const [carrinho, setCarrinho] = useState([]);
   const [carrinhoTotal, setCarrinhoTotal] = useState(0);
@@ -270,11 +271,11 @@ const Carrinho = () => {
             </div>
             <div className="resumo-item">
               <span>Frete:</span>
-              <span>R$:10,00</span>
+              <span>R${FRETE_FIXO.toFixed(2)}</span>
             </div>
             <div className="resumo-item total">
               <span>Total:</span>
-              <span>R$ {carrinhoTotal.toFixed(2)}</span>
+              <span>R$ {(carrinhoTotal + FRETE_FIXO).toFixed(2)}</span>
             </div>
 
             <div className="checkout-form">
