@@ -320,14 +320,14 @@ const Navbar = () => {
             }));
             
             // Se você também quiser criar um pedido no backend:
-            await axios.post('/pedidos', {
-               usuario_id: usuario.id,
-                itens: carrinho.map(item => ({
-                   produto_id: item.produto_id || item.id, // Usa qualquer um que estiver disponível
-                   quantidade: item.quantidade,
-                   preco: item.preco
-                }))
-            });
+           // await axios.post('/pedidos', {
+             //   usuario_id: usuario.id,
+              //  itens: carrinho.map(item => ({
+              //      produto_id: item.produto_id || item.id, // Usa qualquer um que estiver disponível
+              //      quantidade: item.quantidade,
+              //      preco: item.preco
+              //  }))
+          //  });
     
             setShowCartMenu(false); // Fecha o mini-carrinho
             
