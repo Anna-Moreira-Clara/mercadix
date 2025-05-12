@@ -164,14 +164,16 @@ const Navbar = () => {
                 localStorage.removeItem('carrinho_local');
                 window.dispatchEvent(new Event('carrinhoAtualizado'));
             }
-    
-            setLoginMessage('Login realizado com sucesso!');
-            
+     setLoginMessage('Login realizado com sucesso!');
             await carregarCarrinho();
-    
+
             setTimeout(() => {
                 toggleLoginModal();
-                navigate("/");
+                if (usuario.role === 'admin') {
+                    navigate("/dashboard");
+                } else {
+                    navigate("/");
+                }
             }, 1500);
     
         } catch (error) {

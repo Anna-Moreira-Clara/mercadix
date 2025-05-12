@@ -7,7 +7,7 @@ function CategoriasAdmin() {
   const [modalAberto, setModalAberto] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
-    descricao:''
+    descricao: ''
   });
 
   useEffect(() => {
@@ -20,16 +20,21 @@ function CategoriasAdmin() {
       .catch(err => console.error('Erro ao buscar categorias:', err));
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleEditarClick = (categoria) => {
     setEditandoId(categoria.id);
     setFormData({
       nome: categoria.nome,
-     descricao: categoria.descricao
+      descricao: categoria.descricao
     });
   };
 
   const handleSalvarClick = (id) => {
-    axios.put(`http://localhost:5000/categorias/${id}`, formData)
+    axios.put(`http://localhost:5000/categorias/${id}`, formData)  // formData já inclui descricao
       .then(() => {
         setEditandoId(null);
         buscarCategorias();
@@ -37,12 +42,11 @@ function CategoriasAdmin() {
       .catch(err => console.error('Erro ao atualizar categoria:', err));
   };
 
-  
 
   const abrirModal = () => {
     setFormData({
       nome: '',
-      descricao:''
+      descricao: ''
     });
     setModalAberto(true);
   };
@@ -75,7 +79,7 @@ function CategoriasAdmin() {
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Gerenciar Categorias</h2>
-        <button 
+        <button
           onClick={abrirModal}
           className="botao"
         >
@@ -89,14 +93,14 @@ function CategoriasAdmin() {
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Adicionar Nova Categoria</h3>
-              <button 
+              <button
                 onClick={fecharModal}
-                className="botao"
+                className="text-red-600 text-2xl font-bold"
               >
                 &times;
               </button>
             </div>
-            
+
             <form onSubmit={handleAdicionarCategoria}>
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
@@ -109,25 +113,24 @@ function CategoriasAdmin() {
                   required
                 />
               </div>
-              
+
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">Descrição:</label>
                 <input
                   type="text"
-                  name="desc"
-                  value={formData.descricao}
+                  name="descricao"
+                  value={formData.descricao}  // Garante que o campo 'descricao' do formData está correto
                   onChange={handleChange}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
                 />
-              
               </div>
-              
-              <div className="flex justify-end">
+
+              <div className="flex justify-end space-x-2">
                 <button
                   type="button"
                   onClick={fecharModal}
-                  className="botao "
+                  className="botao"
                 >
                   Cancelar
                 </button>
@@ -173,7 +176,7 @@ function CategoriasAdmin() {
                 {editandoId === cat.id ? (
                   <input
                     type="text"
-                    name="slug"
+                    name="descricao"
                     value={formData.descricao}
                     onChange={handleChange}
                     className="border px-2 py-1 w-full"
