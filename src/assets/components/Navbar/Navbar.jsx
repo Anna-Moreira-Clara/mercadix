@@ -386,7 +386,7 @@ const Navbar = () => {
             </div>
 
         <div className="pesquisa">
-                <button className="botao-menu" onClick={() => setIsOpen(!isOpen)}>☰ CATEGORIAS</button>
+                <button className="botao-menu" onClick={toggleMenu}>☰ CATEGORIAS</button>
                 {isOpen && (
                     <div className="menu-dropdown">
                         <ul>

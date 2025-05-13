@@ -93,7 +93,7 @@ function App() {
           <Route path="/categoria/:categoriaId" element={<Produtos />} />
           
           <Route path="/hortifruti" element={<Hortifruti />} />
-          <Route path="/acougue" element={<Acougue />} />
+          <Route path="/açougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
           <Route path='/limpeza' element={<Limpeza />} />
           <Route path='/pedidos' element={<Pedidos />} />
