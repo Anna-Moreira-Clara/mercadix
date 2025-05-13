@@ -361,6 +361,21 @@ const Navbar = () => {
             navigate('/');
          };
 
+         const [categorias, setCategorias] = useState([]);
+
+    const [modalAberto, setModalAberto] = useState(false); // se ainda não tiver isso
+
+    const buscarCategorias = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/categorias'); // ajuste o endereço conforme seu backend
+            setCategorias(response.data);
+        } catch (error) {
+            console.error('Erro ao buscar categorias:', error);
+        }
+    };
+    useEffect(() => {
+        buscarCategorias();
+    }, []);
 
     return (
         <header className="header">
@@ -370,19 +385,19 @@ const Navbar = () => {
                 </button>
             </div>
 
-            <div className="pesquisa">
-                <button className="botao-menu" onClick={toggleMenu}>☰ CATEGORIAS</button>
+        <div className="pesquisa">
+                <button className="botao-menu" onClick={() => setIsOpen(!isOpen)}>☰ CATEGORIAS</button>
                 {isOpen && (
                     <div className="menu-dropdown">
                         <ul>
-                            <li><a href="/hortifruti">Hortifruti</a></li>
-                            <li><a href="/acougue">Açougue</a></li>
-                            <li><a href="/bebidas">Bebidas</a></li>
-                            <li><a href="/limpeza">Limpeza</a></li>
+                            {categorias.map((categoria) => (
+                                <li key={categoria.id}>
+                                    <a href={`/${categoria.nome.toLowerCase()}`}>{categoria.nome}</a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 )}
-               
             </div>
 
             <nav className="navbar">
