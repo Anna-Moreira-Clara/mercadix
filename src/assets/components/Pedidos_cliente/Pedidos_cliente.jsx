@@ -9,8 +9,7 @@ export default function ThankYouPage() {
         <h1>Compra Confirmada!</h1>
         <p>Obrigado por sua compra. Seu pedido foi recebido com sucesso!</p>
         <div className="thankyou-buttons">
-          <button onClick={() => window.location.href = "/"}>Voltar à Página Inicial</button>
-         
+          <button onClick={() => window.location.href = "/"}>Voltar à Página Inicial</button>         
         </div>
       </div>
     </div>
