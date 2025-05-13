@@ -18,6 +18,7 @@ import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
 import Bebidas from './assets/components/Menu-Hamburguer/Bebidas.jsx';
 import Limpeza from './assets/components/Menu-Hamburguer/Limpeza.jsx';
 import Carrinho from './assets/components/carrinho/carrinho.jsx';
+import Pedidos from './assets/components/Pedidos_cliente/Pedidos_cliente.jsx';
 
 // Componente Home com o conteúdo da página inicial
 function Home() {
@@ -95,6 +96,7 @@ function App() {
           <Route path="/acougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
           <Route path='/limpeza' element={<Limpeza />} />
+          <Route path='/pedidos' element={<Pedidos />} />
           
           {/* Carrinho requer login */}
           <Route path='/carrinho' element={

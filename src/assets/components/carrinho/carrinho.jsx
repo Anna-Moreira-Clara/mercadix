@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaMinus, FaPlus, FaTrash, FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import './carrinho.css'; // Você pode criar este arquivo de estilo depois
+import './carrinho.css';
 
 const Carrinho = () => {
   const FRETE_FIXO = 10.0;
@@ -12,10 +12,19 @@ const Carrinho = () => {
   const [loading, setLoading] = useState(true);
   const [endereco, setEndereco] = useState('');
   const [formaPagamento, setFormaPagamento] = useState('cartao');
+  const [atualizando, setAtualizando] = useState(false);
 
   useEffect(() => {
     carregarCarrinho();
   }, []);
+
+  // Função para calcular o total do carrinho
+  const calcularTotal = (itens) => {
+    return itens.reduce(
+      (acc, item) => acc + parseFloat(item.subtotal || item.preco * item.quantidade || 0),
+      0
+    );
+  };
 
   const carregarCarrinho = async () => {
     setLoading(true);
@@ -42,96 +51,122 @@ const Carrinho = () => {
       try {
         const res = await axios.get(`/carrinho/${usuario.id}`);
         setCarrinho(res.data);
-        
-        // Calcular o total
-        const total = res.data.reduce(
-          (acc, item) => acc + parseFloat(item.subtotal || item.preco * item.quantidade || 0), 
-          0
-        );
-        setCarrinhoTotal(total);
+        setCarrinhoTotal(calcularTotal(res.data));
       } catch (err) {
         console.error("Erro ao buscar carrinho:", err);
+        alert("Erro ao carregar carrinho.");
       }
     } else {
       // Carregar do carrinho local se não estiver logado
       const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
       setCarrinho(carrinhoLocal);
-      
-      const total = carrinhoLocal.reduce(
-        (acc, item) => acc + parseFloat(item.subtotal || item.preco * item.quantidade || 0), 
-        0
-      );
-      setCarrinhoTotal(total);
+      setCarrinhoTotal(calcularTotal(carrinhoLocal));
     }
     
     setLoading(false);
   };
 
-  // Função para atualizar quantidade
+  // Função corrigida para atualizar quantidade - atualiza a UI imediatamente
   const atualizarQuantidade = async (item, novaQuantidade) => {
+    if (atualizando) return; // Evita múltiplos cliques durante atualização
+    setAtualizando(true);
+    
     if (novaQuantidade <= 0) {
-      removerItem(item);
+      await removerItem(item);
+      setAtualizando(false);
       return;
     }
 
-    const usuario = JSON.parse(localStorage.getItem('usuarios'));
+    let usuario = JSON.parse(localStorage.getItem('usuarios'));
+    if (Array.isArray(usuario)) {
+      usuario = usuario[0];
+    }
     
+    // Primeiro atualize o estado local para feedback imediato ao usuário
+    const novosItens = carrinho.map(i => {
+      if (i.id === item.id) {
+        return {
+          ...i,
+          quantidade: novaQuantidade,
+          subtotal: i.preco * novaQuantidade
+        };
+      }
+      return i;
+    });
+    
+    setCarrinho(novosItens);
+    setCarrinhoTotal(calcularTotal(novosItens));
+    
+    // Então faça a atualização persistente
     if (usuario && usuario.id) {
       try {
         await axios.put(`/carrinho/${item.id}`, { quantidade: novaQuantidade });
-        carregarCarrinho();
+        // Não recarregamos o carrinho inteiro para evitar problemas de sincronização
+        console.log("Quantidade atualizada no servidor com sucesso");
       } catch (err) {
         console.error("Erro ao atualizar quantidade:", err);
+        alert("Erro ao atualizar quantidade no servidor.");
+        // Em caso de erro, recarregue o carrinho
+        await carregarCarrinho();
       }
     } else {
+      // Para carrinho local, atualize o localStorage
       const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
-      const itemIndex = carrinhoLocal.findIndex(i => i.id === item.id);
-
-      if (itemIndex !== -1) {
-        carrinhoLocal[itemIndex].quantidade = novaQuantidade;
-        carrinhoLocal[itemIndex].subtotal = carrinhoLocal[itemIndex].preco * novaQuantidade;
-        localStorage.setItem('carrinho_local', JSON.stringify(carrinhoLocal));
-        
-        // Atualizar o estado
-        const newCarrinho = [...carrinhoLocal];
-        setCarrinho(newCarrinho);
-        
-        // Recalcular o total
-        const total = newCarrinho.reduce(
-          (acc, item) => acc + parseFloat(item.subtotal || item.preco * item.quantidade || 0), 
-          0
-        );
-        setCarrinhoTotal(total);
-      }
+      const carrinhoAtualizado = carrinhoLocal.map(i => {
+        if (i.id === item.id) {
+          return {
+            ...i,
+            quantidade: novaQuantidade,
+            subtotal: i.preco * novaQuantidade
+          };
+        }
+        return i;
+      });
+      
+      localStorage.setItem('carrinho_local', JSON.stringify(carrinhoAtualizado));
+      console.log("Carrinho local atualizado com sucesso");
     }
+    
+    setAtualizando(false);
   };
 
-  // Função para remover um item
+  // Função revisada para remover um item
   const removerItem = async (item) => {
-    const usuario = JSON.parse(localStorage.getItem('usuarios'));
+    if (atualizando) return; // Evita múltiplos cliques durante exclusão
+    
+    console.log("Removendo item:", item.id);
+    setAtualizando(true);
+    
+    // Primeiro atualize a interface para feedback imediato
+    const novosItens = carrinho.filter(i => i.id !== item.id);
+    setCarrinho(novosItens);
+    setCarrinhoTotal(calcularTotal(novosItens));
+    
+    let usuario = JSON.parse(localStorage.getItem('usuarios'));
+    if (Array.isArray(usuario)) {
+      usuario = usuario[0];
+    }
     
     if (usuario && usuario.id) {
       try {
         await axios.delete(`/carrinho/${item.id}`);
-        carregarCarrinho();
+        console.log("Item removido do servidor com sucesso");
       } catch (err) {
         console.error("Erro ao remover item:", err);
+        alert("Erro ao remover item do servidor.");
+        // Em caso de erro, recarregue o carrinho
+        await carregarCarrinho();
       }
     } else {
+      // Para carrinho local, atualize o localStorage
       const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
-      const newCarrinho = carrinhoLocal.filter(i => i.id !== item.id);
-      localStorage.setItem('carrinho_local', JSON.stringify(newCarrinho));
+      const carrinhoAtualizado = carrinhoLocal.filter(i => i.id !== item.id);
       
-      // Atualizar o estado
-      setCarrinho(newCarrinho);
-      
-      // Recalcular o total
-      const total = newCarrinho.reduce(
-        (acc, item) => acc + parseFloat(item.subtotal || item.preco * item.quantidade || 0), 
-        0
-      );
-      setCarrinhoTotal(total);
+      localStorage.setItem('carrinho_local', JSON.stringify(carrinhoAtualizado));
+      console.log("Carrinho local atualizado após remoção:", carrinhoAtualizado);
     }
+    
+    setAtualizando(false);
   };
 
   // Função para finalizar pedido
@@ -142,7 +177,6 @@ const Carrinho = () => {
     }
 
     let usuario = JSON.parse(localStorage.getItem('usuarios'));
-    
     if (Array.isArray(usuario)) {
       usuario = usuario[0];
     }
@@ -177,6 +211,11 @@ const Carrinho = () => {
       
       // Limpar localStorage
       localStorage.removeItem('carrinho_completo');
+      localStorage.removeItem('carrinho_local');
+      
+      // Atualizar estado local
+      setCarrinho([]);
+      setCarrinhoTotal(0);
       
       // Redirecionar para página de confirmação ou histórico de pedidos
       navigate('/pedidos');
@@ -234,6 +273,7 @@ const Carrinho = () => {
                         <button
                           className="qty-btn"
                           onClick={() => atualizarQuantidade(item, item.quantidade - 1)}
+                          disabled={atualizando}
                         >
                           <FaMinus size={10} />
                         </button>
@@ -241,6 +281,7 @@ const Carrinho = () => {
                         <button
                           className="qty-btn"
                           onClick={() => atualizarQuantidade(item, item.quantidade + 1)}
+                          disabled={atualizando}
                         >
                           <FaPlus size={10} />
                         </button>
@@ -253,6 +294,7 @@ const Carrinho = () => {
                       <button
                         className="remove-btn"
                         onClick={() => removerItem(item)}
+                        disabled={atualizando}
                       >
                         <FaTrash size={14} />
                       </button>
@@ -296,13 +338,15 @@ const Carrinho = () => {
                   value={formaPagamento}
                   onChange={(e) => setFormaPagamento(e.target.value)}
                 >
-                 
                   <option value="entrega">NA ENTREGA</option>
-                  
                 </select>
               </div>
 
-              <button className="finalizar-compra-btn" onClick={finalizarPedido}>
+              <button 
+                className="finalizar-compra-btn" 
+                onClick={finalizarPedido}
+                disabled={atualizando || carrinho.length === 0}
+              >
                 Finalizar Pedido
               </button>
             </div>

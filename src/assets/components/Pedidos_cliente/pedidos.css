@@ -1,0 +1,70 @@
+/* Reset simples */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.thankyou-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #d1fae5, #ffffff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.thankyou-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.checkmark {
+  font-size: 3rem;
+  color: #22c55e; /* Verde */
+  margin-bottom: 1rem;
+}
+
+.thankyou-card h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #111827;
+}
+
+.thankyou-card p {
+  color: #4b5563;
+  margin-bottom: 1.5rem;
+}
+
+.thankyou-buttons button {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  transition: background 0.3s;
+}
+
+.thankyou-buttons button:first-child {
+  background-color: #22c55e;
+  color: white;
+}
+
+.thankyou-buttons button:first-child:hover {
+  background-color: #16a34a;
+}
+
+.thankyou-buttons button.secondary {
+  background: none;
+  color: #22c55e;
+  text-decoration: underline;
+}
