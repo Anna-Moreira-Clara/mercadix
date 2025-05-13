@@ -2,5 +2,5 @@ body{
     margin: 0;
     padding: 0;
     text-align: center;
-    background-color: rgb(240, 238, 238);
+    background: linear-gradient(to bottom right, #d1fae5, #ffffff);
 }
