@@ -55,14 +55,10 @@ exports.listarPedidosPorUsuario = (req, res) => {
         JOIN pedido_itens pi ON p.id = pi.pedido_id
         JOIN produtos pr ON pi.produto_id = pr.id
         WHERE p.usuario_id ;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     `;//
-=======
-=======
->>>>>>> 614fd73704a4a81ac327ec48b94dc8ef853c8a3e
-    `;
->>>>>>> 614fd73704a4a81ac327ec48b94dc8ef853c8a3e
+
+
 
     db.query(sqlPedidos, [usuario_id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
