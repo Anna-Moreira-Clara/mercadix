@@ -6,7 +6,7 @@ const Pedidos = () => {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);
 
-  const usuarioId = 1; // Substitua pelo ID do usuário logado
+  const usuarioId = ""; // Substitua pelo ID do usuário logado
 
   useEffect(() => {
     axios.get(`http://localhost:3001/pedidos/${usuarioId}`)

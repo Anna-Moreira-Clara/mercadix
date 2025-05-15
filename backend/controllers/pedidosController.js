@@ -54,8 +54,7 @@ exports.listarPedidosPorUsuario = (req, res) => {
         FROM pedidos p
         JOIN pedido_itens pi ON p.id = pi.pedido_id
         JOIN produtos pr ON pi.produto_id = pr.id
-        WHERE p.usuario_id = ?
-        ORDER BY p.data_pedido DESC
+        WHERE p.usuario_id ;
     `;
 
     db.query(sqlPedidos, [usuario_id], (err, results) => {
