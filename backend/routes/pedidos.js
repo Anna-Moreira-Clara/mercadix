@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pedidosController = require('../controllers/pedidosController');
 
-//rota para criar novo pedido
-router.post('/', pedidosController.criarPedido);
+router.get('/todos', pedidosController.listarTodosPedidos); // nova rota
 router.get('/:usuario_id', pedidosController.listarPedidosPorUsuario);
-
 
 module.exports = router;
