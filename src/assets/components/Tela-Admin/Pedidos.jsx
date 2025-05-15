@@ -6,7 +6,7 @@ const Pedidos = () => {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(null);
 useEffect(() => {
-  axios.get('http://localhost:5000/dashboard/pedidos')
+  axios.get('http://localhost:5000/pedidos')
     .then((res) => {
       console.log("📦 Dados recebidos:", res.data);
       setPedidos(res.data);
