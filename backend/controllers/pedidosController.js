@@ -54,16 +54,12 @@ exports.listarPedidosPorUsuario = (req, res) => {
         FROM pedidos p
         JOIN pedido_itens pi ON p.id = pi.pedido_id
         JOIN produtos pr ON pi.produto_id = pr.id
-        WHERE p.usuario_id ;
-
-    `;//
-
-
+        WHERE p.usuario_id = ?
+    `;
 
     db.query(sqlPedidos, [usuario_id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
 
-        // Agrupar os itens por pedido
         const pedidos = {};
 
         results.forEach(row => {
@@ -72,7 +68,7 @@ exports.listarPedidosPorUsuario = (req, res) => {
                     pedido_id: row.pedido_id,
                     data_pedido: row.data_pedido,
                     status: row.status,
-                    total: row.total,
+                    total: parseFloat(row.total || 0),
                     itens: []
                 };
             }
@@ -81,8 +77,53 @@ exports.listarPedidosPorUsuario = (req, res) => {
                 produto_id: row.produto_id,
                 nome: row.nome_produto,
                 quantidade: row.quantidade,
-                preco: row.preco
+                preco: parseFloat(row.preco || 0)
             });
+        });
+
+        res.json(Object.values(pedidos));
+    });
+};
+// Listar todos os pedidos
+exports.listarTodosPedidos = (req, res) => {
+    const sql = `
+        SELECT 
+            p.id AS pedido_id, p.data_pedido, p.status, p.total, 
+            u.id AS usuario_id, u.nome AS nome_usuario,
+            pi.produto_id, pr.nome AS nome_produto, pi.quantidade, pi.preco
+        FROM pedidos p
+        JOIN usuarios u ON p.usuario_id = u.id
+        LEFT JOIN pedido_itens pi ON p.id = pi.pedido_id
+        LEFT JOIN produtos pr ON pi.produto_id = pr.id
+        ORDER BY p.id DESC
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        const pedidos = {};
+
+        results.forEach(row => {
+            if (!pedidos[row.pedido_id]) {
+                pedidos[row.pedido_id] = {
+                    pedido_id: row.pedido_id,
+                    data_pedido: row.data_pedido,
+                    status: row.status,
+                    total: parseFloat(row.total || 0),
+                    usuario_id: row.usuario_id,
+                    nome_usuario: row.nome_usuario,
+                    itens: []
+                };
+            }
+
+            if (row.produto_id) {
+                pedidos[row.pedido_id].itens.push({
+                    produto_id: row.produto_id,
+                    nome_produto: row.nome_produto,
+                    quantidade: row.quantidade,
+                    preco: row.preco
+                });
+            }
         });
 
         res.json(Object.values(pedidos));

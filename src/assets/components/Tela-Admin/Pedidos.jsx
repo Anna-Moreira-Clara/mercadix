@@ -43,7 +43,8 @@ useEffect(() => {
               {pedido.itens && pedido.itens.length > 0 ? (
                 pedido.itens.map((item, idx) => (
                   <li key={idx}>
-                    {item.nome_produto} - {item.quantidade}x R$ {item.preco.toFixed(2)}
+                   {item.nome_produto} - {item.quantidade}x R$ {parseFloat(item.preco).toFixed(2)}
+
                   </li>
                 ))
               ) : (
