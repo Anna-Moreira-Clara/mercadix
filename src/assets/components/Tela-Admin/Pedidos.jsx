@@ -36,7 +36,8 @@ useEffect(() => {
             <p><strong>Usuário:</strong> {pedido.nome_usuario} (ID: {pedido.usuario_id})</p>
             <p><strong>Data:</strong> {new Date(pedido.data_pedido).toLocaleDateString()}</p>
             <p><strong>Status:</strong> {pedido.status}</p>
-            <p><strong>Total:</strong> R$ {pedido.total?.toFixed(2) || 'N/A'}</p>
+            <p><strong>Total:</strong> R$ {Number(pedido.total).toFixed(2)}</p>
+
 
             <h3 className="mt-3 font-medium">Itens:</h3>
             <ul className="list-disc list-inside">

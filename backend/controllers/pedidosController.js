@@ -33,16 +33,28 @@ exports.criarPedido = (req, res) => {
             db.query(sqlItens, [valores], (err) => {
                 if (err) return res.status(500).json({ error: 'Erro ao inserir itens do pedido.' });
 
-                const sqlLimpar = 'DELETE FROM carrinho WHERE usuario_id = ?';
-                db.query(sqlLimpar, [usuario_id], (err) => {
-                    if (err) return res.status(500).json({ error: 'Erro ao limpar carrinho.' });
+                // Calcula o total do pedido somando quantidade * preco de cada item
+                const total = itens.reduce((soma, item) => soma + (item.quantidade * parseFloat(item.preco)), 0);
 
-                    res.status(201).json({ message: 'Pedido criado com sucesso!', pedido_id: pedidoId });
+                // Atualiza o total no pedido
+                const sqlAtualizarTotal = 'UPDATE pedidos SET total = ? WHERE id = ?';
+                db.query(sqlAtualizarTotal, [total, pedidoId], (err) => {
+                    if (err) return res.status(500).json({ error: 'Erro ao atualizar total do pedido.' });
+
+                    // Limpa o carrinho do usuário
+                    const sqlLimpar = 'DELETE FROM carrinho WHERE usuario_id = ?';
+                    db.query(sqlLimpar, [usuario_id], (err) => {
+                        if (err) return res.status(500).json({ error: 'Erro ao limpar carrinho.' });
+
+                        // Finalmente responde sucesso
+                        res.status(201).json({ message: 'Pedido criado com sucesso!', pedido_id: pedidoId });
+                    });
                 });
             });
         });
     });
 };
+
 
 // Listar Pedidos por Usuário (com detalhes dos itens)
 exports.listarPedidosPorUsuario = (req, res) => {
