@@ -7,6 +7,8 @@ import "./dash.css";
 const AdminDashboard = () => {
   const location = useLocation();
   const [pedidosPendentes, setPedidosPendentes] = useState(0);
+  const [pedidosFinalizados, setPedidosFinalizados] = useState([]);
+  const [mostrarPedidosFinalizados, setMostrarPedidosFinalizados] = useState(false);
 
   useEffect(() => {
     if (location.pathname === '/dashboard') {
@@ -23,9 +25,22 @@ const AdminDashboard = () => {
       buscarPedidosPendentes();
       const interval = setInterval(buscarPedidosPendentes, 10000); // Atualiza a cada 10 segundos
 
-      return () => clearInterval(interval); // Limpa intervalo ao desmontar
+      return () => clearInterval(interval);
     }
   }, [location.pathname]);
+
+  const handleMostrarPedidosFinalizados = async () => {
+    if (!mostrarPedidosFinalizados) {
+      try {
+        const res = await axios.get('http://localhost:5000/pedidos');
+        const finalizados = res.data.filter(p => p.status === 'finalizado');
+        setPedidosFinalizados(finalizados);
+      } catch (error) {
+        console.error("Erro ao buscar pedidos finalizados:", error);
+      }
+    }
+    setMostrarPedidosFinalizados(!mostrarPedidosFinalizados);
+  };
 
   const isDashboardHome = location.pathname === '/dashboard';
 
@@ -105,9 +120,10 @@ const AdminDashboard = () => {
           {/* Cards aparecem somente na raiz de /dashboard */}
           {isDashboardHome && (
             <div className="grid grid-cols-4 gap-6 mb-6">
+              {/* VENDAS MENSAL */}
               <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
                 <div>
-                  <p className="text-xs font-bold text-green-500">VENDAS MENSAL</p>
+                  <p className="text-xs font-bold text-green-500 pddfinal">VENDAS MENSAL</p>
                   <p className="text-2xl font-bold text-gray-700">R$000,00</p>
                 </div>
                 <div className="text-gray-300">
@@ -115,6 +131,35 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
+              {/* PEDIDOS FINALIZADOS */}
+              <div className="bg-white rounded border-l-4 border-green-500 shadow p-4 col-span-2">
+                <div>
+                  <button
+                    className="text-xs font-bold text-green-500 pddfinal mb-2"
+                    onClick={handleMostrarPedidosFinalizados}
+                  >
+                    PEDIDOS FINALIZADOS
+                  </button>
+
+                  {mostrarPedidosFinalizados && (
+                    <div className="max-h-60 overflow-y-auto mt-2">
+                      {pedidosFinalizados.length === 0 ? (
+                        <p className="text-sm text-gray-500">Nenhum pedido finalizado.</p>
+                      ) : (
+                        <ul className="text-sm text-gray-700 list-disc list-inside">
+                          {pedidosFinalizados.map((pedido) => (
+                            <li key={pedido.id}>
+                              Pedido #{pedido.id} - Cliente: {pedido.cliente} - Total: R${pedido.total}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* PEDIDOS PENDENTES */}
               <div className="bg-white rounded border-l-4 border-yellow-500 shadow flex items-center justify-between p-4">
                 <div>
                   <p className="text-xs font-bold text-yellow-500">PEDIDOS PENDENTES</p>
