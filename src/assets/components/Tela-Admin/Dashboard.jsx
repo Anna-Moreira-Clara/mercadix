@@ -1,13 +1,32 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { User, Rocket, ChevronRight, Grid, Settings, FileText } from 'lucide-react';
 import "./dash.css";
 
 const AdminDashboard = () => {
   const location = useLocation();
+  const [pedidosPendentes, setPedidosPendentes] = useState(0);
 
-  // Verifica se está na raiz do dashboard (exatamente "/dashboard")
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      const buscarPedidosPendentes = async () => {
+        try {
+          const res = await axios.get('http://localhost:5000/pedidos');
+          const pendentes = res.data.filter(p => p.status === 'pendente');
+          setPedidosPendentes(pendentes.length);
+        } catch (error) {
+          console.error("Erro ao buscar pedidos pendentes:", error);
+        }
+      };
+
+      buscarPedidosPendentes();
+      const interval = setInterval(buscarPedidosPendentes, 10000); // Atualiza a cada 10 segundos
+
+      return () => clearInterval(interval); // Limpa intervalo ao desmontar
+    }
+  }, [location.pathname]);
+
   const isDashboardHome = location.pathname === '/dashboard';
 
   return (
@@ -64,7 +83,6 @@ const AdminDashboard = () => {
                 <ChevronRight className="h-4 w-4" />
               </div>
             </Link>
-            
           </div>
         </nav>
       </div>
@@ -87,8 +105,6 @@ const AdminDashboard = () => {
           {/* Cards aparecem somente na raiz de /dashboard */}
           {isDashboardHome && (
             <div className="grid grid-cols-4 gap-6 mb-6">
-              
-
               <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
                 <div>
                   <p className="text-xs font-bold text-green-500">VENDAS MENSAL</p>
@@ -99,12 +115,10 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              
-
               <div className="bg-white rounded border-l-4 border-yellow-500 shadow flex items-center justify-between p-4">
                 <div>
                   <p className="text-xs font-bold text-yellow-500">PEDIDOS PENDENTES</p>
-                  <p className="text-2xl font-bold text-gray-700">0</p>
+                  <p className="text-2xl font-bold text-gray-700">{pedidosPendentes}</p>
                 </div>
                 <div className="text-gray-300">
                   <FileText className="h-12 w-12" />
