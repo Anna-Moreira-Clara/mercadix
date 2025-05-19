@@ -417,3 +417,24 @@ background-color: #f5c6cb;
 .add-to-cart:hover {
   background-color: #01e70c;
 }
+
+/* Deixando apenas o link de "Esqueceu sua senha?" estilizado como link verde simples */
+.link-esqueceu-senha {
+  background: none;
+  border: none;
+  color: #0c7e11;  /* Verde */
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.link-esqueceu-senha:hover {
+  color: #01e70c;  /* Verde claro */
+}
+
+.esqueceu-senha {
+  text-align: center;
+  margin-top: 15px;
+}

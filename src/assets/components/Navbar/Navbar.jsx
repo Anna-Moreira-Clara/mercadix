@@ -16,6 +16,7 @@ const Navbar = () => {
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false); // Novo state para o modal de redefinição de senha
 
     const [formData, setFormData] = useState({
         nome: '',
@@ -32,10 +33,19 @@ const Navbar = () => {
         senha: ''
     });
 
+    // Novo state para os dados de redefinição de senha
+    const [resetPasswordData, setResetPasswordData] = useState({
+        email: '',
+        novaSenha: '',
+        confirmarSenha: ''
+    });
+
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [loginMessage, setLoginMessage] = useState('');
     const [loginLoading, setLoginLoading] = useState(false);
+    const [resetPasswordMessage, setResetPasswordMessage] = useState(''); // Mensagem para o reset de senha
+    const [resetPasswordLoading, setResetPasswordLoading] = useState(false); // Loading para o reset de senha
 
     // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
@@ -77,6 +87,20 @@ const Navbar = () => {
         setLoginMessage('');
     };
 
+    // Função para abrir/fechar o modal de redefinição de senha
+    const toggleResetPasswordModal = () => {
+        setShowResetPasswordModal(!showResetPasswordModal);
+        setResetPasswordMessage('');
+        // Reseta os dados do formulário quando fechar o modal
+        if (showResetPasswordModal) {
+            setResetPasswordData({
+                email: '',
+                novaSenha: '',
+                confirmarSenha: ''
+            });
+        }
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -88,6 +112,15 @@ const Navbar = () => {
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
         setLoginData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Handler para os campos de redefinição de senha
+    const handleResetPasswordChange = (e) => {
+        const { name, value } = e.target;
+        setResetPasswordData(prev => ({
             ...prev,
             [name]: value
         }));
@@ -164,7 +197,7 @@ const Navbar = () => {
                 localStorage.removeItem('carrinho_local');
                 window.dispatchEvent(new Event('carrinhoAtualizado'));
             }
-     setLoginMessage('Login realizado com sucesso!');
+            setLoginMessage('Login realizado com sucesso!');
             await carregarCarrinho();
 
             setTimeout(() => {
@@ -183,6 +216,51 @@ const Navbar = () => {
             setLoginLoading(false);
         }
     };
+
+    // Função para redefinir a senha
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        setResetPasswordLoading(true);
+        setResetPasswordMessage('');
+
+        // Validação das senhas
+        if (resetPasswordData.novaSenha !== resetPasswordData.confirmarSenha) {
+            setResetPasswordMessage('As senhas não coincidem');
+            setResetPasswordLoading(false);
+            return;
+        }
+
+        try {
+            const response = await axios.post('/usuarios/redefinir-senha', {
+                email: resetPasswordData.email,
+                novaSenha: resetPasswordData.novaSenha
+            });
+
+            setResetPasswordMessage(response.data.message);
+            
+            // Limpa os campos após sucesso
+            setResetPasswordData({
+                email: '',
+                novaSenha: '',
+                confirmarSenha: ''
+            });
+
+            // Fecha o modal após alguns segundos em caso de sucesso
+            if (response.data.message.includes('sucesso')) {
+                setTimeout(() => {
+                    toggleResetPasswordModal();
+                    // Opcionalmente, abre o modal de login
+                    toggleLoginModal();
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Erro ao redefinir senha:', error);
+            setResetPasswordMessage(error.response?.data?.error || 'Erro ao redefinir senha');
+        } finally {
+            setResetPasswordLoading(false);
+        }
+    };
+
     const [showCartMenu, setShowCartMenu] = useState(false);
     const [carrinho, setCarrinho] = useState([]);
     const [carrinhoTotal, setCarrinhoTotal] = useState(0);
@@ -357,11 +435,11 @@ const Navbar = () => {
         };
     }, [usuarioLogado]);
 
-         const voltarParaCompras = () => {
-            navigate('/');
-         };
+    const voltarParaCompras = () => {
+        navigate('/');
+    };
 
-         const [categorias, setCategorias] = useState([]);
+    const [categorias, setCategorias] = useState([]);
 
     const [modalAberto, setModalAberto] = useState(false); // se ainda não tiver isso
 
@@ -532,7 +610,70 @@ const Navbar = () => {
                                 <input type="password" name="senha" value={loginData.senha} onChange={handleLoginChange} required />
                             </div>
                             {loginMessage && <p>{loginMessage}</p>}
-                            <button type="submit" disabled={loginLoading}>{loginLoading ? 'Entrando...' : 'Entrar'}</button>
+                            <div className="modal-buttons">
+                                <button type="submit" disabled={loginLoading}>{loginLoading ? 'Entrando...' : 'Entrar'}</button>
+                            </div>
+                            <p className="esqueceu-senha">
+                                <button 
+                                    type="button" 
+                                    onClick={() => {
+                                        toggleLoginModal();
+                                        toggleResetPasswordModal();
+                                    }}
+                                    className="link-esqueceu-senha"
+                                >
+                                    Esqueceu sua senha?
+                                </button>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Redefinição de Senha */}
+            {showResetPasswordModal && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
+                        <h2>Redefinir Senha</h2>
+                        <form onSubmit={handleResetPassword}>
+                            <div className="form-group">
+                                <label>Email:</label>
+                                <input 
+                                    type="email" 
+                                    name="email" 
+                                    value={resetPasswordData.email} 
+                                    onChange={handleResetPasswordChange} 
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Nova Senha:</label>
+                                <input 
+                                    type="password" 
+                                    name="novaSenha" 
+                                    value={resetPasswordData.novaSenha} 
+                                    onChange={handleResetPasswordChange} 
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Confirmar Nova Senha:</label>
+                                <input 
+                                    type="password" 
+                                    name="confirmarSenha" 
+                                    value={resetPasswordData.confirmarSenha} 
+                                    onChange={handleResetPasswordChange} 
+                                    required 
+                                />
+                            </div>
+                            {resetPasswordMessage && <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>{resetPasswordMessage}</p>}
+                            <div className="modal-buttons">
+                                <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">Cancelar</button>
+                                <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
+                                    {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
