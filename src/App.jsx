@@ -17,6 +17,7 @@ import LayoutComNavbar from './assets/components/LayoutPrincipal/LayoutPrincipal
 import Acougue from './assets/components/Menu-Hamburguer/Acougue.jsx';
 import Bebidas from './assets/components/Menu-Hamburguer/Bebidas.jsx';
 import Limpeza from './assets/components/Menu-Hamburguer/Limpeza.jsx';
+import Padaria from './assets/components/Menu-Hamburguer/Padaria.jsx';
 import Carrinho from './assets/components/carrinho/carrinho.jsx';
 import Pedidos from './assets/components/Pedidos_cliente/Pedidos_cliente.jsx';
 
@@ -96,6 +97,8 @@ function App() {
           <Route path="/açougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
           <Route path='/limpeza' element={<Limpeza />} />
+          <Route path='/padaria' element={<Padaria />} />
+          
           <Route path='/pedidos' element={<Pedidos />} />
           
           {/* Carrinho requer login */}
