@@ -98,12 +98,12 @@
   }
   
   .status-pendente {
-    border-left: 4px solid #f59e0b;
+    border-left: 4px solid #0bf584;
   }
   
   .status-pendente .status-badge {
     background-color: #fef3c7;
-    color: #b45309;
+    color: #b40909;
   }
   
   .status-preparo {

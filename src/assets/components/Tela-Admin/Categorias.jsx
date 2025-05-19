@@ -191,7 +191,7 @@ function CategoriasAdmin() {
                 ) : (
                   <div className="flex space-x-2">
                     <button className="botao" onClick={() => handleEditarClick(cat)}>Editar</button>
-                    <button className="botao" onClick={() => handleExcluirClick(cat.id)}>Excluir</button>
+                    <button className="botaoexcluir" onClick={() => handleExcluirClick(cat.id)}>Excluir</button>
                   </div>
                 )}
               </td>
