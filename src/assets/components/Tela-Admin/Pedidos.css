@@ -224,7 +224,7 @@
   
   .btn-preparar {
     background-color: #3b82f6;
-    color: white;
+    color: rgb(0, 0, 0);
   }
   
   .btn-preparar:hover {
@@ -233,7 +233,7 @@
   
   .btn-despachar {
     background-color: #10b981;
-    color: white;
+    color: rgb(12, 12, 12);
   }
   
   .btn-despachar:hover {
@@ -251,7 +251,7 @@
   
   .btn-cancelar {
     background-color: #f43f5e;
-    color: white;
+    color: rgb(0, 0, 0);
   }
   
   .btn-cancelar:hover {
