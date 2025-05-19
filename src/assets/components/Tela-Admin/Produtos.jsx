@@ -360,7 +360,7 @@ function ProdutosAdmin() {
                 ) : (
                   <div className="flex space-x-2">
                     <button className="botao" onClick={() => handleEditarClick(prod)}>Editar</button>
-                    <button className="botao" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
+                    <button className="botaoexcluir" onClick={() => handleExcluirClick(prod.id)}>Excluir</button>
                   </div>
                 )}
               </td>
