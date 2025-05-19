@@ -9,6 +9,7 @@ const AdminDashboard = () => {
   const [pedidosPendentes, setPedidosPendentes] = useState(0);
   const [pedidosFinalizados, setPedidosFinalizados] = useState([]);
   const [mostrarPedidosFinalizados, setMostrarPedidosFinalizados] = useState(false);
+  const [carregandoPedidos, setCarregandoPedidos] = useState(false);
 
   useEffect(() => {
     if (location.pathname === '/dashboard') {
@@ -30,16 +31,17 @@ const AdminDashboard = () => {
   }, [location.pathname]);
 
   const handleMostrarPedidosFinalizados = async () => {
-    if (!mostrarPedidosFinalizados) {
-      try {
-        const res = await axios.get('http://localhost:5000/pedidos');
-        const finalizados = res.data.filter(p => p.status === 'finalizado');
-        setPedidosFinalizados(finalizados);
-      } catch (error) {
-        console.error("Erro ao buscar pedidos finalizados:", error);
-      }
+    setMostrarPedidosFinalizados(true);
+    setCarregandoPedidos(true);
+    try {
+      const res = await axios.get('http://localhost:5000/pedidos');
+      const finalizados = res.data.filter(p => p.status === 'finalizado');
+      setPedidosFinalizados(finalizados);
+    } catch (error) {
+      console.error("Erro ao buscar pedidos finalizados:", error);
+    } finally {
+      setCarregandoPedidos(false);
     }
-    setMostrarPedidosFinalizados(!mostrarPedidosFinalizados);
   };
 
   const isDashboardHome = location.pathname === '/dashboard';
@@ -78,6 +80,21 @@ const AdminDashboard = () => {
                 <ChevronRight className="h-4 w-4" />
               </div>
             </Link>
+
+            <div className='bota'>
+              <div 
+                className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer"
+                onClick={() => {
+                  handleMostrarPedidosFinalizados();
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5" />
+                  <span>Pedidos Finalizados</span>
+                </div>
+                <ChevronRight className="h-4 w-4" />
+              </div>
+            </div>
 
             <Link to="produtos" className='bota'>
               <div className="flex items-center justify-between px-4 py-2 hover:bg-blue-700 rounded cursor-pointer">
@@ -118,7 +135,7 @@ const AdminDashboard = () => {
 
         <main className="flex-1 overflow-auto p-6 bg-gray-100">
           {/* Cards aparecem somente na raiz de /dashboard */}
-          {isDashboardHome && (
+          {isDashboardHome && !mostrarPedidosFinalizados && (
             <div className="grid grid-cols-4 gap-6 mb-6">
               {/* VENDAS MENSAL */}
               <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
@@ -140,22 +157,6 @@ const AdminDashboard = () => {
                   >
                     PEDIDOS FINALIZADOS
                   </button>
-
-                  {mostrarPedidosFinalizados && (
-                    <div className="max-h-60 overflow-y-auto mt-2">
-                      {pedidosFinalizados.length === 0 ? (
-                        <p className="text-sm text-gray-500">Nenhum pedido finalizado.</p>
-                      ) : (
-                        <ul className="text-sm text-gray-700 list-disc list-inside">
-                          {pedidosFinalizados.map((pedido) => (
-                            <li key={pedido.id}>
-                              Pedido #{pedido.id} - Cliente: {pedido.cliente} - Total: R${pedido.total}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -172,7 +173,67 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          <Outlet />
+          {mostrarPedidosFinalizados ? (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Gerenciar Pedidos Finalizados</h1>
+                <button 
+                  onClick={() => setMostrarPedidosFinalizados(false)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Voltar ao Dashboard
+                </button>
+              </div>
+
+              {carregandoPedidos ? (
+                <div className="text-center py-4">Carregando...</div>
+              ) : (
+                <div className="bg-white rounded shadow overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="px-4 py-2 text-left">ID</th>
+                        <th className="px-4 py-2 text-left">Cliente</th>
+                        <th className="px-4 py-2 text-left">Data</th>
+                        <th className="px-4 py-2 text-left">Total (R$)</th>
+                        <th className="px-4 py-2 text-left">Itens</th>
+                        <th className="px-4 py-2 text-center">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pedidosFinalizados.length === 0 ? (
+                        <tr>
+                          <td colSpan="6" className="px-4 py-2 text-center text-gray-500">
+                            Nenhum pedido finalizado encontrado.
+                          </td>
+                        </tr>
+                      ) : (
+                        pedidosFinalizados.map((pedido) => (
+                          <tr key={pedido.id} className="border-t hover:bg-gray-50">
+                            <td className="px-4 py-2">{pedido.id}</td>
+                            <td className="px-4 py-2">{pedido.cliente}</td>
+                            <td className="px-4 py-2">{new Date(pedido.data).toLocaleDateString('pt-BR')}</td>
+                            <td className="px-4 py-2">R$ {Number(pedido.total).toFixed(2)}</td>
+                            <td className="px-4 py-2">{pedido.itens?.length || 0}</td>
+                            <td className="px-4 py-2 text-center">
+                              <button 
+                                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                                onClick={() => window.alert(`Detalhes do pedido #${pedido.id}`)}
+                              >
+                                Detalhes
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Outlet />
+          )}
         </main>
       </div>
     </div>
