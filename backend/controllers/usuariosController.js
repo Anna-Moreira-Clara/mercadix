@@ -116,5 +116,42 @@ exports.deletarUsuario = (req, res) => {
     });
 };
 
+// Adicionar ao final do arquivo usuariosController.js
 
+// Redefinir senha do usuário
+exports.redefinirSenha = (req, res) => {
+    const { email, novaSenha } = req.body;
     
+    if (!email || !novaSenha) {
+        return res.status(400).json({ error: 'Email e nova senha são obrigatórios' });
+    }
+
+    // Busca o usuário pelo email para verificar se existe
+    db.query('SELECT * FROM usuarios WHERE email = ?', [email], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Email não encontrado no sistema' });
+        }
+
+        const usuario = results[0];
+
+        // Criptografa a nova senha
+        bcrypt.hash(novaSenha, 10, (err, hashedSenha) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            // Atualiza a senha no banco de dados
+            const sql = 'UPDATE usuarios SET senha = ? WHERE id = ?';
+            
+            db.query(sql, [hashedSenha, usuario.id], (err, result) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({ error: 'Não foi possível atualizar a senha' });
+                }
+
+                res.status(200).json({ message: 'Senha redefinida com sucesso!' });
+            });
+        });
+    });
+};
