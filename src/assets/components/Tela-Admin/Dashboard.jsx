@@ -203,7 +203,6 @@ const AdminDashboard = () => {
                             <th className="px-4 py-2 text-left">Data</th>
                             <th className="px-4 py-2 text-left">Total (R$)</th>
                             <th className="px-4 py-2 text-left">Itens</th>
-                            <th className="px-4 py-2 text-center">Ações</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -222,14 +221,7 @@ const AdminDashboard = () => {
                                 <td className="px-4 py-2">R$ {Number(pedido.total).toFixed(2)}</td>
                                 <td className="px-4 py-2">{pedido.itens?.length || 0}</td>
                                 <td className="px-4 py-2 text-center">
-                                  
-                                  <button 
-                                    className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
-                                    onClick={() => window.alert(`Detalhes do pedido #${pedido.id}`)}
-                                    
-                                  >
-                                    Detalhes
-                                  </button>
+                                 
                                 </td>
                               </tr>
                             ))
