@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Pedidos.css'; // Importando o CSS
+import './Pedidos.css';
 
 const Pedidos = () => {
   const FRETE_FIXO = 10.0;
@@ -9,9 +9,12 @@ const Pedidos = () => {
   const [erro, setErro] = useState(null);
 
   useEffect(() => {
+    carregarPedidos();
+  }, []);
+
+  const carregarPedidos = () => {
     axios.get('http://localhost:5000/pedidos')
       .then((res) => {
-        console.log("📦 Dados recebidos:", res.data);
         setPedidos(res.data);
         setLoading(false);
       })
@@ -20,7 +23,34 @@ const Pedidos = () => {
         setErro('Erro ao buscar pedidos. Tente novamente mais tarde.');
         setLoading(false);
       });
-  }, []);
+  };
+
+  const atualizarStatusPedido = async (id, novoStatus) => {
+    try {
+      console.log(`Tentando atualizar pedido ${id} para status ${novoStatus}`);
+      
+      const response = await axios.put(`http://localhost:5000/pedidos/${id}/status`, { 
+        status: novoStatus 
+      });
+      
+      console.log('Resposta da atualização:', response.data);
+      
+      // Atualiza o estado local
+      setPedidos((prev) =>
+        prev.map((pedido) =>
+          pedido.pedido_id === id ? { ...pedido, status: novoStatus } : pedido
+        )
+      );
+      
+      alert(`Pedido #${id} atualizado para ${novoStatus} com sucesso!`);
+    } catch (error) {
+      console.error(`Erro ao atualizar status do pedido #${id}:`, error);
+      console.error('URL que falhou:', error.config?.url);
+      console.error('Response data:', error.response?.data);
+      console.error('Status code:', error.response?.status);
+      alert(`Erro ao atualizar o pedido: ${error.response?.data?.error || error.message}`);
+    }
+  };
 
   if (loading) return <p>Carregando pedidos...</p>;
   if (erro) return <p className="text-red-500">{erro}</p>;
@@ -78,10 +108,9 @@ const Pedidos = () => {
               </div>
 
               <div className="pedido-valor">
-                
                 <div className="frete">
-                <span>Frete:</span>
-                <span>R${FRETE_FIXO.toFixed(2)}</span>
+                  <span>Frete:</span>
+                  <span>R${FRETE_FIXO.toFixed(2)}</span>
                 </div>
                 <div className="total">
                   <span>Total:</span>
@@ -90,17 +119,33 @@ const Pedidos = () => {
               </div>
 
               <div className="acoes-pedido">
+                {/* Botões condicionais baseados no status atual */}
+                {pedido.status === "finalizado" && (
+                  <>
+                   
+                    <button
+                      className="btn-cancelar"
+                      onClick={() => atualizarStatusPedido(pedido.pedido_id, "cancelado")}
+                    >
+                      Cancelar Pedido
+                    </button>
+                  </>
+                )}
+
+
                 {pedido.status === "pendente" && (
-                  <button className="btn-preparar">Marcar como Em Preparo</button>
+                  <button
+                    className="btn-finalizar"
+                    onClick={() => atualizarStatusPedido(pedido.pedido_id, "finalizado")}
+                  >
+                    Marcar como Finalizado
+                  </button>
                 )}
-                {pedido.status === "preparo" && (
-                  <button className="btn-despachar">Marcar como Despachado</button>
-                )}
-                {pedido.status === "despachado" && (
-                  <button className="btn-finalizar">Finalizar Pedido</button>
-                )}
-                {pedido.status !== "cancelado" && pedido.status !== "entregue" && (
-                  <button className="btn-cancelar">Cancelar Pedido</button>
+
+                {(pedido.status === "entregue" || pedido.status === "cancelado") && (
+                  <span className="status-final">
+                    Pedido {pedido.status === "entregue" ? "finalizado" : "cancelado"}
+                  </span>
                 )}
               </div>
             </div>

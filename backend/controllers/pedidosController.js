@@ -140,4 +140,31 @@ exports.listarTodosPedidos = (req, res) => {
 
         res.json(Object.values(pedidos));
     });
+};exports.atualizarStatus = (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    console.log(`Tentando atualizar pedido ${id} para status: ${status}`); // Log para debug
+
+    // Status permitidos (ADICIONADO 'cancelado')
+    const statusPermitidos = ['pendente', 'finalizado', 'cancelado'];
+    if (!statusPermitidos.includes(status)) {
+        return res.status(400).json({ error: `Status inválido. Status permitidos: ${statusPermitidos.join(', ')}` });
+    }
+
+    const sql = 'UPDATE pedidos SET status = ? WHERE id = ?';
+    db.query(sql, [status, id], (err, result) => {
+        if (err) {
+            console.error('Erro no banco ao atualizar status:', err);
+            return res.status(500).json({ error: 'Erro ao atualizar o status do pedido.' });
+        }
+
+        console.log('Resultado da query:', result); // Log para debug
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Pedido não encontrado.' });
+        }
+
+        res.json({ success: true, message: 'Status do pedido atualizado com sucesso!' });
+    });
 };
