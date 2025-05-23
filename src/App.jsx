@@ -19,6 +19,7 @@ import Limpeza from './assets/components/Menu-Hamburguer/Limpeza.jsx';
 import Padaria from './assets/components/Menu-Hamburguer/Padaria.jsx';
 import Carrinho from './assets/components/carrinho/carrinho.jsx';
 import Pedidos from './assets/components/Pedidos_cliente/Pedidos_cliente.jsx';
+import Frios from './assets/components/Menu-Hamburguer/frios.jsx';
 
 // Componente Home com o conteúdo da página inicial
 function Home() {
@@ -95,6 +96,7 @@ function App() {
           <Route path="/hortifruti" element={<Hortifruti />} />
           <Route path="/açougue" element={<Acougue />} />
           <Route path='/bebidas' element={<Bebidas />} />
+          <Route path='/frios' element={<Frios />} />
           <Route path='/limpeza' element={<Limpeza />} />
           <Route path='/padaria' element={<Padaria />} />
           
