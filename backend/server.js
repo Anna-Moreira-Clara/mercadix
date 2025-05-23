@@ -80,15 +80,4 @@ app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
 
-// Exemplo do backend em Node.js
-app.put('/pedidos/status', async (req, res) => {
-  const { pedido_id, status } = req.body;
 
-  try {
-    await connection.query('UPDATE pedidos SET status = ? WHERE pedido_id = ?', [status, pedido_id]);
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Erro ao atualizar pedido:', error);
-    res.status(500).json({ error: 'Erro ao atualizar status do pedido.' });
-  }
-});
