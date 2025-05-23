@@ -155,9 +155,9 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded border-l-4 border-red-500 shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50" onClick={handleAbrirModalPedidosCancelados}>
+              <div className="bg-white rounded border-l-4 border-blue-500  shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50" onClick={handleAbrirModalPedidosCancelados}>
                 <div>
-                  <p className="text-xs font-bold text-red-500">PEDIDOS CANCELADOS</p>
+                  <p className=" ppdcancelado text-xs font-bold text-red-500">PEDIDOS CANCELADOS</p>
                   <p className="text-2xl font-bold text-gray-700">{pedidosCancelados.length}</p>
                 </div>
                 <div className="text-gray-300">
