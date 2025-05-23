@@ -1,3 +1,4 @@
+// AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -9,12 +10,13 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [pedidosPendentes, setPedidosPendentes] = useState(0);
   const [pedidosFinalizados, setPedidosFinalizados] = useState([]);
-  const [modalAberto, setModalAberto] = useState(false);
+  const [pedidosCancelados, setPedidosCancelados] = useState([]);
+  const [modalAberto, setModalAberto] = useState(null); // null | 'finalizados' | 'cancelados'
   const [carregandoPedidos, setCarregandoPedidos] = useState(false);
-  const [totalVendasMensal, setTotalVendasMensal] = useState(0); // Novo estado
+  const [totalVendasMensal, setTotalVendasMensal] = useState(0);
 
   useEffect(() => {
-    setModalAberto(false);
+    setModalAberto(null);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -24,11 +26,12 @@ const AdminDashboard = () => {
           const res = await axios.get('http://localhost:5000/pedidos');
           const pendentes = res.data.filter(p => p.status === 'pendente');
           const finalizados = res.data.filter(p => p.status === 'finalizado');
-          
+          const cancelados = res.data.filter(p => p.status === 'cancelado');
+
           setPedidosPendentes(pendentes.length);
           setPedidosFinalizados(finalizados);
+          setPedidosCancelados(cancelados);
 
-          // Calcular total de vendas
           const total = finalizados.reduce((acc, pedido) => acc + Number(pedido.total), 0);
           setTotalVendasMensal(total);
         } catch (error) {
@@ -42,13 +45,9 @@ const AdminDashboard = () => {
     }
   }, [location.pathname]);
 
-  const handleAbrirModalPedidosFinalizados = () => {
-    setModalAberto(true);
-  };
-
-  const handleFecharModal = () => {
-    setModalAberto(false);
-  };
+  const handleAbrirModalPedidosFinalizados = () => setModalAberto('finalizados');
+  const handleAbrirModalPedidosCancelados = () => setModalAberto('cancelados');
+  const handleFecharModal = () => setModalAberto(null);
 
   const isDashboardHome = location.pathname === '/dashboard';
 
@@ -129,19 +128,14 @@ const AdminDashboard = () => {
               <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
                 <div>
                   <p className="text-xs font-bold text-green-500">VENDAS MENSAL</p>
-                  <p className="text-2xl font-bold text-gray-700">
-                    R${totalVendasMensal.toFixed(2)}
-                  </p>
+                  <p className="text-2xl font-bold text-gray-700">R${totalVendasMensal.toFixed(2)}</p>
                 </div>
                 <div className="text-gray-300">
                   <FileText className="h-12 w-12" />
                 </div>
               </div>
 
-              <div 
-                className="bg-white rounded border-l-4 border-blue-500 shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50"
-                onClick={handleAbrirModalPedidosFinalizados}
-              >
+              <div className="bg-white rounded border-l-4 border-blue-500 shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50" onClick={handleAbrirModalPedidosFinalizados}>
                 <div>
                   <p className="text-xs font-bold text-blue-500">PEDIDOS FINALIZADOS</p>
                   <p className="text-2xl font-bold text-gray-700">{pedidosFinalizados.length}</p>
@@ -160,66 +154,84 @@ const AdminDashboard = () => {
                   <FileText className="h-12 w-12" />
                 </div>
               </div>
+
+              <div className="bg-white rounded border-l-4 border-red-500 shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50" onClick={handleAbrirModalPedidosCancelados}>
+                <div>
+                  <p className="text-xs font-bold text-red-500">PEDIDOS CANCELADOS</p>
+                  <p className="text-2xl font-bold text-gray-700">{pedidosCancelados.length}</p>
+                </div>
+                <div className="text-gray-300">
+                  <FileText className="h-12 w-12" />
+                </div>
+              </div>
             </div>
           )}
 
           <Outlet />
 
-          {modalAberto && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleFecharModal}>
-              <div className="bg-white rounded-lg shadow-lg w-4/5 max-h-4/5 overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
-                <div className="px-6 py-4 border-b flex justify-between items-center bg-blue-600 text-white">
-                  <h2 className="text-xl font-bold">Pedidos Finalizados</h2>
-                  <button onClick={handleFecharModal} className="bataoexcluir">
-                    <X className="bo" />
-                  </button>
-                </div>
+          {/* Modal Finalizados */}
+          {modalAberto === 'finalizados' && renderModal('Pedidos Finalizados', pedidosFinalizados)}
 
-                <div className="p-6 overflow-auto flex-1">
-                  {carregandoPedidos ? (
-                    <div className="text-center py-4">Carregando...</div>
-                  ) : (
-                    <div className="bg-white rounded shadow overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="bg-gray-100">
-                            <th className="px-4 py-2 text-left">ID</th>
-                            <th className="px-4 py-2 text-left">Cliente</th>
-                            <th className="px-4 py-2 text-left">Data</th>
-                            <th className="px-4 py-2 text-left">Total (R$)</th>
-                            <th className="px-4 py-2 text-left">Itens</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {pedidosFinalizados.length === 0 ? (
-                            <tr>
-                              <td colSpan="6" className="px-4 py-2 text-center text-gray-500">
-                                Nenhum pedido finalizado encontrado.
-                              </td>
-                            </tr>
-                          ) : (
-                            pedidosFinalizados.map((pedido) => (
-                              <tr key={pedido.id} className="border-t hover:bg-gray-50">
-                                <td className="px-4 py-2">{pedido.pedido_id}</td>
-                                <td className="px-4 py-2">{pedido.nome_usuario || pedido.cliente}</td>
-                                <td className="px-4 py-2">{new Date(pedido.data_pedido).toLocaleDateString('pt-BR')}</td>
-                                <td className="px-4 py-2">R$ {Number(pedido.total).toFixed(2)}</td>
-                                <td className="px-4 py-2">{pedido.itens?.length || 0}</td>
-                              </tr>
-                            ))
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Modal Cancelados */}
+          {modalAberto === 'cancelados' && renderModal('Pedidos Cancelados', pedidosCancelados)}
         </main>
       </div>
     </div>
   );
+
+  function renderModal(titulo, pedidos) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleFecharModal}>
+        <div className="bg-white rounded-lg shadow-lg w-4/5 max-h-4/5 overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="px-6 py-4 border-b flex justify-between items-center bg-blue-600 text-white">
+            <h2 className="text-xl font-bold">{titulo}</h2>
+            <button onClick={handleFecharModal} className="bataoexcluir">
+              <X className="bo" />
+            </button>
+          </div>
+
+          <div className="p-6 overflow-auto flex-1">
+            {carregandoPedidos ? (
+              <div className="text-center py-4">Carregando...</div>
+            ) : (
+              <div className="bg-white rounded shadow overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="px-4 py-2 text-left">ID</th>
+                      <th className="px-4 py-2 text-left">Cliente</th>
+                      <th className="px-4 py-2 text-left">Data</th>
+                      <th className="px-4 py-2 text-left">Total (R$)</th>
+                      <th className="px-4 py-2 text-left">Itens</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pedidos.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="px-4 py-2 text-center text-gray-500">
+                          Nenhum pedido encontrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      pedidos.map((pedido) => (
+                        <tr key={pedido.id} className="border-t hover:bg-gray-50">
+                          <td className="px-4 py-2">{pedido.pedido_id}</td>
+                          <td className="px-4 py-2">{pedido.nome_usuario || pedido.cliente}</td>
+                          <td className="px-4 py-2">{new Date(pedido.data_pedido).toLocaleDateString('pt-BR')}</td>
+                          <td className="px-4 py-2">R$ {Number(pedido.total).toFixed(2)}</td>
+                          <td className="px-4 py-2">{pedido.itens?.length || 0}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default AdminDashboard;
