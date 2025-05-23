@@ -125,7 +125,7 @@ const Produtos = () => {
 
                 <div className="controle-quantidade">
                   <button className="bot" onClick={() => diminuirQuantidade(produto.id)}>-</button>
-                  <span>{quantidades[produto.id] || 0}</span>
+                  <span>{quantidades[produto.id] || 1}</span>
                   <button className="bot" onClick={() => aumentarQuantidade(produto.id)}>+</button>
                   <button
                     className="add-to-cart"
