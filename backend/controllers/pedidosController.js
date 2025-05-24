@@ -147,7 +147,7 @@ exports.listarTodosPedidos = (req, res) => {
     console.log(`Tentando atualizar pedido ${id} para status: ${status}`); // Log para debug
 
     // Status permitidos (ADICIONADO 'cancelado')
-    const statusPermitidos = ['pendente', 'finalizado', 'cancelado'];
+    const statusPermitidos = ['pendente', 'finalizado'];
     if (!statusPermitidos.includes(status)) {
         return res.status(400).json({ error: `Status inválido. Status permitidos: ${statusPermitidos.join(', ')}` });
     }
