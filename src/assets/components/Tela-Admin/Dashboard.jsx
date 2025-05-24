@@ -14,6 +14,7 @@ const AdminDashboard = () => {
   const [modalAberto, setModalAberto] = useState(null); // null | 'finalizados' | 'cancelados'
   const [carregandoPedidos, setCarregandoPedidos] = useState(false);
   const [totalVendasMensal, setTotalVendasMensal] = useState(0);
+  
 
   useEffect(() => {
     setModalAberto(null);
@@ -50,6 +51,19 @@ const AdminDashboard = () => {
   const handleFecharModal = () => setModalAberto(null);
 
   const isDashboardHome = location.pathname === '/dashboard';
+
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
+
+useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  setUsuarioLogado(user);
+}, []);
+
+const [mostrarMenuUsuario, setMostrarMenuUsuario] = useState(false);
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  navigate("/"); // redireciona para a tela de login
+};
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -113,12 +127,27 @@ const AdminDashboard = () => {
         <header className="bg-white border-b flex items-center justify-between px-6 py-4">
           <a href="/"><button className="botao">Acessar Site</button></a>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <span className="text-gray-600">...</span>
-              <div className="bg-gray-200 h-8 w-8 rounded-full flex items-center justify-center">
-                <User className="h-5 w-5" />
-              </div>
-            </div>
+          <div className="relative">
+  <div
+    className="bg-gray-200 h-8 w-8 rounded-full flex items-center justify-center cursor-pointer"
+    onClick={() => setMostrarMenuUsuario(prev => !prev)}
+  >
+    <User className="h-5 w-5" />
+  </div>
+
+  {mostrarMenuUsuario && (
+    <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded z-50">
+      <div className="px-4 py-2 text-sm text-gray-700 border-b">{usuarioLogado?.nome}</div>
+ <button
+  onClick={handleLogout}
+  className="botao-logout"
+>
+  Sair
+</button>
+
+    </div>
+  )}
+</div>
           </div>
         </header>
 
@@ -155,15 +184,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded border-l-4 border-blue-500  shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50" onClick={handleAbrirModalPedidosCancelados}>
-                <div>
-                  <p className=" ppdcancelado text-xs font-bold text-red-500">PEDIDOS CANCELADOS</p>
-                  <p className="text-2xl font-bold text-gray-700">{pedidosCancelados.length}</p>
-                </div>
-                <div className="text-gray-300">
-                  <FileText className="h-12 w-12" />
-                </div>
-              </div>
+          
             </div>
           )}
 
