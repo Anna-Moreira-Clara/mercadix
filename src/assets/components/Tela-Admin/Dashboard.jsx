@@ -176,7 +176,7 @@ const AdminDashboard = () => {
               </div>
 
               <div className="bg-white rounded shadow p-6 mb-6">
-                <h2 className="text-xl font-bold mb-4">Vendas Mensais</h2>
+                <h2 className="text-xl font-bold mb-4"> Vendas Mensais</h2>
                 <ResponsiveContainer width="100%" height={350}>
                   <BarChart data={dadosGrafico} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
