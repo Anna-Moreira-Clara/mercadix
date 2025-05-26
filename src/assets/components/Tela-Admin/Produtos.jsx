@@ -42,11 +42,6 @@ function ProdutosAdmin() {
     return categoria ? categoria.nome : 'Categoria não encontrada';
   };
 
-  const getCategorySlugById = (categoryId) => {
-    const categoria = categorias.find(cat => cat.id === Number(categoryId));
-    return categoria ? categoria.slug || categoria.nome.toLowerCase().replace(/\s+/g, '-').normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
-  };
-
   const handleEditarClick = (produto) => {
     setEditandoId(produto.id);
     setFormData({
@@ -64,8 +59,8 @@ function ProdutosAdmin() {
       .then(() => {
         setEditandoId(null);
         buscarProdutos();
-        // Redirecionar para a página da categoria
-       
+        // Redirecionar para a página da categoria usando ID
+        navigate(`/categoria/${formData.categoria_id}`);
       })
       .catch(err => console.error('Erro ao atualizar produto:', err));
   };
@@ -99,9 +94,8 @@ function ProdutosAdmin() {
       .then(() => {
         fecharModal();
         buscarProdutos();
-        // Redirecionar para a página da categoria
-        const categoriaSlug = getCategorySlugById(formData.categoria_id);
-        navigate(`/categoria/${categoriaSlug}`);
+        // Redirecionar para a página da categoria usando ID
+        navigate(`/categoria/${formData.categoria_id}`);
       })
       .catch(err => console.error('Erro ao adicionar produto:', err));
   };
@@ -214,7 +208,6 @@ function ProdutosAdmin() {
               <div className="mb-4">
                 <div className="flex justify-between items-center">
                   <label className="block text-gray-700 text-sm font-bold mb-2">Categoria:</label>
-                 
                 </div>
                 <select
                   name="categoria_id"

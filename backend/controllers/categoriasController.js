@@ -40,7 +40,6 @@ const ${nomeComponente} = () => {
     axios.get('http://localhost:5000/categorias')
       .then(response => {
         const categorias = response.data;
-        // Encontrar a categoria ${nome}
         const categoria = categorias.find(cat => cat.nome.toLowerCase() === '${nome.toLowerCase()}');
 
         if (categoria) {
@@ -62,16 +61,59 @@ const ${nomeComponente} = () => {
 export default ${nomeComponente};
 `.trim();
 
+    // Criar o arquivo JSX
     fs.writeFile(filePath, jsxContent, (err) => {
       if (err) {
         console.error('Erro ao criar arquivo JSX:', err);
         return res.status(500).json({ error: 'Erro ao criar o componente JSX' });
       }
 
-      res.status(201).json({
-        message: 'Categoria criada com sucesso!',
-        id: result.insertId,
-        jsxFile: filePath,
+      // Caminho para o App.jsx
+      const appJsxPath = path.join('C:\\Users\\anna_\\mercadix\\src\\App.jsx');
+
+      fs.readFile(appJsxPath, 'utf8', (err, data) => {
+        if (err) {
+          console.error('Erro ao ler App.jsx:', err);
+          return res.status(500).json({ error: 'Erro ao ler App.jsx' });
+        }
+
+        const importLine = `import ${nomeComponente} from './assets/components/Menu-Hamburguer/${nomeArquivo}.jsx';\n`;
+        const routeLine = `\n          <Route path='/${nomeArquivo}' element={<${nomeComponente} />} />`;
+
+        let novoConteudo = data;
+
+        // Adicionar import se não existir
+        if (!data.includes(importLine)) {
+          const ultimaImport = data.lastIndexOf("import");
+          const proximaLinha = data.indexOf("\n", ultimaImport);
+          novoConteudo = data.slice(0, proximaLinha + 1) + importLine + data.slice(proximaLinha + 1);
+        }
+
+        // Adicionar rota na seção do LayoutComNavbar
+        const padraoRotas = /<Route element={<LayoutComNavbar\s*\/?>}>([\s\S]*?)<\/Route>/;
+        const match = novoConteudo.match(padraoRotas);
+
+        if (match) {
+          const rotasExistentes = match[1];
+          if (!rotasExistentes.includes(routeLine.trim())) {
+            const novaSecao = `<Route element={<LayoutComNavbar />}>${rotasExistentes}${routeLine}\n          </Route>`;
+            novoConteudo = novoConteudo.replace(padraoRotas, novaSecao);
+          }
+        }
+
+        fs.writeFile(appJsxPath, novoConteudo, (err) => {
+          if (err) {
+            console.error('Erro ao atualizar App.jsx com nova rota:', err);
+            return res.status(500).json({ error: 'Erro ao atualizar App.jsx' });
+          }
+
+          res.status(201).json({
+            message: 'Categoria criada com sucesso!',
+            id: result.insertId,
+            jsxFile: filePath,
+            rotaAdicionada: `/${nomeArquivo}`,
+          });
+        });
       });
     });
   });

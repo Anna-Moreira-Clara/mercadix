@@ -19,8 +19,14 @@ exports.criarProduto = (req, res) => {
   db.query(sql, [nome, descricao, preco, estoque, imagem, categoria_id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    // Retorna sucesso com o ID gerado
-    res.status(201).json({ message: 'Produto cadastrado!', id: result.insertId });
+    const novoId = result.insertId;
+
+    // Busca o produto recém-inserido e retorna ele
+    db.query('SELECT * FROM produtos WHERE id = ?', [novoId], (err2, result2) => {
+      if (err2) return res.status(500).json({ error: err2.message });
+
+      res.status(201).json({ message: 'Produto cadastrado!', produto: result2[0] });
+    });
   });
 };
 

@@ -20,6 +20,7 @@ import Padaria from './assets/components/Menu-Hamburguer/Padaria.jsx';
 import Carrinho from './assets/components/carrinho/carrinho.jsx';
 import Pedidos from './assets/components/Pedidos_cliente/Pedidos_cliente.jsx';
 import Frios from './assets/components/Menu-Hamburguer/frios.jsx';
+import Beleza from './assets/components/Menu-Hamburguer/beleza.jsx';
 
 // Componente Home com o conteúdo da página inicial
 function Home() {
@@ -108,7 +109,9 @@ function App() {
               <Carrinho />
             </RotaCliente>
           } />
-        </Route>
+        
+          <Route path='/beleza' element={<Beleza />} />
+          </Route>
 
         {/* Rotas sem Navbar */}
      
