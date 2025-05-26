@@ -65,8 +65,7 @@ function ProdutosAdmin() {
         setEditandoId(null);
         buscarProdutos();
         // Redirecionar para a página da categoria
-        const categoriaSlug = getCategorySlugById(formData.categoria_id);
-        navigate(`/categoria/${categoriaSlug}`);
+       
       })
       .catch(err => console.error('Erro ao atualizar produto:', err));
   };

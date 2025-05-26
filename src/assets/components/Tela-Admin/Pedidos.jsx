@@ -119,18 +119,7 @@ const Pedidos = () => {
               </div>
 
               <div className="acoes-pedido">
-                {/* Botões condicionais baseados no status atual */}
-                {pedido.status === "finalizado" && (
-                  <>
-                   
-                    <button
-                      className="btn-cancelar"
-                      onClick={() => atualizarStatusPedido(pedido.pedido_id, "cancelado")}
-                    >
-                      Cancelar Pedido
-                    </button>
-                  </>
-                )}
+                
 
 
                 {pedido.status === "pendente" && (
