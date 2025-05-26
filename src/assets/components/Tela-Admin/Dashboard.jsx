@@ -13,31 +13,31 @@ const AdminDashboard = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [carregandoPedidos, setCarregandoPedidos] = useState(false);
   const [dadosGrafico, setDadosGrafico] = useState([]);
+  const [mostrarGrafico, setMostrarGrafico] = useState(false); // ⬅️ NOVO
 
   useEffect(() => {
     setModalAberto(false);
   }, [location.pathname]);
 
   const agruparPorMes = (pedidos) => {
-  const mapa = {};
-  pedidos.forEach(pedido => {
-    const data = new Date(pedido.data_pedido);
-    const ano = data.getFullYear();
-    const mes = data.getMonth(); // 0 = janeiro, 11 = dezembro
-    const chave = `${ano}-${mes.toString().padStart(2, '0')}`;
-    mapa[chave] = (mapa[chave] || 0) + Number(pedido.total);
-  });
-
-  return Object.entries(mapa)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([chave, total]) => {
-      const [ano, mes] = chave.split('-');
-      const data = new Date(ano, mes);
-      const label = data.toLocaleString('pt-BR', { month: 'short', year: 'numeric' });
-      return { mes: label, total };
+    const mapa = {};
+    pedidos.forEach(pedido => {
+      const data = new Date(pedido.data_pedido);
+      const ano = data.getFullYear();
+      const mes = data.getMonth();
+      const chave = `${ano}-${mes.toString().padStart(2, '0')}`;
+      mapa[chave] = (mapa[chave] || 0) + Number(pedido.total);
     });
-};
 
+    return Object.entries(mapa)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([chave, total]) => {
+        const [ano, mes] = chave.split('-');
+        const data = new Date(ano, mes);
+        const label = data.toLocaleString('pt-BR', { month: 'short', year: 'numeric' });
+        return { mes: label, total };
+      });
+  };
 
   useEffect(() => {
     if (location.pathname === '/dashboard') {
@@ -141,7 +141,10 @@ const AdminDashboard = () => {
           {isDashboardHome && (
             <>
               <div className="grid grid-cols-4 gap-6 mb-6">
-                <div className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4">
+                <div
+                  className="bg-white rounded border-l-4 border-green-500 shadow flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50"
+                  onClick={() => setMostrarGrafico(!mostrarGrafico)}
+                >
                   <div>
                     <p className="text-xs font-bold text-green-500 pddfinal">VENDAS MENSAL</p>
                     <p className="text-2xl font-bold text-gray-700">R$ {totalVendasMensal.toFixed(2)}</p>
@@ -175,24 +178,77 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded shadow p-6 mb-6">
-                <h2 className="text-xl font-bold mb-4">Vendas Mensais</h2>
-                <ResponsiveContainer width="100%" height={350}>
-                  <BarChart data={dadosGrafico} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="mes" stroke="#8884d8" />
-                    <YAxis stroke="#8884d8" />
-                    <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`} />
-                    <Legend />
-                    <Bar dataKey="total" fill="#3b82f6" radius={[10, 10, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              {mostrarGrafico && ( // ⬅️ SÓ MOSTRA O GRÁFICO QUANDO ATIVADO
+                <div className="bg-white rounded shadow p-6 mb-6">
+                  <h2 className="text-xl font-bold mb-4">Vendas Mensais</h2>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart data={dadosGrafico} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="mes" stroke="#8884d8" />
+                      <YAxis stroke="#8884d8" />
+                      <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`} />
+                      <Legend />
+                      <Bar dataKey="total" fill="#3b82f6" radius={[10, 10, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </>
           )}
-        
 
           <Outlet />
+
+          {modalAberto && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleFecharModal}>
+              <div className="bg-white rounded-lg shadow-lg w-4/5 max-h-4/5 overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+                <div className="px-6 py-4 border-b flex justify-between items-center bg-blue-600 text-white">
+                  <h2 className="text-xl font-bold">Pedidos Finalizados</h2>
+                  <button onClick={handleFecharModal} className="bataoexcluir">
+                    <X className="bo" />
+                  </button>
+                </div>
+                
+                <div className="p-6 overflow-auto flex-1">
+                  {carregandoPedidos ? (
+                    <div className="text-center py-4">Carregando...</div>
+                  ) : (
+                    <div className="bg-white rounded shadow overflow-x-auto">
+                      <table className="min-w-full text-sm text-left text-gray-700">
+                        <thead className="text-xs text-gray-600 uppercase bg-blue-100">
+                          <tr>
+                            <th className="px-4 py-3">ID</th>
+                            <th className="px-4 py-3">Cliente</th>
+                            <th className="px-4 py-3">Data</th>
+                            <th className="px-4 py-3">Total (R$)</th>
+                            <th className="px-4 py-3">Itens</th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {pedidosFinalizados.length === 0 ? (
+                            <tr>
+                              <td colSpan="5" className="px-4 py-3 text-center text-gray-500">
+                                Nenhum pedido finalizado encontrado.
+                              </td>
+                            </tr>
+                          ) : (
+                            pedidosFinalizados.map((pedido) => (
+                              <tr key={pedido.id} className="hover:bg-blue-50 transition duration-150">
+                                <td className="px-4 py-3 font-medium">{pedido.pedido_id}</td>
+                                <td className="px-4 py-3">{pedido.nome_usuario || pedido.cliente}</td>
+                                <td className="px-4 py-3">{new Date(pedido.data_pedido).toLocaleDateString('pt-BR')}</td>
+                                <td className="px-4 py-3">R$ {Number(pedido.total).toFixed(2)}</td>
+                                <td className="px-4 py-3">{pedido.itens?.length || 0}</td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
