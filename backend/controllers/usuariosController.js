@@ -116,20 +116,22 @@ exports.deletarUsuario = (req, res) => {
     });
 };
 
-// Redefinir senha do usuário - ATUALIZADO COM VERIFICAÇÃO DE CPF
+// Adicionar ao final do arquivo usuariosController.js
+
+// Redefinir senha do usuário
 exports.redefinirSenha = (req, res) => {
-    const { email, cpf, novaSenha } = req.body;
+    const { email, novaSenha } = req.body;
     
-    if (!email || !cpf || !novaSenha) {
-        return res.status(400).json({ error: 'Email, CPF e nova senha são obrigatórios' });
+    if (!email || !novaSenha) {
+        return res.status(400).json({ error: 'Email e nova senha são obrigatórios' });
     }
 
-    // Busca o usuário pelo email E CPF para verificar se existe e se os dados conferem
-    db.query('SELECT * FROM usuarios WHERE email = ? AND cpf = ?', [email, cpf], (err, results) => {
+    // Busca o usuário pelo email para verificar se existe
+    db.query('SELECT * FROM usuarios WHERE email = ?', [email], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
 
         if (results.length === 0) {
-            return res.status(404).json({ error: 'Email ou CPF não encontrado no sistema, ou os dados não coincidem' });
+            return res.status(404).json({ error: 'Email não encontrado no sistema' });
         }
 
         const usuario = results[0];
@@ -153,3 +155,4 @@ exports.redefinirSenha = (req, res) => {
         });
     });
 };
+
