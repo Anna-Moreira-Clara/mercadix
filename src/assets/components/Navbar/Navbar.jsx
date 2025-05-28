@@ -35,11 +35,11 @@ const Navbar = () => {
 
     // Novo state para os dados de redefinição de senha
     const [resetPasswordData, setResetPasswordData] = useState({
-        email: '',
         cpf: '',
         novaSenha: '',
         confirmarSenha: ''
     });
+    
 
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -95,8 +95,7 @@ const Navbar = () => {
         // Reseta os dados do formulário quando fechar o modal
         if (showResetPasswordModal) {
             setResetPasswordData({
-                email: '',
-                cpf: '', 
+                cpf: '',
                 novaSenha: '',
                 confirmarSenha: ''
             });
@@ -224,31 +223,29 @@ const Navbar = () => {
         e.preventDefault();
         setResetPasswordLoading(true);
         setResetPasswordMessage('');
-
+    
         // Validação das senhas
         if (resetPasswordData.novaSenha !== resetPasswordData.confirmarSenha) {
             setResetPasswordMessage('As senhas não coincidem');
             setResetPasswordLoading(false);
             return;
         }
-
+    
         try {
             const response = await axios.post('/usuarios/redefinir-senha', {
-                email: resetPasswordData.email,
                 cpf: resetPasswordData.cpf,
                 novaSenha: resetPasswordData.novaSenha
             });
-
+    
             setResetPasswordMessage(response.data.message);
             
             // Limpa os campos após sucesso
             setResetPasswordData({
-                email: '',
                 cpf: '',
                 novaSenha: '',
                 confirmarSenha: ''
             });
-
+    
             // Fecha o modal após alguns segundos em caso de sucesso
             if (response.data.message.includes('sucesso')) {
                 setTimeout(() => {
@@ -636,52 +633,55 @@ const Navbar = () => {
 
             {/* Modal de Redefinição de Senha */}
             {showResetPasswordModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
-                        <h2>Redefinir Senha</h2>
-                        <form onSubmit={handleResetPassword}>
-                            <div className="form-group">
-                                <label>Email:</label>
-                                <input 
-                                    type="email" 
-                                    name="email" 
-                                    value={resetPasswordData.email} 
-                                    onChange={handleResetPasswordChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Nova Senha:</label>
-                                <input 
-                                    type="password" 
-                                    name="novaSenha" 
-                                    value={resetPasswordData.novaSenha} 
-                                    onChange={handleResetPasswordChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Confirmar Nova Senha:</label>
-                                <input 
-                                    type="password" 
-                                    name="confirmarSenha" 
-                                    value={resetPasswordData.confirmarSenha} 
-                                    onChange={handleResetPasswordChange} 
-                                    required 
-                                />
-                            </div>
-                            {resetPasswordMessage && <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>{resetPasswordMessage}</p>}
-                            <div className="modal-buttons">
-                                <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">Cancelar</button>
-                                <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
-                                    {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+    <div className="modal-overlay">
+        <div className="modal">
+            <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
+            <h2>Redefinir Senha</h2>
+            <form onSubmit={handleResetPassword}>
+                <div className="form-group">
+                    <label>CPF:</label>
+                    <input 
+                        type="text" 
+                        name="cpf" 
+                        value={resetPasswordData.cpf} 
+                        onChange={handleResetPasswordChange} 
+                        placeholder="Digite seu CPF"
+                        required 
+                    />
                 </div>
-            )}
+                <div className="form-group">
+                    <label>Nova Senha:</label>
+                    <input 
+                        type="password" 
+                        name="novaSenha" 
+                        value={resetPasswordData.novaSenha} 
+                        onChange={handleResetPasswordChange} 
+                        placeholder="Digite sua nova senha"
+                        required 
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Confirmar Nova Senha:</label>
+                    <input 
+                        type="password" 
+                        name="confirmarSenha" 
+                        value={resetPasswordData.confirmarSenha} 
+                        onChange={handleResetPasswordChange} 
+                        placeholder="Confirme sua nova senha"
+                        required 
+                    />
+                </div>
+                {resetPasswordMessage && <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>{resetPasswordMessage}</p>}
+                <div className="modal-buttons">
+                    <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">Cancelar</button>
+                    <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
+                        {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+)}
         </header>
     );
 };

@@ -120,18 +120,18 @@ exports.deletarUsuario = (req, res) => {
 
 // Redefinir senha do usuário
 exports.redefinirSenha = (req, res) => {
-    const { email, novaSenha } = req.body;
+    const { cpf, novaSenha } = req.body;
     
-    if (!email || !novaSenha) {
-        return res.status(400).json({ error: 'Email e nova senha são obrigatórios' });
+    if (!cpf || !novaSenha) {
+        return res.status(400).json({ error: 'CPF e nova senha são obrigatórios' });
     }
 
-    // Busca o usuário pelo email para verificar se existe
-    db.query('SELECT * FROM usuarios WHERE email = ?', [email], (err, results) => {
+    // Busca o usuário pelo CPF para verificar se existe
+    db.query('SELECT * FROM usuarios WHERE cpf = ?', [cpf], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
 
         if (results.length === 0) {
-            return res.status(404).json({ error: 'Email não encontrado no sistema' });
+            return res.status(404).json({ error: 'CPF não encontrado no sistema' });
         }
 
         const usuario = results[0];
