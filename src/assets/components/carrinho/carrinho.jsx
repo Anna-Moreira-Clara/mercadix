@@ -169,7 +169,7 @@ const Carrinho = () => {
     setAtualizando(false);
   };
 
-  // Função para finalizar pedido
+  // Função para finalizar pedido - CORRIGIDA para definir status explicitamente
   const finalizarPedido = async () => {
     if (carrinho.length === 0) {
       alert("Seu carrinho está vazio!");
@@ -193,10 +193,12 @@ const Carrinho = () => {
     }
 
     try {
-      await axios.post('/pedidos', {
+      // CORREÇÃO: Agora enviamos explicitamente o status como 'pendente'
+      const response = await axios.post('/pedidos', {
         usuario_id: usuario.id,
         endereco_entrega: endereco,
         forma_pagamento: formaPagamento,
+        status: 'pendente', // ← ADICIONADO: Define explicitamente o status
         itens: carrinho.map(item => ({
           produto_id: item.produto_id || item.id,
           quantidade: item.quantidade,
@@ -204,6 +206,7 @@ const Carrinho = () => {
         }))
       });
 
+      console.log('Pedido criado com sucesso:', response.data);
       alert("Pedido finalizado com sucesso!");
       
       // Limpar carrinho no backend
@@ -221,6 +224,7 @@ const Carrinho = () => {
       navigate('/pedidos');
     } catch (error) {
       console.error("Erro ao finalizar pedido:", error);
+      console.error("Detalhes do erro:", error.response?.data);
       alert("Erro ao finalizar pedido. Tente novamente.");
     }
   };
