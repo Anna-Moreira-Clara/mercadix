@@ -36,6 +36,7 @@ const Navbar = () => {
     // Novo state para os dados de redefinição de senha
     const [resetPasswordData, setResetPasswordData] = useState({
         email: '',
+        cpf: '',
         novaSenha: '',
         confirmarSenha: ''
     });
@@ -95,6 +96,7 @@ const Navbar = () => {
         if (showResetPasswordModal) {
             setResetPasswordData({
                 email: '',
+                cpf: '', 
                 novaSenha: '',
                 confirmarSenha: ''
             });
@@ -233,6 +235,7 @@ const Navbar = () => {
         try {
             const response = await axios.post('/usuarios/redefinir-senha', {
                 email: resetPasswordData.email,
+                cpf: resetPasswordData.cpf,
                 novaSenha: resetPasswordData.novaSenha
             });
 
@@ -241,6 +244,7 @@ const Navbar = () => {
             // Limpa os campos após sucesso
             setResetPasswordData({
                 email: '',
+                cpf: '',
                 novaSenha: '',
                 confirmarSenha: ''
             });
@@ -632,52 +636,78 @@ const Navbar = () => {
 
             {/* Modal de Redefinição de Senha */}
             {showResetPasswordModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
-                        <h2>Redefinir Senha</h2>
-                        <form onSubmit={handleResetPassword}>
-                            <div className="form-group">
-                                <label>Email:</label>
-                                <input 
-                                    type="email" 
-                                    name="email" 
-                                    value={resetPasswordData.email} 
-                                    onChange={handleResetPasswordChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Nova Senha:</label>
-                                <input 
-                                    type="password" 
-                                    name="novaSenha" 
-                                    value={resetPasswordData.novaSenha} 
-                                    onChange={handleResetPasswordChange} 
-                                    required 
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Confirmar Nova Senha:</label>
-                                <input 
-                                    type="password" 
-                                    name="confirmarSenha" 
-                                    value={resetPasswordData.confirmarSenha} 
-                                    onChange={handleResetPasswordChange} 
-                                    required 
-                                />
-                            </div>
-                            {resetPasswordMessage && <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>{resetPasswordMessage}</p>}
-                            <div className="modal-buttons">
-                                <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">Cancelar</button>
-                                <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
-                                    {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+    <div className="modal-overlay">
+        <div className="modal">
+            <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
+            <h2>Redefinir Senha</h2>
+            <p style={{fontSize: '14px', color: '#666', marginBottom: '15px'}}>
+                Para sua segurança, informe o email e CPF cadastrados
+            </p>
+            <form onSubmit={handleResetPassword}>
+                <div className="form-group">
+                    <label>Email:</label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        value={resetPasswordData.email} 
+                        onChange={handleResetPasswordChange} 
+                        required 
+                        placeholder="Digite seu email cadastrado"
+                    />
                 </div>
-            )}
+                <div className="form-group">
+                    <label>CPF:</label>
+                    <input 
+                        type="text" 
+                        name="cpf" 
+                        value={resetPasswordData.cpf} 
+                        onChange={handleResetPasswordChange} 
+                        required 
+                        placeholder="Somente números"
+                        maxLength="11"
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Nova Senha:</label>
+                    <input 
+                        type="password" 
+                        name="novaSenha" 
+                        value={resetPasswordData.novaSenha} 
+                        onChange={handleResetPasswordChange} 
+                        required 
+                        placeholder="Digite sua nova senha"
+                        minLength="2"
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Confirmar Nova Senha:</label>
+                    <input 
+                        type="password" 
+                        name="confirmarSenha" 
+                        value={resetPasswordData.confirmarSenha} 
+                        onChange={handleResetPasswordChange} 
+                        required 
+                        placeholder="Confirme sua nova senha"
+                        minLength="2"
+                    />
+                </div>
+                {resetPasswordMessage && (
+                    <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>
+                        {resetPasswordMessage}
+                    </p>
+                )}
+                <div className="modal-buttons">
+                    <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">
+                        Cancelar
+                    </button>
+                    <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
+                        {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+)}
         </header>
     );
 };
