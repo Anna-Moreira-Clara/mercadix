@@ -13,7 +13,7 @@ const AdminDashboard = () => {
   const [modalAberto, setModalAberto] = useState(false);
   const [carregandoPedidos, setCarregandoPedidos] = useState(false);
   const [dadosGrafico, setDadosGrafico] = useState([]);
-  const [mostrarGrafico, setMostrarGrafico] = useState(false); // ⬅️ NOVO
+  const [mostrarGrafico, setMostrarGrafico] = useState(false);
 
   useEffect(() => {
     setModalAberto(false);
@@ -69,8 +69,12 @@ const AdminDashboard = () => {
     setModalAberto(false);
   };
 
-  const isDashboardHome = location.pathname === '/dashboard';
+  const handleLogout = () => {
+    localStorage.clear(); // ou localStorage.removeItem('usuario') se for específico
+    navigate('/'); // Redireciona para a página inicial
+  };
 
+  const isDashboardHome = location.pathname === '/dashboard';
   const totalVendasMensal = pedidosFinalizados.reduce((acc, p) => acc + Number(p.total), 0);
 
   return (
@@ -129,10 +133,11 @@ const AdminDashboard = () => {
           <a href="/"><button className="botao">Acessar Site</button></a>
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
-              <span className="text-gray-600">...</span>
+              <span className="text-gray-600">Administrador</span>
               <div className="bg-gray-200 h-8 w-8 rounded-full flex items-center justify-center">
                 <User className="h-5 w-5" />
               </div>
+              <button className="botao" onClick={handleLogout}>Sair</button>
             </div>
           </div>
         </header>
@@ -178,7 +183,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {mostrarGrafico && ( // ⬅️ SÓ MOSTRA O GRÁFICO QUANDO ATIVADO
+              {mostrarGrafico && (
                 <div className="bg-white rounded shadow p-6 mb-6">
                   <h2 className="text-xl font-bold mb-4">Vendas Mensais</h2>
                   <ResponsiveContainer width="100%" height={350}>
