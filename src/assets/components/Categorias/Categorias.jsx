@@ -11,9 +11,8 @@ const Produtos = () => {
 
   const [mensagem, setMensagem] = useState("");
   const [quantidades, setQuantidades] = useState({});
+  const [hoverId, setHoverId] = useState(null); // novo estado para hover
 
-  
-  
   const buscarProdutos = () => {
     setCarregando(true);
     const url = categoriaId
@@ -51,7 +50,7 @@ const Produtos = () => {
   };
 
   const adicionarAoCarrinho = (produto) => {
-    const quantidade = quantidades[produto.id] || 1; // Padrão 1 se não selecionado
+    const quantidade = quantidades[produto.id] || 1;
     let usuarioLogado = JSON.parse(localStorage.getItem("usuarios"));
 
     if (Array.isArray(usuarioLogado)) {
@@ -85,6 +84,7 @@ const Produtos = () => {
         carrinhoLocal.push({
           id: produto.id,
           nome: produto.nome,
+          descricao: produto.descricao,
           preco: produto.preco,
           quantidade: quantidade,
           subtotal: produto.preco * quantidade,
@@ -96,8 +96,7 @@ const Produtos = () => {
       setTimeout(() => setMensagem(""), 3000);
       window.dispatchEvent(new Event("carrinhoAtualizado"));
     }
- //
-    // Reseta a quantidade após adicionar
+
     setQuantidades((prev) => ({
       ...prev,
       [produto.id]: 0,
@@ -114,13 +113,23 @@ const Produtos = () => {
         <section className="produtos-container">
           {produtos.length > 0 ? (
             produtos.map((produto) => (
-              <div key={produto.id} className="produto">
+              <div
+                key={produto.id}
+                className="produto"
+                onMouseEnter={() => setHoverId(produto.id)}
+                onMouseLeave={() => setHoverId(null)}
+              >
                 <img
                   src={`/imagens/${produto.imagem}`}
                   alt={produto.nome}
                   className="imagem-produto"
                 />
                 <p>{produto.nome}</p>
+
+                {hoverId === produto.id && (
+                  <p className="descricao">{produto.descricao}</p>
+                )}
+
                 <p className="preco">R$ {parseFloat(produto.preco).toFixed(2)}</p>
 
                 <div className="controle-quantidade">

@@ -71,3 +71,18 @@
     text-align: center;
     font-weight: bold;
   }
+  .produto {
+    transition: box-shadow 0.2s ease;
+    position: relative;
+  }
+  
+  .produto:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  .descricao {
+    margin-top: 8px;
+    color: #555;
+    font-size: 0.9rem;
+    transition: opacity 0.3s ease;
+  }
