@@ -76,15 +76,22 @@ exports.limparCarrinho = (req, res) => {
 
 // finalizar compra
 exports.finalizarCompra = (req, res) => {
-    const { usuario_id, itens } = req.body;
+    const { usuario_id, endereco, itens } = req.body;
 
     if (!itens || itens.length === 0) {
         return res.status(400).json({ error: 'Carrinho vazio.' });
     }
 
-    const criarPedidoSQL = 'INSERT INTO pedidos (usuario_id, total, status, data_pedido) VALUES (?, 0, "pendente", NOW())';
+    if (!endereco) {
+        return res.status(400).json({ error: 'Endereço de entrega obrigatório.' });
+    }
 
-    db.query(criarPedidoSQL, [usuario_id], (err, pedidoResult) => {
+    const criarPedidoSQL = `
+        INSERT INTO pedidos (usuario_id, endereco, total, status, data_pedido) 
+        VALUES (?, ?, 0, "pendente", NOW())
+    `;
+
+    db.query(criarPedidoSQL, [usuario_id, endereco], (err, pedidoResult) => {
         if (err) return res.status(500).json({ error: err.message });
 
         const pedido_id = pedidoResult.insertId;
@@ -103,3 +110,4 @@ exports.finalizarCompra = (req, res) => {
         });
     });
 };
+

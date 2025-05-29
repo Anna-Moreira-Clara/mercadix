@@ -196,7 +196,7 @@ const Carrinho = () => {
       // CORREÇÃO: Agora enviamos explicitamente o status como 'pendente'
       const response = await axios.post('/pedidos', {
         usuario_id: usuario.id,
-        endereco_entrega: endereco,
+        endereco: endereco,
         forma_pagamento: formaPagamento,
         status: 'pendente', // ← ADICIONADO: Define explicitamente o status
         itens: carrinho.map(item => ({

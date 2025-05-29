@@ -2,14 +2,14 @@ const db = require('../db');
 
 // Criar Pedido - ATUALIZADO COM CONTROLE DE ESTOQUE
 exports.criarPedido = (req, res) => {
-    const { usuario_id } = req.body;
+    const { usuario_id, endereco } = req.body;
 
-    if (!usuario_id) {
+    if (!usuario_id || !endereco) {
         return res.status(400).json({ error: 'Usuário não informado.' });
     }
 
-    const sqlPedido = 'INSERT INTO pedidos (usuario_id, data_pedido, status) VALUES (?, NOW(), "pendente")';
-    db.query(sqlPedido, [usuario_id], (err, result) => {
+    const sqlPedido = 'INSERT INTO pedidos (usuario_id, endereco, data_pedido, status) VALUES (?, ?, NOW(), "pendente")';
+    db.query(sqlPedido, [usuario_id, endereco], (err, result) => {
         if (err) return res.status(500).json({ error: 'Erro ao criar pedido.' });
 
         const pedidoId = result.insertId;
@@ -111,7 +111,7 @@ exports.listarPedidosPorUsuario = (req, res) => {
     const { usuario_id } = req.params;
 
     const sqlPedidos = `
-        SELECT p.id AS pedido_id, p.data_pedido, p.status, p.total,
+        SELECT p.id AS pedido_id, p.data_pedido, p.status, p.total, p.endereco,
                pi.produto_id, pr.nome AS nome_produto, pi.quantidade, pi.preco
         FROM pedidos p
         JOIN pedido_itens pi ON p.id = pi.pedido_id
@@ -132,6 +132,7 @@ exports.listarPedidosPorUsuario = (req, res) => {
                     data_pedido: row.data_pedido,
                     status: row.status,
                     total: parseFloat(row.total || 0),
+                    endereco: row.endereco,
                     itens: []
                 };
             }
@@ -152,7 +153,7 @@ exports.listarPedidosPorUsuario = (req, res) => {
 exports.listarTodosPedidos = (req, res) => {
     const sql = `
         SELECT 
-            p.id AS pedido_id, p.data_pedido, p.status, p.total, 
+            p.id AS pedido_id, p.data_pedido, p.status, p.total, p.endereco, 
             u.id AS usuario_id, u.nome AS nome_usuario,
             pi.produto_id, pr.nome AS nome_produto, pi.quantidade, pi.preco
         FROM pedidos p
@@ -174,6 +175,7 @@ exports.listarTodosPedidos = (req, res) => {
                     data_pedido: row.data_pedido,
                     status: row.status,
                     total: parseFloat(row.total || 0),
+                    endereco: row.endereco,
                     usuario_id: row.usuario_id,
                     nome_usuario: row.nome_usuario,
                     itens: []
