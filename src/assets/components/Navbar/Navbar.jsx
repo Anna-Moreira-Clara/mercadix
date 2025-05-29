@@ -3,7 +3,7 @@ import "./Navbar.css";
 import Logo from "../Navbar/logo.jpg";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaShoppingCart, FaMinus, FaPlus, FaTrash, FaSearch } from 'react-icons/fa';
 
 // Configure a base URL para todas as requisições
 axios.defaults.baseURL = 'http://localhost:5000';
@@ -16,7 +16,7 @@ const Navbar = () => {
 
     const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false); // Novo state para o modal de redefinição de senha
+    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
 
     const [formData, setFormData] = useState({
         nome: '',
@@ -33,20 +33,24 @@ const Navbar = () => {
         senha: ''
     });
 
-    // Novo state para os dados de redefinição de senha
     const [resetPasswordData, setResetPasswordData] = useState({
         cpf: '',
         novaSenha: '',
         confirmarSenha: ''
     });
     
+    // Estados para pesquisa de produtos
+    const [termoPesquisa, setTermoPesquisa] = useState('');
+    const [produtosSugeridos, setProdutosSugeridos] = useState([]);
+    const [mostrarSugestoes, setMostrarSugestoes] = useState(false);
+    const [carregandoPesquisa, setCarregandoPesquisa] = useState(false);
 
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [loginMessage, setLoginMessage] = useState('');
     const [loginLoading, setLoginLoading] = useState(false);
-    const [resetPasswordMessage, setResetPasswordMessage] = useState(''); // Mensagem para o reset de senha
-    const [resetPasswordLoading, setResetPasswordLoading] = useState(false); // Loading para o reset de senha
+    const [resetPasswordMessage, setResetPasswordMessage] = useState('');
+    const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
 
     // Verifica se o usuário está logado ao iniciar
     useEffect(() => {
@@ -56,21 +60,77 @@ const Navbar = () => {
         }
     }, []);
 
-    // Adiciona a função de logout que estava faltando
+    // Função para pesquisar produtos
+    const pesquisarProdutos = async (termo) => {
+        if (!termo || termo.length < 2) {
+            setProdutosSugeridos([]);
+            setMostrarSugestoes(false);
+            return;
+        }
+
+        setCarregandoPesquisa(true);
+        try {
+            const response = await axios.get(`/produtos/pesquisar?q=${encodeURIComponent(termo)}`);
+            setProdutosSugeridos(response.data.slice(0, 8)); // Limita a 8 sugestões
+            setMostrarSugestoes(true);
+        } catch (error) {
+            console.error('Erro ao pesquisar produtos:', error);
+            setProdutosSugeridos([]);
+        } finally {
+            setCarregandoPesquisa(false);
+        }
+    };
+
+    // useEffect para pesquisa dinâmica com debounce
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            pesquisarProdutos(termoPesquisa);
+        }, 300); // Aguarda 300ms após parar de digitar
+
+        return () => clearTimeout(timeoutId);
+    }, [termoPesquisa]);
+
+    // Função para lidar com mudanças no campo de pesquisa
+    const handlePesquisaChange = (e) => {
+        setTermoPesquisa(e.target.value);
+    };
+
+    // Função para selecionar um produto da lista de sugestões
+    const selecionarProduto = (produto) => {
+        setTermoPesquisa(produto.nome);
+        setMostrarSugestoes(false);
+        // Aqui você pode navegar para a página do produto ou fazer outra ação
+        navigate(`/produto/${produto.id}`);
+    };
+
+    // Função para fazer pesquisa completa (quando pressionar Enter ou clicar no botão)
+    const executarPesquisa = (e) => {
+        e.preventDefault();
+        if (termoPesquisa.trim()) {
+            setMostrarSugestoes(false);
+            // Navega para página de resultados de pesquisa
+            navigate(`/pesquisa?q=${encodeURIComponent(termoPesquisa)}`);
+        }
+    };
+
+    // Função para fechar sugestões quando clicar fora
+    const fecharSugestoes = () => {
+        setTimeout(() => {
+            setMostrarSugestoes(false);
+        }, 200); // Pequeno delay para permitir clique nas sugestões
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('usuarios');
         setUsuarioLogado(null);
         
-        // Limpa carrinho local se houver
         if (localStorage.getItem('carrinho_local')) {
             localStorage.removeItem('carrinho_local');
         }
         
-        // Atualiza o estado do carrinho
         setCarrinho([]);
         setCarrinhoTotal(0);
         
-        // Redireciona para a página inicial
         navigate("/");
     };
 
@@ -88,11 +148,9 @@ const Navbar = () => {
         setLoginMessage('');
     };
 
-    // Função para abrir/fechar o modal de redefinição de senha
     const toggleResetPasswordModal = () => {
         setShowResetPasswordModal(!showResetPasswordModal);
         setResetPasswordMessage('');
-        // Reseta os dados do formulário quando fechar o modal
         if (showResetPasswordModal) {
             setResetPasswordData({
                 cpf: '',
@@ -118,7 +176,6 @@ const Navbar = () => {
         }));
     };
 
-    // Handler para os campos de redefinição de senha
     const handleResetPasswordChange = (e) => {
         const { name, value } = e.target;
         setResetPasswordData(prev => ({
@@ -165,7 +222,6 @@ const Navbar = () => {
         setLoginMessage('');
     
         try {
-            // Aqui está a correção: use POST em vez de GET e o endpoint correto
             const response = await axios.post('/usuarios/login', loginData);
     
             if (!response.data || response.data.error) {
@@ -174,12 +230,10 @@ const Navbar = () => {
     
             const usuario = response.data;
     
-            // Armazena o usuário corretamente no localStorage
             localStorage.setItem('usuarios', JSON.stringify(usuario));
             setUsuarioLogado(usuario);
             console.log("Usuário logado:", usuario.nome);
             
-            // Transfere o carrinho local para o backend após login
             const carrinhoLocal = JSON.parse(localStorage.getItem('carrinho_local')) || [];
             if (carrinhoLocal.length > 0) {
                 console.log("Transferindo carrinho local:", carrinhoLocal);
@@ -218,13 +272,11 @@ const Navbar = () => {
         }
     };
 
-    // Função para redefinir a senha
     const handleResetPassword = async (e) => {
         e.preventDefault();
         setResetPasswordLoading(true);
         setResetPasswordMessage('');
     
-        // Validação das senhas
         if (resetPasswordData.novaSenha !== resetPasswordData.confirmarSenha) {
             setResetPasswordMessage('As senhas não coincidem');
             setResetPasswordLoading(false);
@@ -239,18 +291,15 @@ const Navbar = () => {
     
             setResetPasswordMessage(response.data.message);
             
-            // Limpa os campos após sucesso
             setResetPasswordData({
                 cpf: '',
                 novaSenha: '',
                 confirmarSenha: ''
             });
     
-            // Fecha o modal após alguns segundos em caso de sucesso
             if (response.data.message.includes('sucesso')) {
                 setTimeout(() => {
                     toggleResetPasswordModal();
-                    // Opcionalmente, abre o modal de login
                     toggleLoginModal();
                 }, 2000);
             }
@@ -274,7 +323,6 @@ const Navbar = () => {
     const carregarCarrinho = async () => {
         let usuario = JSON.parse(localStorage.getItem('usuarios'));
 
-        // CORREÇÃO: Se for array, pega o primeiro usuário
         if (Array.isArray(usuario)) {
             usuario = usuario[0];
         }
@@ -299,7 +347,6 @@ const Navbar = () => {
         setCarrinhoTotal(total);
     };
 
-    // Função para atualizar quantidade de um item no carrinho
     const atualizarQuantidade = async (item, novaQuantidade) => {
         if (novaQuantidade <= 0) {
             removerItem(item);
@@ -329,7 +376,6 @@ const Navbar = () => {
         }
     };
 
-    // Função para remover um item do carrinho
     const removerItem = async (item) => {
         const usuario = JSON.parse(localStorage.getItem('usuarios'));
 
@@ -349,13 +395,10 @@ const Navbar = () => {
         }
     };
 
-    // Função para limpar carrinho
     const limparCarrinho = async () => {
         const usuario = JSON.parse(localStorage.getItem('usuarios'));
     
-        // Corrigido: Verifica se o usuário existe antes de tentar acessar propriedades
         if (usuario) {
-            // Determina o ID do usuário dependendo se é objeto ou array
             const usuarioId = Array.isArray(usuario) ? usuario[0].id : usuario.id;
             
             try {
@@ -366,15 +409,12 @@ const Navbar = () => {
                 console.error("Erro ao limpar carrinho:", err);
             }
         } else {
-            // Se não estiver logado, limpa o carrinho local
             localStorage.removeItem('carrinho_local');
             setCarrinho([]);
             setCarrinhoTotal(0);
         }
     };
-    
 
-    // Função para finalizar compra
     const finalizarCompra = async () => {
         if (carrinho.length === 0) {
             alert("Seu carrinho está vazio!");
@@ -394,25 +434,13 @@ const Navbar = () => {
         }
     
         try {
-            // Primeiro, salve os dados do carrinho em localStorage para o componente Carrinho acessar
             localStorage.setItem('carrinho_completo', JSON.stringify({
                 itens: carrinho,
                 total: carrinhoTotal
             }));
-            
-            // Se você também quiser criar um pedido no backend:
-           // await axios.post('/pedidos', {
-             //   usuario_id: usuario.id,
-              //  itens: carrinho.map(item => ({
-              //      produto_id: item.produto_id || item.id, // Usa qualquer um que estiver disponível
-              //      quantidade: item.quantidade,
-              //      preco: item.preco
-              //  }))
-          //  });
     
-            setShowCartMenu(false); // Fecha o mini-carrinho
+            setShowCartMenu(false);
             
-            // Redireciona para a página de carrinho completo
             navigate('/carrinho');
         } catch (error) {
             console.error("Erro ao finalizar compra:", error);
@@ -420,11 +448,9 @@ const Navbar = () => {
         }
     };
     
-    // Carregar o carrinho ao iniciar o componente e quando o usuário logado mudar
     useEffect(() => {
         carregarCarrinho();
 
-        // Adicionar listener para atualização do carrinho de outros componentes
         const handleCarrinhoAtualizado = () => {
             carregarCarrinho();
         };
@@ -442,16 +468,15 @@ const Navbar = () => {
 
     const [categorias, setCategorias] = useState([]);
 
-    const [modalAberto, setModalAberto] = useState(false); // se ainda não tiver isso
-
     const buscarCategorias = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/categorias'); // ajuste o endereço conforme seu backend
+            const response = await axios.get('http://localhost:5000/categorias');
             setCategorias(response.data);
         } catch (error) {
             console.error('Erro ao buscar categorias:', error);
         }
     };
+    
     useEffect(() => {
         buscarCategorias();
     }, []);
@@ -464,7 +489,7 @@ const Navbar = () => {
                 </button>
             </div>
 
-        <div className="pesquisa">
+            <div className="pesquisa">
                 <button className="botao-menu" onClick={toggleMenu}>☰ CATEGORIAS</button>
                 {isOpen && (
                     <div className="menu-dropdown">
@@ -477,6 +502,69 @@ const Navbar = () => {
                         </ul>
                     </div>
                 )}
+
+                {/* Campo de Pesquisa */}
+                <div className="search-container">
+                    <form onSubmit={executarPesquisa} className="search-form">
+                        <div className="search-input-container">
+                            <input
+                                type="text"
+                                placeholder="Buscar produtos..."
+                                value={termoPesquisa}
+                                onChange={handlePesquisaChange}
+                                onBlur={fecharSugestoes}
+                                onFocus={() => {
+                                    if (produtosSugeridos.length > 0) {
+                                        setMostrarSugestoes(true);
+                                    }
+                                }}
+                                className="search-input"
+                            />
+                            <button type="submit" className="search-button">
+                                <FaSearch />
+                            </button>
+                        </div>
+
+                        {/* Lista de Sugestões */}
+                        {mostrarSugestoes && (
+                            <div className="search-suggestions">
+                                {carregandoPesquisa ? (
+                                    <div className="suggestion-item loading">
+                                        Buscando...
+                                    </div>
+                                ) : produtosSugeridos.length > 0 ? (
+                                    produtosSugeridos.map((produto) => (
+                                        <div
+                                            key={produto.id}
+                                            className="suggestion-item"
+                                            onClick={() => selecionarProduto(produto)}
+                                        >
+                                            <div className="suggestion-content">
+                                                {produto.imagem && (
+                                                    <img 
+                                                        src={produto.imagem} 
+                                                        alt={produto.nome} 
+                                                        className="suggestion-image"
+                                                    />
+                                                )}
+                                                <div className="suggestion-details">
+                                                    <span className="suggestion-name">{produto.nome}</span>
+                                                    <span className="suggestion-price">
+                                                        R$ {parseFloat(produto.preco).toFixed(2)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : termoPesquisa.length >= 2 ? (
+                                    <div className="suggestion-item no-results">
+                                        Nenhum produto encontrado
+                                    </div>
+                                ) : null}
+                            </div>
+                        )}
+                    </form>
+                </div>
             </div>
 
             <nav className="navbar">
@@ -633,55 +721,55 @@ const Navbar = () => {
 
             {/* Modal de Redefinição de Senha */}
             {showResetPasswordModal && (
-    <div className="modal-overlay">
-        <div className="modal">
-            <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
-            <h2>Redefinir Senha</h2>
-            <form onSubmit={handleResetPassword}>
-                <div className="form-group">
-                    <label>CPF:</label>
-                    <input 
-                        type="text" 
-                        name="cpf" 
-                        value={resetPasswordData.cpf} 
-                        onChange={handleResetPasswordChange} 
-                        placeholder="Digite seu CPF"
-                        required 
-                    />
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <button className="close-btn" onClick={toggleResetPasswordModal}>×</button>
+                        <h2>Redefinir Senha</h2>
+                        <form onSubmit={handleResetPassword}>
+                            <div className="form-group">
+                                <label>CPF:</label>
+                                <input 
+                                    type="text" 
+                                    name="cpf" 
+                                    value={resetPasswordData.cpf} 
+                                    onChange={handleResetPasswordChange} 
+                                    placeholder="Digite seu CPF"
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Nova Senha:</label>
+                                <input 
+                                    type="password" 
+                                    name="novaSenha" 
+                                    value={resetPasswordData.novaSenha} 
+                                    onChange={handleResetPasswordChange} 
+                                    placeholder="Digite sua nova senha"
+                                    required 
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Confirmar Nova Senha:</label>
+                                <input 
+                                    type="password" 
+                                    name="confirmarSenha" 
+                                    value={resetPasswordData.confirmarSenha} 
+                                    onChange={handleResetPasswordChange} 
+                                    placeholder="Confirme sua nova senha"
+                                    required 
+                                />
+                            </div>
+                            {resetPasswordMessage && <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>{resetPasswordMessage}</p>}
+                            <div className="modal-buttons">
+                                <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">Cancelar</button>
+                                <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
+                                    {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label>Nova Senha:</label>
-                    <input 
-                        type="password" 
-                        name="novaSenha" 
-                        value={resetPasswordData.novaSenha} 
-                        onChange={handleResetPasswordChange} 
-                        placeholder="Digite sua nova senha"
-                        required 
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Confirmar Nova Senha:</label>
-                    <input 
-                        type="password" 
-                        name="confirmarSenha" 
-                        value={resetPasswordData.confirmarSenha} 
-                        onChange={handleResetPasswordChange} 
-                        placeholder="Confirme sua nova senha"
-                        required 
-                    />
-                </div>
-                {resetPasswordMessage && <p className={resetPasswordMessage.includes('sucesso') ? 'message-success' : 'message-error'}>{resetPasswordMessage}</p>}
-                <div className="modal-buttons">
-                    <button type="button" onClick={toggleResetPasswordModal} className="cancel-btn">Cancelar</button>
-                    <button type="submit" disabled={resetPasswordLoading} className="submit-btn">
-                        {resetPasswordLoading ? 'Processando...' : 'Redefinir Senha'}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-)}
+            )}
         </header>
     );
 };

@@ -438,3 +438,225 @@ background-color: #f5c6cb;
   text-align: center;
   margin-top: 15px;
 }
+/* Adicione este CSS ao seu arquivo Navbar.css existente */
+
+/* Container de pesquisa */
+.search-container {
+    position: relative;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+
+.search-form {
+    position: relative;
+    width: 100%;
+}
+
+.search-input-container {
+    display: flex;
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 50px 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.search-input:focus {
+    border-color: #256f1dbc;
+    box-shadow: 0 0 0 3px #256f1d5d;
+}
+
+.search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #256f1d;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #256f1d;
+}
+
+/* Lista de sugestões */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.suggestion-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item.loading {
+    text-align: center;
+    color: #666;
+    cursor: default;
+}
+
+.suggestion-item.no-results {
+    text-align: center;
+    color: #999;
+    cursor: default;
+    font-style: italic;
+}
+
+.suggestion-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.suggestion-image {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.suggestion-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.suggestion-name {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 2px;
+    font-size: 14px;
+}
+
+.suggestion-price {
+    color: #0a7c21;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .search-container {
+        margin: 0 10px;
+        max-width: none;
+        flex: 1;
+    }
+    
+    .search-input {
+        font-size: 14px;
+        padding: 10px 45px 10px 14px;
+    }
+    
+    .search-button {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .suggestion-item {
+        padding: 10px 12px;
+    }
+    
+    .suggestion-image {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .suggestion-name,
+    .suggestion-price {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container {
+        margin: 0 5px;
+    }
+    
+    .search-input {
+        padding: 8px 40px 8px 12px;
+        font-size: 13px;
+    }
+    
+    .search-button {
+        width: 28px;
+        height: 28px;
+        right: 3px;
+    }
+    
+    .suggestion-content {
+        gap: 8px;
+    }
+    
+    .suggestion-image {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Ajustes no container principal para acomodar a pesquisa */
+.pesquisa {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    max-width: 800px;
+}
+
+/* Scrollbar personalizada para as sugestões */
+.search-suggestions::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-suggestions::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.search-suggestions::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.search-suggestions::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
