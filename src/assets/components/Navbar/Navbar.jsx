@@ -503,68 +503,7 @@ const Navbar = () => {
                     </div>
                 )}
 
-                {/* Campo de Pesquisa */}
-                <div className="search-container">
-                    <form onSubmit={executarPesquisa} className="search-form">
-                        <div className="search-input-container">
-                            <input
-                                type="text"
-                                placeholder="Buscar produtos..."
-                                value={termoPesquisa}
-                                onChange={handlePesquisaChange}
-                                onBlur={fecharSugestoes}
-                                onFocus={() => {
-                                    if (produtosSugeridos.length > 0) {
-                                        setMostrarSugestoes(true);
-                                    }
-                                }}
-                                className="search-input"
-                            />
-                            <button type="submit" className="search-button">
-                                <FaSearch />
-                            </button>
-                        </div>
-
-                        {/* Lista de Sugestões */}
-                        {mostrarSugestoes && (
-                            <div className="search-suggestions">
-                                {carregandoPesquisa ? (
-                                    <div className="suggestion-item loading">
-                                        Buscando...
-                                    </div>
-                                ) : produtosSugeridos.length > 0 ? (
-                                    produtosSugeridos.map((produto) => (
-                                        <div
-                                            key={produto.id}
-                                            className="suggestion-item"
-                                            onClick={() => selecionarProduto(produto)}
-                                        >
-                                            <div className="suggestion-content">
-                                                {produto.imagem && (
-                                                    <img 
-                                                        src={produto.imagem} 
-                                                        alt={produto.nome} 
-                                                        className="suggestion-image"
-                                                    />
-                                                )}
-                                                <div className="suggestion-details">
-                                                    <span className="suggestion-name">{produto.nome}</span>
-                                                    <span className="suggestion-price">
-                                                        R$ {parseFloat(produto.preco).toFixed(2)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : termoPesquisa.length >= 2 ? (
-                                    <div className="suggestion-item no-results">
-                                        Nenhum produto encontrado
-                                    </div>
-                                ) : null}
-                            </div>
-                        )}
-                    </form>
-                </div>
+                
             </div>
 
             <nav className="navbar">

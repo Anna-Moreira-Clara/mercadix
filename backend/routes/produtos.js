@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router(); //cria um grupo de rotas para produtos.
 const produtosController = require('../controllers/produtosController');
-router.get('/pesquisar', produtosController.pesquisarProdutos);
+
 router.post('/', produtosController.criarProduto);
 router.get('/', produtosController.listarProdutos);
 router.get('/:id', produtosController.buscarProdutoPorId);
