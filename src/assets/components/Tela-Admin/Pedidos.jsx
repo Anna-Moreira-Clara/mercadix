@@ -13,23 +13,27 @@ const Pedidos = () => {
   }, []);
 
   const carregarPedidos = () => {
-    axios.get('http://localhost:5000/pedidos')
-      .then((res) => {
-        // CORREÇÃO: Trata pedidos com status NULL
-        const pedidosFormatados = res.data.map(pedido => ({
-          ...pedido,
-          status: pedido.status || 'pendente' // Se status for NULL, define como 'pendente'
-        }));
-        
-        setPedidos(pedidosFormatados);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Erro ao buscar pedidos:', err.response?.data || err.message);
-        setErro('Erro ao buscar pedidos. Tente novamente mais tarde.');
-        setLoading(false);
-      });
-  };
+  axios.get('http://localhost:5000/pedidos')
+    .then((res) => {
+      const pedidosFormatados = res.data.map(pedido => ({
+        ...pedido,
+        status: pedido.status || 'pendente'
+      }));
+
+      const apenasPendentes = pedidosFormatados
+        .filter(p => p.status.toLowerCase() === 'pendente')
+        .sort((a, b) => new Date(b.data_pedido) - new Date(a.data_pedido));
+
+      setPedidos(apenasPendentes);
+      setLoading(false);
+    })
+    .catch((err) => {
+      console.error('Erro ao buscar pedidos:', err.response?.data || err.message);
+      setErro('Erro ao buscar pedidos. Tente novamente mais tarde.');
+      setLoading(false);
+    });
+};
+
 
   const atualizarStatusPedido = async (id, novoStatus) => {
     try {
