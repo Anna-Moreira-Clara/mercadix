@@ -47,9 +47,7 @@
   background-color: #01e70c; /* Verde claro */
 }
 
-.login-btn:active {
-  transform: scale(0.98); /* Efeito de clique */
-}
+
 
 .cadastrar-btn {
   background-color: #0c7e11; /* Verde */
