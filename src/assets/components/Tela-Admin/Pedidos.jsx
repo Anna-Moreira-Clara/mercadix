@@ -106,6 +106,7 @@ const Pedidos = () => {
                 <div className="pedido-cliente">
                   <div className="cliente-info">
                     <strong>Cliente:</strong> {pedido.nome_usuario} (ID: {pedido.usuario_id})
+                    <strong> - Edereco:</strong> {pedido.endereco}
                   </div>
                 </div>
 
